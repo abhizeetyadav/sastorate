@@ -467,7 +467,11 @@ def from_heuristics(soup: BeautifulSoup, page_url: str) -> list[RawOffer]:
 
 def from_product_page(soup: BeautifulSoup, page_url: str) -> list[RawOffer]:
     """Last resort for a single product page: <h1> + first price after it."""
+    if not is_product_url(page_url):  # a search page's heading is just the search words
+        return []
     h1 = soup.find("h1")
+    if re.search(r"search|results?\s+for|showing\s+\d", _text(h1), re.I):
+        return []
     title = _text(h1)
     if not is_iphone_title(title):
         return []

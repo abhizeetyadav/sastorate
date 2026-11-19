@@ -30,10 +30,26 @@ NON_PRODUCT_URL = re.compile(
     re.I)
 
 
-def is_product_url(url: str) -> bool:
-    """False for addresses that are clearly articles/news/guides rather than product pages."""
+SEARCH_PARAMS = {"q", "s", "search", "keyword", "keywords", "query", "term", "search_query"}
+
+
+def is_article_url(url: str) -> bool:
+    """True for blog posts, news, comparisons and guides."""
     from urllib.parse import urlparse
-    return not NON_PRODUCT_URL.search(urlparse(url or "").path)
+    return bool(NON_PRODUCT_URL.search(urlparse(url or "").path))
+
+
+def is_search_url(url: str) -> bool:
+    """True for a store's search results page (/search, ?q=iphone+18 ...): it lists products but is never one.
+    (A GAG Nepal search for "iphone 18" was once read as a GAG "iPhone 18" listing.)"""
+    from urllib.parse import parse_qs, urlparse
+    u = urlparse(url or "")
+    return bool(re.search(r"/search(?:/|$|\.)", u.path, re.I)) or bool(SEARCH_PARAMS & set(k.lower() for k in parse_qs(u.query)))
+
+
+def is_product_url(url: str) -> bool:
+    """False for addresses that can't be a single product: articles, news, guides and search results."""
+    return not is_article_url(url) and not is_search_url(url)
 
 
 @dataclass(frozen=True)

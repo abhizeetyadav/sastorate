@@ -143,7 +143,7 @@ The site is static, so other hosts work too: point them at the `web/` folder and
 python -m scraper inspect "iPhone 17"
 ```
 
-It lists each store's latest price for that model with the page title and address it was read from. If the title names a different model, or the page is a blog post, that's the culprit. Pages that are articles, news, comparisons or guides are skipped automatically, and prices read from them earlier are hidden.
+It lists each store's latest price for that model with the page title and address it was read from. If the title names a different model, or the page is a blog post or search page, that's the culprit. Articles, news, comparisons, guides and search results are never read as a single product, and prices read from them earlier are hidden.
 
 
 Store sites change. When a store suddenly shows 0 prices, probe one of its pages:

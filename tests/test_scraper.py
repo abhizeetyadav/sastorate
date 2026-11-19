@@ -575,4 +575,34 @@ def test_inspect_shows_where_prices_came_from(tmp_path, monkeypatch, capsys):
     assert cli.main(["inspect", "17"]) == 0
     out = capsys.readouterr().out
     assert "iPhone 17:" in out and "https://hukut.com/iphone-17" in out and "Rs   149,999" in out
-    assert "HIDDEN: article/news page" in out
+    assert "HIDDEN: not a product page" in out
+
+
+def test_search_pages_are_never_read_as_one_product(tmp_path):
+    import json as _json
+    from scraper.normalize import is_product_url, is_search_url
+    gag_search = "https://gag-nepal.com/search?q=iphone+18"
+    assert is_search_url(gag_search) and not is_product_url(gag_search)
+    for u in ["https://x.np/search/iphone", "https://x.np/?s=iphone+17", "https://x.np/catalogsearch/result/?q=iphone"]:
+        assert is_search_url(u), u
+    for u in ["https://x.np/products/iphone-17?variant=4411", "https://x.np/iphone-17-research-edition"]:
+        assert not is_search_url(u), u
+    # a search page whose first result is the 18 Pro Max: no made-up "iPhone 18" offer
+    page = ('<html><body><main><h1>Search results for "iphone 18"</h1>'
+            '<div><p>Rs. 2,79,900</p><p>Out of stock</p></div></main></body></html>')
+    assert extract_offers(page, gag_search) == []
+    page2 = '<html><body><main><h1>iphone 18</h1><p>Rs. 2,79,900</p></main></body></html>'   # heading = search words
+    assert extract_offers(page2, gag_search) == []
+    # ...but product cards with their own links on a search page still count
+    cards = ('<html><body><h1>Search: iphone</h1><div class="product-card"><a href="/products/iphone-18-pro-max">'
+             'Apple iPhone 18 Pro Max 256GB</a><span class="price">Rs. 2,79,900</span></div></body></html>')
+    got = {(v.model, o.url) for v, o in pick_best(extract_offers(cards, gag_search), False)}
+    assert got == {("iPhone 18 Pro Max", "https://gag-nepal.com/products/iphone-18-pro-max")}
+    # prices read from search pages by older versions are hidden from the site
+    from scraper.db import DB
+    from scraper.export import export
+    db = DB(tmp_path / "t.db")
+    db.record("gag", classify("iPhone 18"), "iphone 18", gag_search, 279900, None, False)
+    out = tmp_path / "web" / "data"
+    export(db, [{"id": "gag", "name": "GAG Nepal", "url": "https://gag-nepal.com"}], out, rules=[])
+    assert _json.loads((out / "latest.json").read_text(encoding="utf-8"))["variants"] == []

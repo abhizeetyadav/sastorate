@@ -155,7 +155,7 @@ def cmd_inspect(args) -> int:
     for r in rows:
         size = "?" if not r["storage_gb"] else (f"{r['storage_gb'] // 1024} TB" if r["storage_gb"] >= 1024 else f"{r['storage_gb']} GB")
         stock = {1: "in stock", 0: "out of stock"}.get(r["in_stock"], "stock not shown")
-        note = ("  <- HIDDEN: article/news page, not a product" if not is_product_url(r["url"])
+        note = ("  <- HIDDEN: not a product page (article, news or search results)" if not is_product_url(r["url"])
                 else "  <- HIDDEN by overrides.yaml" if is_hidden(rules, r["store_id"], r["model"], r["storage_gb"]) else "")
         print(f"  {r['store_id']:<12} {size:>6}  Rs {r['price']:>9,}  {stock:<15} last seen {r['last_seen'][:16].replace('T', ' ')}{note}")
         print(f"               title: {r['title']}")
