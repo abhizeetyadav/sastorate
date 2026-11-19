@@ -126,7 +126,7 @@ stores:
 
   - id: macstore
     name: MacStore
-    logo: logos/omacstore.jpg
+    logo: logos/macstore.jpg
     url: https://www.macstore.com.np/
     authorized: false
     enabled: true
