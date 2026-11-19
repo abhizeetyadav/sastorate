@@ -1,0 +1,19 @@
+# Cloudflare Worker for Bhaau price-drop alerts. See README "Price-drop alerts" for setup.
+name = "bhaau-alerts"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bhaau-alerts"
+database_id = "PUT-YOUR-DATABASE-ID-HERE"   # printed by: npx wrangler d1 create bhaau-alerts
+
+[vars]
+SITE_URL = "https://bhaau.com.np"                               # your website, no trailing slash
+SITE_ORIGINS = "https://bhaau.com.np,http://localhost:8000"     # pages allowed to sign people up
+MAIL_FROM = "Bhaau <alerts@bhaau.com.np>"                       # an address on a domain verified in Resend
+MAX_EMAILS_PER_RUN = "90"                                       # Resend free plan allows 100 emails a day
+
+# Secrets (never put these in this file):
+#   npx wrangler secret put RESEND_API_KEY
+#   npx wrangler secret put ALERTS_TOKEN      (any long random string; also set it in GitHub as ALERTS_TOKEN)

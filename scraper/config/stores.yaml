@@ -1,0 +1,129 @@
+# Stores to track. Each store goes through the same pipeline:
+#   1. fetch start_urls (or, with discover: true, find iPhone links on the homepage)
+#   2. extract offers with JSON-LD -> embedded JSON -> selectors -> heuristics
+#   3. optionally open each product page (follow_product_pages) for per-storage prices
+#
+# Tune a store with:  python -m scraper probe <url> --store <id>
+# Fields marked "verified" were confirmed against the live site in Nov 2026;
+# everything else uses auto-discovery and may need a selector tweak after the first run.
+
+defaults:
+  respect_robots: true        # skip URLs disallowed by robots.txt
+  delay_seconds: [2, 5]       # random pause between requests to the same host
+  timeout: 30
+  retries: 4
+  max_pages: 5                # listing pages per start URL
+  max_product_pages: 60       # product pages per store per run
+  include_used: false         # ignore refurbished / pre-owned listings
+  stale_after_days: 3         # hide offers not seen for this long
+
+stores:
+  - id: evostore
+    name: Evo Store
+    url: https://evostore.com.np
+    authorized: true
+    enabled: true
+    # verified: OpenCart, iPhone category with series sub-categories, "NPR 295,000" prices
+    start_urls:
+      - https://evostore.com.np/apple/iphone
+      - https://evostore.com.np/apple/iphone/iphone-18-series
+      - https://evostore.com.np/apple/iphone/iphone-17-series
+      - https://evostore.com.np/apple/iphone/iphone-air
+      - https://evostore.com.np/apple/iphone/iphone-15-iphone-16
+    page_param: page
+    follow_product_pages: true     # each storage is its own product (/iphone-17-pro-1tb)
+    product_link_pattern: "evostore\\.com\\.np/(?!apple/)[a-z0-9-]*iphone[a-z0-9-]*(\\?|$)"
+    selectors:
+      card: ".product-thumb, .product-layout"
+      name: ".description h4 a, .caption h4 a, .name a, h4 a"
+      link: "h4 a, .name a, a[href]"
+      price: ".price"
+      old_price: ".price-old"
+
+
+    product_selectors:
+      card: "main"
+      name: "h1"
+      link: "page"
+      price: "[data-product-price]"
+      old_price: "[data-product-original-price]"
+      stock: "[data-product-stock]"
+  
+
+             # flip to true if probe shows an empty page
+    
+
+  - id: olizstore
+    name: Oliz Store
+    url: https://www.olizstore.com
+    authorized: true
+    enabled: true
+    render_js: true
+    start_urls:
+      - https://www.olizstore.com/collections/iphone-price-in-nepal
+    follow_product_pages: true
+    product_link_pattern: "olizstore\\.com/product/(apple-)?iphone-[0-9a-z-]+-price-in-nepal"
+
+
+  - id: fatafatsewa
+    name: Fatafat Sewa
+    url: https://fatafatsewa.com
+    authorized: false
+    enabled: true
+    # verified: Next.js, product URLs are /product-detail/{slug}, prices "Rs. 63,999"
+    start_urls:
+      - https://fatafatsewa.com/category/apple-iphone-price-in-nepal
+      - https://fatafatsewa.com/brand/iphone-price-in-nepal
+    product_path: "/product-detail/{slug}"
+    follow_product_pages: true
+    product_link_pattern: "/product-detail/[^/]*iphone"
+
+  - id: hukut
+    name: Hukut
+    logo: logos/Hukut.jpeg
+    url: https://hukut.com
+    authorized: false
+    enabled: true
+    # verified Nov 2026: homepage is rendered by JavaScript (no links in plain HTML),
+    # but /sitemaps/sitemap/products.xml lists every product, e.g.
+    # /apple-iphone-18-pro-price-in-nepal. Product pages go to the browser automatically if needed.
+    sitemap: true
+    follow_product_pages: true
+
+ 
+
+  - id: dursachar
+    name: Dursachar
+    url: https://dursachar.com.np
+    authorized: false
+    # Disabled Nov 2026: robots.txt disallows automated access and the site
+    # refused connections from Webshare proxies.
+    enabled: false
+    discover: true
+    follow_product_pages: true
+
+  - id: daraz
+    name: Daraz (Oliz / official stores)
+    url: https://www.daraz.com.np
+    authorized: false
+    # Disabled: Daraz's robots.txt disallows its catalog/search pages. If you have
+    # permission or use the Daraz affiliate/open-platform API, add it here instead.
+    enabled: false
+    start_urls:
+      - https://www.daraz.com.np/catalog/?q=iphone
+
+  - id: gagstore
+    name: GAG Nepal
+    url: https://gag-nepal.com/
+    authorized: false
+    enabled: true
+    discover: true
+    follow_product_pages: true
+
+  - id: macstore
+    name: MacStore
+    url: https://www.macstore.com.np/
+    authorized: false
+    enabled: true
+    discover: true
+    follow_product_pages: true

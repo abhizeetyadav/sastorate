@@ -1,0 +1,7 @@
+# Same line endings on Windows and on GitHub's Linux runners, so files don't show as changed
+* text=auto eol=lf
+*.db binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.zip binary

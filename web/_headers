@@ -1,0 +1,14 @@
+# Cloudflare Pages response headers (https://developers.cloudflare.com/pages/configuration/headers/)
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# prices change every 6 hours: let browsers keep them 5 minutes at most
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+# private status page: never in search results, never cached
+/status-*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

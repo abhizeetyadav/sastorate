@@ -1,0 +1,6 @@
+hide:
+  - store: joystore
+    model: iPhone 16
+    storage: 128GB
+    until:       # optional: the rule switches itself off after this date
+    reason: lists the 256 GB price

@@ -1,0 +1,31 @@
+{
+ "release": "2026-11-19",
+ "files": {
+  ".github/workflows/scrape.yml": "b28ff3a768277b28",
+  "alerts/schema.sql": "ec0b59063e09a651",
+  "alerts/test/worker.test.mjs": "d1caa4606d8cb3f6",
+  "alerts/worker.js": "94b3f03198ec0988",
+  "requirements.txt": "a14eb7c3230b5a4c",
+  "scraper/__init__.py": "d494c9456497fe07",
+  "scraper/__main__.py": "9feaded0be35d60e",
+  "scraper/alerts.py": "cb16de464066402d",
+  "scraper/db.py": "85762e3b64efd787",
+  "scraper/export.py": "8b6e237335ae3a88",
+  "scraper/extract.py": "9a9511ed4843751d",
+  "scraper/fetch.py": "0ba2f9d7384c4ea8",
+  "scraper/health.py": "78f658e6893e0705",
+  "scraper/normalize.py": "d719b88f306e6444",
+  "scraper/overrides.py": "b7a55e905ef828bb",
+  "scraper/pipeline.py": "1d7f5194d6f98012",
+  "scraper/proxies.py": "fc7f31aa7abf9ccf",
+  "scraper/seo.py": "48e86d5770da5efd",
+  "scraper/status_page.py": "0ad7ddf5f3f2a66c",
+  "scripts/build_standalone.py": "03d90eaeff30a3c8",
+  "scripts/deploy.py": "d9afbaed2bce1505",
+  "scripts/make_demo_data.py": "a4b72ca7260bb9c7",
+  "tests/test_scraper.py": "b7ec2470da75fe01",
+  "web/_headers": "9751eb58e38b6042",
+  "web/app.js": "dfebb017e90731e1",
+  "web/styles.css": "473b9e492b2a26da"
+ }
+}
