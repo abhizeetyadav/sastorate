@@ -89,10 +89,69 @@ def search_urls(template: str, refs: dict[str, dict]) -> list[str]:
     return [template.format(query=quote(m.lower())) for m in models]
 
 
+USED_JUNK = re.compile(
+    r"\b(copy|clone|replica|first\s*copy|master\s*copy|dummy|duplicate|fake|wanted|want\s*to\s*buy|buying"
+    r"|emi|installments?|on\s*rent|rent|hire|parts?|display|screen|motherboard|icloud|locked|bypass"
+    r"|crack\w*|broken|dead|not\s*working|repair|box\s*only|only\s*box|empty\s*box"
+    r"|case|cover|glass|protector|charger|cable|adapter|airpods|watch)\b|\b1\s*:\s*1\b", re.I)
+NEW_BADGE = re.compile(r"brand[\s-]?new|sealed|unused", re.I)
+MIN_USED_SHARE = 0.35  # used ads far below this are parts, bait or deposits
+MIN_USED_ADS = 3
+
+
+def _pct(sorted_prices: list[int], q: float) -> int:
+    return sorted_prices[min(len(sorted_prices) - 1, max(0, round(q * (len(sorted_prices) - 1))))]
+
+
+def used_stats(offers: list[RawOffer], refs: dict[str, dict]) -> list[dict]:
+    """Typical used prices per model and storage (and per model for all sizes together):
+    the middle half of believable used ads, needing at least 3 ads."""
+    shop_low: dict[str, int] = {}
+    shop_by_key = {k: r["price"] for k, r in refs.items()}
+    for r in refs.values():
+        shop_low[r["model"]] = min(shop_low.get(r["model"], r["price"]), r["price"])
+    groups: dict[tuple, list[int]] = {}
+    seen: set = set()
+    for o in offers:
+        key = (o.url.split("?")[0], o.price)
+        if key in seen:
+            continue
+        seen.add(key)
+        path = urlparse(o.url).path.lower()
+        badge = (o.extra.get("condition") or "").strip()
+        text = f"{o.title} {re.sub(r'[-_/]+', ' ', path)}"
+        used = (badge and not NEW_BADGE.search(badge)) or bool(re.search(
+            r"\b(used|second[\s-]?hand|2nd[\s-]?hand|like[\s-]?new|refurb\w*)\b|\b\d{2}\s*(?:%|bh\b|battery)|\bbh\s*\d{2}",
+            text, re.I))
+        if not used or "/accessories/" in path or USED_JUNK.search(f"{text} {badge}") or mixed_ad(o.title):
+            continue
+        v = classify(o.title, include_used=True)
+        if v is None or v.model not in shop_low:
+            continue
+        ceiling = shop_by_key.get(f"{v.key.split('|')[0]}|{v.storage_gb}") if v.storage_gb else None
+        ceiling = ceiling or max(r["price"] for r in refs.values() if r["model"] == v.model)
+        if not MIN_USED_SHARE * shop_low[v.model] <= o.price <= ceiling:
+            continue
+        groups.setdefault((v.model, v.storage_gb or 0), []).append(o.price)
+        if v.storage_gb:
+            groups.setdefault((v.model, 0), []).append(o.price)  # also counts toward "all sizes"
+    out = []
+    for (model, gb), prices in groups.items():
+        if len(prices) < MIN_USED_ADS:
+            continue
+        p = sorted(prices)
+        out.append({"model": model, "storage_gb": gb, "ads": len(p),
+                    "low": _pct(p, 0.25), "median": _pct(p, 0.5), "high": _pct(p, 0.75)})
+    if out:
+        log.info("  marketplace: used price ranges for %d phones", len(out))
+    return out
+
+
 class Selected(list):
     """The kept listings; `.listings` is how many listings the pages had before filtering
     (0 means the pages couldn't be read, which is a real problem; few kept is normal)."""
     listings = 0
+    used: list = []
 
 
 def select(offers: list[RawOffer], refs: dict[str, dict]) -> Selected:

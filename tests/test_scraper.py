@@ -842,3 +842,88 @@ def test_analytics_beacon_and_privacy_text_follow_the_token(tmp_path, monkeypatc
     build_site(latest, web, "https://bhaau.pages.dev")
     assert not any("cloudflareinsights" in p.read_text(encoding="utf-8") or "bad</script>" in p.read_text(encoding="utf-8")
                    for p in pages())
+
+
+def test_colour_stock_from_titles():
+    from scraper.extract import RawOffer
+    from scraper.pipeline import colour_stock
+    offers = [
+        RawOffer("iPhone 18 Pro Max — Burgundy — 256GB", 279900, "https://gag-nepal.com/products/iphone-18-pro-max", in_stock=False),
+        RawOffer("iPhone 18 Pro Max — Burgundy — 256GB", 279900, "https://gag-nepal.com/products/iphone-18-pro-max?v=2", in_stock=True),
+        RawOffer("iPhone 18 Pro Max — Deep Blue — 256GB", 279900, "https://gag-nepal.com/products/iphone-18-pro-max", in_stock=False),
+        RawOffer("Apple iPhone 18 Pro Max – Black, 12/512GB", 322899, "https://hukut.com/x", in_stock=None),
+        RawOffer("iPhone 18 Pro Max 1TB", 407900, "https://x.np/p"),                       # no colour named: ignored
+        RawOffer("iPhone 18 Pro Max Black 256GB", 279900, "https://x.np/blog/iphone-18"),  # article: ignored
+    ]
+    got = {(r["model"], r["storage_gb"], r["colour"]): r["in_stock"] for r in colour_stock(offers)}
+    assert got == {("iPhone 18 Pro Max", 256, "Burgundy"): True, ("iPhone 18 Pro Max", 256, "Deep Blue"): False,
+                   ("iPhone 18 Pro Max", 512, "Black"): None}
+
+
+def test_used_price_ranges_from_marketplace_ads():
+    from scraper import marketplace as mk
+    from scraper.extract import RawOffer
+    refs = {"iphone-17-pro-max|256": {"model": "iPhone 17 Pro Max", "storage_gb": 256, "price": 242499},
+            "iphone-17-pro-max|512": {"model": "iPhone 17 Pro Max", "storage_gb": 512, "price": 284599}}
+    n = iter(range(1000))
+    ad = lambda t, p, badge="Like new", slug="mobile-phone-handsets/x": RawOffer(
+        t, p, f"https://hamrobazaar.com/detail/{slug}/{next(n)}", extra={"condition": badge})
+    offers = [
+        ad("iphone 17 pro max 256gb 98% battery physical sim", 199999),
+        ad("Iphone 17 pro max (256gb) 95% Bh", 189999),
+        ad("iPhone 17 pro max 256gb on sell", 180000),
+        ad("iphone 17 pro max 256gb sim", 187000),
+        ad("Iphone 17 pro max used warranty baki cha", 170000),                 # no storage: counts for "all sizes"
+        ad("iPhone 17 Pro Max 256GB brand new sealed", 204999, "Brand new"),    # new: not a used price
+        ad("iPhone 17 Pro Max 256GB icloud locked", 60000),                     # junk
+        ad("iPhone 17 Pro Max 256GB", 20000),                                   # bait
+        ad("iPhone 17 Pro Max Magnetic Protective Case", 499, "Brand new", "accessories/x"),
+        ad("iPhone 17 Pro Max 256 / 17 Pro 256", 175000),                       # mixed ad
+        ad("iPhone 16 128GB used", 95000),                                      # no shop price for the 16 here
+    ]
+    stats = {(s["model"], s["storage_gb"]): s for s in mk.used_stats(offers, refs)}
+    assert set(stats) == {("iPhone 17 Pro Max", 256), ("iPhone 17 Pro Max", 0)}
+    s256 = stats[("iPhone 17 Pro Max", 256)]
+    assert s256["ads"] == 4 and s256["low"] <= s256["median"] <= s256["high"] and 180000 <= s256["median"] <= 199999
+    assert stats[("iPhone 17 Pro Max", 0)]["ads"] == 5
+
+
+def test_shop_details_colours_and_used_reach_the_site(tmp_path):
+    from scraper.db import DB
+    from scraper.export import export, store_details
+    d = store_details({"id": "evo", "details": {
+        "warranty": "1 year   Apple warranty", "emi": "Card EMI, 0% on some models", "phone": "01-5970000 <script>",
+        "locations": [{"name": "New Road", "address": "Kathmandu", "map": "https://maps.app.goo.gl/abc"},
+                      {"name": "Bad map", "map": "javascript:alert(1)"}, {"address": "no name: skipped"}],
+        "made_up_field": "ignored"}})
+    assert d == {"warranty": "1 year Apple warranty", "emi": "Card EMI, 0% on some models", "phone": "01-5970000",
+                 "locations": [{"name": "New Road", "address": "Kathmandu", "map": "https://maps.app.goo.gl/abc"},
+                               {"name": "Bad map"}]}
+    assert store_details({"id": "x"}) is None
+
+    db = DB(tmp_path / "t.db")
+    db.record("gag", classify("iPhone 18 Pro Max 256GB"), "iPhone 18 Pro Max 256GB", "https://gag-nepal.com/p", 279900, None, True)
+    db.replace_colours("gag", [{"model": "iPhone 18 Pro Max", "storage_gb": 256, "colour": "Burgundy", "in_stock": True,
+                                "price": 279900, "url": "https://gag-nepal.com/p"},
+                               {"model": "iPhone 18 Pro Max", "storage_gb": 256, "colour": "Deep Blue", "in_stock": False,
+                                "price": 279900, "url": "https://gag-nepal.com/p"}])
+    db.replace_used("hamrobazar", [{"model": "iPhone 18 Pro Max", "storage_gb": 0, "ads": 6, "low": 210000,
+                                    "median": 220000, "high": 230000}])
+    db.commit()
+    stores = [{"id": "gag", "name": "GAG", "url": "https://gag-nepal.com", "details": {"warranty": "1 year"}},
+              {"id": "hamrobazar", "name": "HamroBazar", "url": "https://hamrobazaar.com", "kind": "marketplace"}]
+    latest = export(db, stores, tmp_path / "web" / "data", rules=[])
+    v = latest["variants"][0]
+    assert [c["colour"] for c in v["colours"]] == ["Burgundy", "Deep Blue"]               # in stock first
+    assert v["used"] == {"store": "hamrobazar", "ads": 6, "low": 210000, "median": 220000, "high": 230000, "all_sizes": True}
+    assert {s["id"]: s["details"] for s in latest["stores"]} == {"gag": {"warranty": "1 year"}, "hamrobazar": None}
+
+
+def test_branches_in_several_cities():
+    from scraper.export import store_details
+    d = store_details({"id": "evo", "details": {"locations": [
+        {"name": "New Road", "city": "Kathmandu", "address": "New Road"},
+        {"name": "Labim Mall", "city": "Lalitpur"},
+        {"name": "Lakeside", "city": "Pokhara", "phone": "061-123456"}] + [{"name": f"Branch {i}"} for i in range(40)]}})
+    assert [l.get("city") for l in d["locations"][:3]] == ["Kathmandu", "Lalitpur", "Pokhara"]
+    assert len(d["locations"]) == 30

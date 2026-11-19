@@ -34,7 +34,9 @@ BASE = {  # rough reference prices (NPR) used only to shape the demo
 
 
 def main():
-    cfg = yaml.safe_load((ROOT / "scraper/config/stores.yaml").read_text(encoding="utf-8"))
+    from scraper.shopconfig import load_config
+    defaults, stores = load_config()
+    cfg = {"defaults": defaults, "stores": stores}
     stores = [s for s in cfg["stores"] if s.get("enabled", True)]
     db_path = ROOT / "data" / "demo.db"
     db_path.unlink(missing_ok=True)

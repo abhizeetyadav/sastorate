@@ -98,3 +98,38 @@ def load_rules(path: str | Path | None = None, known_stores: set[str] | None = N
 
 def is_hidden(rules: list[Rule], store: str, model: str, storage_gb: int | None, today: date | None = None) -> Rule | None:
     return next((r for r in rules if r.matches(store, model, storage_gb, today)), None)
+
+
+# ---------------------------------------------------------------- editing (admin panel)
+FILE_HEADER = """\
+# Hide wrong prices. Managed by the admin panel (python -m scraper admin); you can edit it by hand too.
+#
+# hide:
+#   - store: hukut               # shop id (required)
+#     model: iPhone 17 Pro       # optional: only this model
+#     storage: 256 GB            # optional: only this size
+#     until: 2026-12-01          # optional: the rule stops on this date
+#     reason: shows the 128 GB price for every size
+"""
+
+
+def read_raw(path: str | Path | None = None) -> list[dict]:
+    """The rules exactly as written, for editing."""
+    path = Path(path) if path else DEFAULT_PATH
+    if not path.exists():
+        return []
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return [dict(r) for r in (data.get("hide") or []) if isinstance(r, dict)]
+
+
+def write_raw(rules: list[dict], path: str | Path | None = None) -> None:
+    path = Path(path) if path else DEFAULT_PATH
+    clean = []
+    for r in rules:
+        item = {"store": str(r["store"])}
+        for k in ("model", "storage", "until", "reason"):
+            if r.get(k) not in (None, ""):
+                item[k] = str(r[k]) if k != "until" else str(r[k])[:10]
+        clean.append(item)
+    body = yaml.safe_dump({"hide": clean}, allow_unicode=True, sort_keys=False) if clean else "hide: []\n"
+    path.write_text(FILE_HEADER + "\n" + body, encoding="utf-8")

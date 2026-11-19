@@ -104,6 +104,28 @@ def parse_storage(text: str) -> int | None:
     return max(bare) if bare else None
 
 
+# Apple's iPhone colour names (plus common shop spellings), longest first so "Deep Blue" beats "Blue".
+COLOURS = {
+    "cosmic orange": "Cosmic Orange", "deep blue": "Deep Blue", "mist blue": "Mist Blue", "sky blue": "Sky Blue",
+    "light gold": "Light Gold", "cloud white": "Cloud White", "space black": "Space Black", "sage": "Sage",
+    "lavender": "Lavender", "burgundy": "Burgundy",
+    "desert titanium": "Desert Titanium", "natural titanium": "Natural Titanium", "white titanium": "White Titanium",
+    "black titanium": "Black Titanium", "blue titanium": "Blue Titanium", "ultramarine": "Ultramarine", "teal": "Teal",
+    "deep purple": "Deep Purple", "sierra blue": "Sierra Blue", "alpine green": "Alpine Green", "pacific blue": "Pacific Blue",
+    "graphite": "Graphite", "midnight": "Midnight", "starlight": "Starlight", "(product)red": "Red", "product red": "Red",
+    "black": "Black", "white": "White", "silver": "Silver", "gold": "Gold", "pink": "Pink", "blue": "Blue",
+    "green": "Green", "yellow": "Yellow", "purple": "Purple", "red": "Red", "orange": "Orange",
+}
+_COLOUR_RE = re.compile(r"(?<![a-z])(" + "|".join(re.escape(k) for k in sorted(COLOURS, key=len, reverse=True))
+                        + r")(?![a-z])", re.I)
+
+
+def parse_colour(text: str) -> str | None:
+    """'iPhone 18 Pro Max — Burgundy — 256GB' -> 'Burgundy'. None when no colour is named."""
+    m = _COLOUR_RE.search((text or "").replace("Grey", "Gray"))
+    return COLOURS[m.group(1).lower()] if m else None
+
+
 # Names shops use that aren't Apple's: map them to the real model so prices aren't split over two pages.
 ALIASES = {
     "iPhone 17 Air": ("iPhone Air", "Air"),  # Apple sells it as "iPhone Air"

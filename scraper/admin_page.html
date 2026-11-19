@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Bhaau admin</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --ink: #1d2128; --ink-2: #4b5462; --ink-3: #7a8391; --line: #e1e4e9; --line-2: #eef0f3;
+    --brand: #0b3b8c; --brand-ink: #fff; --green: #0a7a43; --green-wash: #e6f5ec; --red: #b42318; --red-wash: #fdecea;
+    --amber: #8a5a00; --amber-wash: #fff3d6; --focus: #2f6fe0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  a { color: var(--brand); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .app { display: grid; grid-template-columns: 210px minmax(0, 1fr); min-height: 100vh; }
+  nav { background: var(--brand); color: var(--brand-ink); padding: 18px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
+  nav .brand { font-weight: 700; font-size: 16px; padding: 4px 10px 16px; }
+  nav .brand span { display: block; font-weight: 400; font-size: 12px; opacity: .75; }
+  nav button { background: none; border: 0; color: inherit; text-align: left; padding: 9px 10px; border-radius: 8px; cursor: pointer; opacity: .85; display: flex; justify-content: space-between; }
+  nav button[aria-current="page"], nav button:hover { background: rgba(255,255,255,.14); opacity: 1; }
+  nav .count { background: #fff; color: var(--brand); border-radius: 999px; padding: 0 7px; font-size: 12px; font-weight: 700; }
+  nav .spacer { flex: 1; }
+  nav a { color: inherit; padding: 9px 10px; opacity: .85; font-size: 13px; }
+
+  main { padding: 24px 28px 140px; max-width: 1180px; width: 100%; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .lead { color: var(--ink-2); margin: 0 0 18px; max-width: 72ch; }
+  h2 { font-size: 16px; margin: 0 0 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  .pad { padding: 16px; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .muted { color: var(--ink-3); }
+  .small { font-size: 12.5px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); cursor: pointer; white-space: nowrap; text-decoration: none; color: var(--ink); }
+  .btn:hover { border-color: var(--ink-3); }
+  .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .btn.danger { color: var(--red); }
+  .btn.sm { height: 28px; padding: 0 10px; font-size: 13px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  th { font-size: 12px; font-weight: 600; color: var(--ink-3); background: #fafbfc; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { text-align: right; white-space: nowrap; }
+  .title-cell { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .pill.ok { background: var(--green-wash); color: var(--green); }
+  .pill.bad { background: var(--red-wash); color: var(--red); }
+  .pill.warn { background: var(--amber-wash); color: var(--amber); }
+  .pill.off { background: var(--line-2); color: var(--ink-3); }
+
+  .problems { margin-bottom: 16px; }
+  .problems li { margin: 4px 0; }
+  .notice { padding: 12px 14px; border-radius: 8px; background: var(--amber-wash); color: var(--ink); margin-bottom: 14px; }
+  .notice.ok { background: var(--green-wash); }
+
+  /* shops */
+  .split { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .list button { display: flex; width: 100%; justify-content: space-between; gap: 8px; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line-2); padding: 10px 14px; cursor: pointer; }
+  .list button[aria-current="true"] { background: #eef3fc; font-weight: 600; }
+  .list button:last-child { border-bottom: 0; }
+  .form { display: grid; gap: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  label.f { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-2); }
+  label.f input, label.f textarea, label.f select { height: 36px; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; background: #fff; color: var(--ink); font-size: 14px; }
+  label.f textarea { height: auto; min-height: 60px; padding: 8px 10px; resize: vertical; }
+  label.check { display: flex; gap: 8px; align-items: center; }
+  .logo-box { width: 64px; height: 64px; border: 1px solid var(--line); border-radius: 10px; display: grid; place-items: center; background: #fff; overflow: hidden; }
+  .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .branches .branch { display: grid; grid-template-columns: 1.1fr .8fr 1.4fr 1fr 1.4fr auto; gap: 8px; margin-bottom: 8px; }
+  .branches input { height: 34px; border: 1px solid var(--line); border-radius: 8px; padding: 0 8px; min-width: 0; }
+  fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0; }
+  legend { font-weight: 600; padding: 0 6px; }
+
+  /* images */
+  .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .img-card { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .img-card .pic { height: 150px; border-radius: 8px; background: #fff; border: 1px solid var(--line-2); display: grid; place-items: center; overflow: hidden; }
+  .img-card .pic img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .img-form { display: grid; gap: 8px; }
+  [hidden] { display: none !important; }
+  .img-form input { height: 32px; border: 1px solid var(--line); border-radius: 8px; padding: 0 8px; min-width: 0; }
+
+  /* job drawer */
+  .drawer { position: fixed; left: 210px; right: 0; bottom: 0; background: #11161d; color: #d9e0ea; border-top: 1px solid #2a313b; max-height: 46vh; display: flex; flex-direction: column; z-index: 5; }
+  .drawer[hidden] { display: none; }
+  .drawer header { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; font-weight: 600; background: #1a212b; }
+  .drawer pre { margin: 0; padding: 10px 14px; overflow: auto; font: 12px/1.5 ui-monospace, Consolas, monospace; white-space: pre-wrap; flex: 1; }
+  .drawer .btn { background: transparent; color: #d9e0ea; border-color: #3a4350; }
+
+  .toast { position: fixed; top: 16px; right: 16px; background: var(--ink); color: #fff; padding: 10px 14px; border-radius: 8px; z-index: 10; max-width: 420px; box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+  .toast.err { background: var(--red); }
+
+  @media (max-width: 860px) {
+    .app { grid-template-columns: 1fr; }
+    nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; }
+    nav .spacer { display: none; }
+    .drawer { left: 0; }
+    .split, .grid2 { grid-template-columns: 1fr; }
+    .branches .branch { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav aria-label="Admin sections">
+    <div class="brand">Bhaau admin<span>Only on this computer</span></div>
+    <button data-view="status">Status <span class="count" id="probCount" hidden></span></button>
+    <button data-view="shops">Shops</button>
+    <button data-view="prices">Prices</button>
+    <button data-view="images">Images</button>
+    <button data-view="publish">Publish <span class="count" id="changeCount" hidden></span></button>
+    <div class="spacer"></div>
+    <a href="/preview/" target="_blank" rel="noopener">Preview the site</a>
+  </nav>
+  <main id="main" tabindex="-1"><p class="muted">Loading…</p></main>
+</div>
+
+<section class="drawer" id="drawer" hidden aria-live="polite">
+  <header><span id="jobTitle">Working…</span><button class="btn sm" id="jobClose" type="button">Hide</button></header>
+  <pre id="jobLog"></pre>
+</section>
+
+<script>
+(() => {
+  "use strict";
+  const TOKEN = "__ADMIN_TOKEN__";
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rs = (n) => n == null ? "" : "Rs " + Number(n).toLocaleString("en-IN");
+  const gb = (n) => !n ? "Size not listed" : n >= 1024 ? `${n / 1024} TB` : `${n} GB`;
+  function ago(iso) {
+    if (!iso) return "never";
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 3600) return `${Math.max(1, Math.round(s / 60))} min ago`;
+    if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+    return `${Math.round(s / 86400)} days ago`;
+  }
+
+  async function api(path, body) {
+    const r = await fetch(path, body === undefined ? { headers: { "X-Admin-Token": TOKEN } } : {
+      method: "POST", headers: { "Content-Type": "application/json", "X-Admin-Token": TOKEN }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({ error: "The admin stopped responding. Is it still running?" }));
+    if (!r.ok) { const e = new Error(j.error || `Error ${r.status}`); e.data = j; e.status = r.status; throw e; }
+    return j;
+  }
+  function toast(msg, err) {
+    const t = document.createElement("div");
+    t.className = "toast" + (err ? " err" : ""); t.textContent = msg; t.setAttribute("role", err ? "alert" : "status");
+    document.body.append(t); setTimeout(() => t.remove(), err ? 7000 : 3500);
+  }
+  const fileToB64 = (f) => new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = bad; r.readAsDataURL(f); });
+
+  let S = null, view = "status", pick = { shop: null, model: null };
+
+  async function load() {
+    S = await api("/api/state");
+    const probs = S.stores.reduce((n, s) => n + s.problems.length, 0);
+    $("#probCount").hidden = !probs; $("#probCount").textContent = probs;
+    const ch = S.changes.files.length;
+    $("#changeCount").hidden = !ch; $("#changeCount").textContent = ch;
+    if (S.job && !S.job.done) followJob();
+  }
+  async function show(v) {
+    view = v;
+    $$("nav [data-view]").forEach((b) => b.setAttribute("aria-current", b.dataset.view === v ? "page" : "false"));
+    await load();
+    ({ status, shops, prices, images, publish })[v]();
+    $("#main").focus({ preventScroll: true });
+  }
+  $$("nav [data-view]").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
+
+  // ================================================================ status
+  function runPill(s) {
+    if (!s.enabled) return `<span class="pill off">Turned off</span>`;
+    if (s.problems.some((p) => /couldn't|no iPhone prices|hasn't been checked|never/.test(p))) return `<span class="pill bad">Needs a look</span>`;
+    if (s.problems.length) return `<span class="pill warn">Check</span>`;
+    if (!s.run) return `<span class="pill off">Not scraped yet</span>`;
+    return `<span class="pill ok">Working</span>`;
+  }
+  function status() {
+    const probs = S.stores.flatMap((s) => s.problems.map((p) => ({ s, p })));
+    $("#main").innerHTML = `
+      <h1>Status</h1>
+      <p class="lead">How each shop's last scrape went. Prices on the live site update every 6 hours on GitHub; "Scrape now" updates the prices on this computer.</p>
+      ${!S.has_db ? `<div class="notice">There's no price database on this computer yet. Click "Scrape now" on a shop, or run <code>python -m scraper run</code>.</div>` : ""}
+      ${probs.length ? `<div class="card pad problems"><h2>Needs attention</h2><ul>${probs.map(({ s, p }) => `<li><b>${esc(s.name)}:</b> ${esc(p)}</li>`).join("")}</ul></div>`
+        : S.has_db ? `<div class="notice ok">All shops look healthy.</div>` : ""}
+      <div class="card"><table>
+        <thead><tr><th>Shop</th><th>State</th><th>Last scrape</th><th class="num">Prices found</th><th>Last error</th><th></th></tr></thead>
+        <tbody>${S.stores.map((s) => `<tr>
+          <td><b>${esc(s.name)}</b>${s.kind === "marketplace" ? ` <span class="pill warn">Marketplace</span>` : ""}<div class="small muted">${esc(s.id)}</div></td>
+          <td>${runPill(s)}</td>
+          <td>${s.run ? esc(ago(s.run.finished_at || s.run.started_at)) : "never"}</td>
+          <td class="num">${s.run ? s.run.offers : ""}</td>
+          <td class="small muted" style="max-width:260px">${s.run && s.run.error ? esc(s.run.error.slice(0, 160)) : ""}</td>
+          <td class="num"><div class="row" style="justify-content:flex-end">
+            <button class="btn sm" data-scrape="${esc(s.id)}" type="button">Scrape now</button>
+            <button class="btn sm" data-probe="${esc(s.id)}" type="button">Test a page</button></div></td>
+        </tr>`).join("")}</tbody></table></div>`;
+    $$("[data-scrape]").forEach((b) => b.addEventListener("click", () => startJob({ kind: "scrape", store: b.dataset.scrape })));
+    $$("[data-probe]").forEach((b) => b.addEventListener("click", () => {
+      const url = prompt("Paste the address of an iPhone page on this shop's website:");
+      if (url) startJob({ kind: "probe", store: b.dataset.probe, url });
+    }));
+  }
+
+  // ================================================================ shops
+  const DETAILS = [["warranty", "Warranty", "1 year Apple warranty through the official distributor"],
+    ["emi", "EMI", "Card EMI with partner banks; 0% on some models"], ["delivery", "Delivery", "Free inside Kathmandu valley; 2–4 days outside"],
+    ["returns", "Returns", "7-day replacement for factory defects"], ["hours", "Opening hours", "10 am to 7 pm, every day"],
+    ["phone", "Main phone", "01-XXXXXXX"], ["note", "Good to know", "Exchange offers on older iPhones"]];
+  function shops() {
+    const list = S.stores;
+    if (!pick.shop || (pick.shop !== "_new" && !list.some((s) => s.id === pick.shop))) pick.shop = list[0] ? list[0].id : "_new";
+    const s = pick.shop === "_new" ? { id: "", name: "", url: "", authorized: false, enabled: true, details: {}, kind: "store", isNew: true }
+      : list.find((x) => x.id === pick.shop);
+    const d = s.details || {};
+    $("#main").innerHTML = `
+      <h1>Shops</h1>
+      <p class="lead">What buyers see about each shop. Only fill in what you've checked with the shop; empty fields aren't shown.</p>
+      <div class="split">
+        <div class="card list" role="list">
+          ${list.map((x) => `<button type="button" data-shop="${esc(x.id)}" aria-current="${x.id === pick.shop}"><span>${esc(x.name)}</span>${x.enabled ? "" : `<span class="pill off">Off</span>`}</button>`).join("")}
+          <button type="button" data-shop="_new" aria-current="${pick.shop === "_new"}"><span>+ Add a shop</span></button>
+        </div>
+        <form class="card pad form" id="shopForm" autocomplete="off">
+          <h2>${s.isNew ? "Add a shop" : esc(s.name)}</h2>
+          ${s.isNew ? `<div class="notice small">New shops are found automatically: Bhaau looks for iPhone pages on the website. After saving, go to Status and click "Scrape now" to see what it finds. If it finds nothing, the shop needs custom settings in stores.yaml.</div>` : ""}
+          <div class="grid2">
+            <label class="f">Shop name<input name="name" required maxlength="60" value="${esc(s.name)}"></label>
+            <label class="f">Website<input name="url" type="url" required placeholder="https://" value="${esc(s.url)}"></label>
+          </div>
+          ${s.isNew ? `<label class="f">Short id (letters, digits, dashes)<input name="id" required pattern="[a-z0-9][a-z0-9-]{1,30}" placeholder="e.g. nepalmobile"></label>` : ""}
+          <div class="row">
+            <label class="check"><input type="checkbox" name="authorized"${s.authorized ? " checked" : ""}> Apple authorized seller</label>
+            <label class="check"><input type="checkbox" name="enabled"${s.enabled ? " checked" : ""}> On (scrape it and show it on the site)</label>
+          </div>
+          ${s.isNew ? "" : `<fieldset><legend>Logo</legend><div class="row">
+            <div class="logo-box">${s.logo ? `<img src="/preview/${esc(s.logo)}?v=${Date.now()}" alt="">` : `<span class="muted small">None</span>`}</div>
+            <label class="btn sm">Upload logo<input type="file" id="logoFile" accept=".svg,.png,.webp,.jpg,.jpeg" hidden></label>
+            ${s.logo ? `<button type="button" class="btn sm danger" id="logoRemove">Remove</button>` : ""}
+            <span class="small muted">Square works best; SVG or PNG at least 96 px. Ask the shop's permission first.</span></div></fieldset>`}
+          <fieldset><legend>Details for buyers</legend><div class="grid2">
+            ${DETAILS.map(([k, l, ph]) => `<label class="f">${l}<input name="d_${k}" maxlength="300" placeholder="${esc(ph)}" value="${esc(d[k] || "")}"></label>`).join("")}
+          </div></fieldset>
+          <fieldset class="branches"><legend>Branches</legend>
+            <div class="small muted" style="margin-bottom:8px">Name, city, address, phone, Google Maps link (open the branch in Maps, tap Share, copy the link).</div>
+            <div id="branchRows">${(d.locations || []).map(branchRow).join("")}</div>
+            <button type="button" class="btn sm" id="addBranch">+ Add branch</button>
+          </fieldset>
+          <div class="row"><button class="btn primary" type="submit">${s.isNew ? "Add shop" : "Save"}</button><span class="small muted">Saving updates the preview. Publish puts it live.</span></div>
+        </form>
+      </div>`;
+    $$("[data-shop]").forEach((b) => b.addEventListener("click", () => { pick.shop = b.dataset.shop; shops(); }));
+    $("#addBranch").addEventListener("click", () => $("#branchRows").insertAdjacentHTML("beforeend", branchRow({})));
+    $("#branchRows").addEventListener("click", (e) => { if (e.target.matches("[data-del]")) e.target.closest(".branch").remove(); });
+    const nameInput = $("#shopForm [name=name]"), idInput = $("#shopForm [name=id]");
+    if (idInput) nameInput.addEventListener("input", () => { if (!idInput.dataset.touched) idInput.value = nameInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 31); });
+    if (idInput) idInput.addEventListener("input", () => (idInput.dataset.touched = "1"));
+    $("#shopForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = e.target, fd = new FormData(f);
+      const details = Object.fromEntries(DETAILS.map(([k]) => [k, fd.get("d_" + k)]));
+      details.locations = $$("#branchRows .branch").map((row) => Object.fromEntries($$("input", row).map((i) => [i.name, i.value])));
+      try {
+        const r = await api("/api/shop", { id: s.isNew ? fd.get("id") : s.id, name: fd.get("name"), url: fd.get("url"),
+          authorized: !!fd.get("authorized"), enabled: !!fd.get("enabled"), details });
+        toast(r.new ? "Shop added. Go to Status and click Scrape now to test it." : r.message === "saved" ? "Saved" : r.message);
+        pick.shop = r.id; await load(); shops();
+      } catch (err) { toast(err.message, true); }
+    });
+    const lf = $("#logoFile");
+    if (lf) lf.addEventListener("change", async () => {
+      const f = lf.files[0]; if (!f) return;
+      try { await api("/api/shop/logo", { id: s.id, filename: f.name, data: await fileToB64(f) }); toast("Logo saved"); await load(); shops(); }
+      catch (err) { toast(err.message, true); }
+    });
+    const lr = $("#logoRemove");
+    if (lr) lr.addEventListener("click", async () => { await api("/api/shop/logo/remove", { id: s.id }); toast("Logo removed"); await load(); shops(); });
+  }
+  const branchRow = (l) => `<div class="branch">
+    <input name="name" placeholder="Branch name" value="${esc(l.name || "")}" aria-label="Branch name">
+    <input name="city" placeholder="City" value="${esc(l.city || "")}" aria-label="City">
+    <input name="address" placeholder="Address" value="${esc(l.address || "")}" aria-label="Address">
+    <input name="phone" placeholder="Phone" value="${esc(l.phone || "")}" aria-label="Phone">
+    <input name="map" placeholder="https://maps.app.goo.gl/…" value="${esc(l.map || "")}" aria-label="Map link">
+    <button type="button" class="btn sm danger" data-del aria-label="Remove branch">Remove</button></div>`;
+
+  // ================================================================ prices
+  async function prices() {
+    if (!pick.model && S.models.length) pick.model = S.models[0];
+    const data = pick.model ? await api("/api/prices?model=" + encodeURIComponent(pick.model)) : { rows: [] };
+    const names = Object.fromEntries(S.stores.map((s) => [s.id, s.name]));
+    $("#main").innerHTML = `
+      <h1>Prices</h1>
+      <p class="lead">Every shop's latest price for a model, and the page it came from. If a price is wrong, hide it: it disappears from the site, history and alerts, and the database keeps it.</p>
+      <div class="row" style="margin-bottom:12px"><label class="f" style="min-width:260px">Model
+        <select id="modelPick">${S.models.map((m) => `<option${m === pick.model ? " selected" : ""}>${esc(m)}</option>`).join("")}</select></label></div>
+      <div class="card"><table>
+        <thead><tr><th>Shop</th><th>Size</th><th class="num">Price</th><th>Stock</th><th>Seen</th><th>Title on the shop's page</th><th></th></tr></thead>
+        <tbody>${data.rows.length ? data.rows.map((r, i) => `<tr>
+          <td><b>${esc(r.store_name)}</b></td><td>${gb(r.storage_gb)}</td><td class="num">${rs(r.price)}</td>
+          <td>${r.in_stock === true ? "In stock" : r.in_stock === false ? "Out" : "?"}</td><td class="small">${esc(ago(r.last_seen))}</td>
+          <td class="title-cell"><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" title="${esc(r.title)}">${esc(r.title)}</a>
+            ${r.hidden ? `<div class="small" style="color:var(--amber)">${esc(r.hidden)}</div>` : ""}</td>
+          <td class="num">${r.hidden ? "" : `<button class="btn sm" data-hide="${i}" type="button">Hide</button>`}</td></tr>
+          <tr hidden id="hideRow${i}"><td colspan="7"><form class="row" data-hideform="${i}">
+            <label class="f" style="flex:1;min-width:220px">Why is it wrong? (shown only to you)<input name="reason" required maxlength="200" placeholder="e.g. lists the 256 GB price for 128 GB"></label>
+            <label class="f">Hide<select name="scope"><option value="size">only ${gb(r.storage_gb)}</option><option value="model">all sizes of ${esc(data.model)}</option><option value="store">everything from ${esc(r.store_name)}</option></select></label>
+            <label class="f">Until (optional)<input type="date" name="until"></label>
+            <button class="btn primary sm" type="submit">Hide price</button></form></td></tr>`).join("")
+          : `<tr><td colspan="7" class="muted">No prices for this model.</td></tr>`}</tbody></table></div>
+      <h2 style="margin-top:22px">Hidden prices</h2>
+      <div class="card">${S.rules.length ? `<table><thead><tr><th>Shop</th><th>What</th><th>Until</th><th>Why</th><th></th></tr></thead><tbody>
+        ${S.rules.map((r) => `<tr><td>${esc(names[r.store] || r.store)}</td><td>${esc([r.model || "All models", r.storage].filter(Boolean).join(" "))}</td>
+          <td>${r.until ? esc(r.until) + (r.active ? "" : " (ended)") : "Until removed"}</td><td>${esc(r.reason)}</td>
+          <td class="num"><button class="btn sm" data-unhide="${r.index}" type="button">Show again</button></td></tr>`).join("")}
+        </tbody></table>` : `<p class="pad muted" style="margin:0">Nothing hidden.</p>`}</div>`;
+    const sel = $("#modelPick");
+    if (sel) sel.addEventListener("change", () => { pick.model = sel.value; prices(); });
+    $$("[data-hide]").forEach((b) => b.addEventListener("click", () => { const row = $("#hideRow" + b.dataset.hide); row.hidden = !row.hidden; if (!row.hidden) $("input", row).focus(); }));
+    $$("[data-hideform]").forEach((f) => f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const r = data.rows[+f.dataset.hideform], fd = new FormData(f), scope = fd.get("scope");
+      try {
+        await api("/api/hide", { store: r.store, model: scope === "store" ? "" : data.model, storage_gb: scope === "size" ? r.storage_gb : null,
+          until: fd.get("until") || null, reason: fd.get("reason") });
+        toast("Hidden. Publish to remove it from the live site."); await load(); prices();
+      } catch (err) { toast(err.message, true); }
+    }));
+    $$("[data-unhide]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api("/api/unhide", { index: +b.dataset.unhide }); toast("Shown again"); await load(); prices(); } catch (err) { toast(err.message, true); }
+    }));
+  }
+
+  // ================================================================ images
+  async function images() {
+    const data = await api("/api/images");
+    $("#main").innerHTML = `
+      <h1>Images</h1>
+      <p class="lead">Your own image for a model is used everywhere instead of a shop's photo. Use one phone, back view, on a white or transparent background, and only images you're allowed to use.</p>
+      <div class="img-grid">${data.models.map((m, i) => `<div class="card img-card">
+        <b>${esc(m.model)}</b>
+        <div class="pic">${m.own ? `<img src="/preview/${esc(m.own)}?v=${Date.now()}" alt="">` : m.store_image ? `<img src="${esc(m.store_image)}" alt="" referrerpolicy="no-referrer">` : `<span class="muted small">No image</span>`}</div>
+        <div class="small muted">${m.own ? `Your image${m.credit ? ": " + esc(m.credit) : ""}` : m.store_image ? "A shop's photo" : "Drawn phone"}</div>
+        <div class="row"><button class="btn sm" data-set="${i}" type="button">${m.own ? "Replace" : "Set image"}</button>${m.own ? `<button class="btn sm danger" data-rm="${i}" type="button">Remove</button>` : ""}</div>
+        <form class="img-form" data-form="${i}" hidden>
+          <input name="url" type="url" placeholder="Image address (right-click > Copy image address)" aria-label="Image address">
+          <input name="file" type="file" accept="image/*" aria-label="Or choose a file">
+          <input name="credit" placeholder="Credit, e.g. Image: Apple" value="${esc(m.credit)}" aria-label="Credit">
+          <div class="problems small" data-probs></div>
+          <div class="row"><button class="btn primary sm" type="submit">Save image</button></div>
+        </form></div>`).join("") || `<p class="muted">No models yet. Scrape a shop first.</p>`}</div>`;
+    $$("[data-set]").forEach((b) => b.addEventListener("click", () => { const f = $(`[data-form="${b.dataset.set}"]`); f.hidden = !f.hidden; }));
+    $$("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api("/api/image/remove", { model: data.models[+b.dataset.rm].model }); toast("Removed"); images(); } catch (err) { toast(err.message, true); }
+    }));
+    $$("[data-form]").forEach((f) => f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const m = data.models[+f.dataset.form], fd = new FormData(f), file = fd.get("file");
+      const body = { model: m.model, credit: fd.get("credit"), url: fd.get("url") };
+      if (file && file.size) Object.assign(body, { filename: file.name, data: await fileToB64(file), url: "" });
+      const send = async (force) => {
+        try { await api("/api/image", { ...body, force }); toast("Image saved"); images(); }
+        catch (err) {
+          if (err.status === 409 && err.data.problems) {
+            $("[data-probs]", f).innerHTML = `<div class="notice"><b>Not saved: this image would look wrong on the site.</b>${err.data.problems.map((p) => `<div>${esc(p.charAt(0).toUpperCase() + p.slice(1))}</div>`).join("")}
+              <div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-force>Use it anyway</button></div></div>`;
+            $("[data-force]", f).addEventListener("click", () => send(true));
+          } else toast(err.message, true);
+        }
+      };
+      send(false);
+    }));
+  }
+
+  // ================================================================ publish
+  function publish() {
+    const ch = S.changes;
+    $("#main").innerHTML = `
+      <h1>Publish</h1>
+      <p class="lead">Sends your changes to GitHub, and the live site updates. Check the preview first: <a href="/preview/" target="_blank" rel="noopener">open the site on this computer</a>.</p>
+      <div class="card pad form">
+        ${!ch.known ? `<div class="notice">Can't see which files changed (is this folder a git repository yet?). Publishing still works.</div>`
+          : ch.files.length ? `<div><h2>Changes not published yet</h2><ul>${ch.files.map((f) => `<li class="small">${esc(f)}</li>`).join("")}</ul></div>`
+          : `<div class="notice ok">Everything is published.</div>`}
+        <label class="check"><input type="checkbox" id="updPrices"> Also update prices on the live site now (runs on GitHub, about 15 minutes)</label>
+        <p class="small muted" style="margin:0">Without this, your changes go live at the next scheduled price update, within 6 hours.</p>
+        <div><button class="btn primary" id="pubBtn" type="button">Publish</button></div>
+      </div>`;
+    $("#pubBtn").addEventListener("click", () => startJob({ kind: "publish", update_prices: $("#updPrices").checked }));
+  }
+
+  // ================================================================ jobs (live log)
+  let following = false;
+  async function startJob(body) {
+    try { await api("/api/job", body); followJob(); } catch (err) { toast(err.message, true); }
+  }
+  async function followJob() {
+    if (following) return;
+    following = true;
+    const log = $("#jobLog"); let since = 0;
+    $("#drawer").hidden = false; log.textContent = "";
+    try {
+      for (;;) {
+        const { job } = await api("/api/job?since=" + since);
+        if (!job) break;
+        $("#jobTitle").textContent = job.done ? `${job.title}: ${job.code === 0 ? "finished" : "stopped with a problem (see the log)"}` : `${job.title}…`;
+        if (job.lines.length) {
+          const atEnd = log.scrollTop + log.clientHeight >= log.scrollHeight - 20;
+          log.textContent += job.lines.join("\n") + "\n"; since = job.total;
+          if (atEnd) log.scrollTop = log.scrollHeight;
+        }
+        if (job.done) { toast(job.code === 0 ? `${job.title}: done` : `${job.title}: see the log`, job.code !== 0); await load(); show(view); break; }
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    } catch (err) { toast(err.message, true); }
+    following = false;
+  }
+  $("#jobClose").addEventListener("click", () => ($("#drawer").hidden = true));
+
+  show("status").catch((e) => { $("#main").innerHTML = `<div class="notice">${esc(e.message)}</div>`; });
+})();
+</script>
+</body>
+</html>

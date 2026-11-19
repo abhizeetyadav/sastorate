@@ -82,6 +82,42 @@ def _place_sizeless_offers(variants: dict, history: dict, drops: list) -> None:
 
 
 LOGO_TYPES = {".svg", ".png", ".webp", ".jpg", ".jpeg"}
+DETAIL_TEXT = ("warranty", "emi", "delivery", "returns", "hours", "note")
+
+
+def _vslug(model: str) -> str:
+    """Same model slug as variant keys ('iPhone 17 Pro Max' -> 'iphone-17-pro-max')."""
+    return re.sub(r"[^a-z0-9]+", "-", model.lower()).strip("-")
+
+
+def store_details(store: dict) -> dict | None:
+    """The shop's own details from stores.yaml (`details:`), tidied and checked. Only what you entered is shown."""
+    raw = store.get("details") or {}
+    if not isinstance(raw, dict):
+        log.warning("%s: details should be a list of fields (warranty:, emi:, ...)", store["id"])
+        return None
+    txt = lambda x: re.sub(r"\s+", " ", str(x or "")).strip()[:300]
+    phone = lambda x: re.sub(r"[^0-9+ ,/()-]", "", str(x or "")).strip()[:60]
+    out = {k: txt(raw[k]) for k in DETAIL_TEXT if txt(raw.get(k))}
+    if phone(raw.get("phone")):
+        out["phone"] = phone(raw["phone"])
+    locs = []
+    for loc in (raw.get("locations") or [])[:30]:
+        if not isinstance(loc, dict) or not txt(loc.get("name")):
+            continue
+        item = {"name": txt(loc["name"])[:80]}
+        if txt(loc.get("city")):
+            item["city"] = txt(loc["city"])[:40]
+        if txt(loc.get("address")):
+            item["address"] = txt(loc["address"])
+        if phone(loc.get("phone")):
+            item["phone"] = phone(loc["phone"])
+        if re.match(r"^https://", str(loc.get("map") or "")):
+            item["map"] = str(loc["map"])[:300]
+        locs.append(item)
+    if locs:
+        out["locations"] = locs
+    return out or None
 
 
 def store_logo(store: dict, web_dir: Path) -> str | None:
@@ -193,6 +229,27 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
         if v["model"] in own:
             v["image"], v["image_credit"] = own[v["model"]]["image"], own[v["model"]]["credit"]
 
+    # ---- colours each shop has (from the latest good scrape), and typical used prices
+    colours: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
+    for r in db.q("SELECT * FROM colour_stock WHERE seen_at >= ? ORDER BY colour", stale_cutoff):
+        if r["store_id"] not in store_by_id or r["store_id"] in market_ids or not is_product_url(r["url"] or "")\
+                or is_hidden(rules, r["store_id"], r["model"], r["storage_gb"]):
+            continue
+        vkey = f"{_vslug(r['model'])}|{r['storage_gb']}"
+        colours[vkey][r["colour"]].append({"store": r["store_id"], "in_stock": None if r["in_stock"] is None
+                                           else bool(r["in_stock"]), "price": r["price"], "url": r["url"]})
+    used = {(r["model"], r["storage_gb"]): dict(r) for r in
+            db.q("SELECT * FROM used_prices WHERE seen_at >= ?", stale_cutoff) if r["store_id"] in market_ids}
+    for v in vlist:
+        if colours.get(v["key"]):
+            v["colours"] = [{"colour": c, "stores": sorted(st, key=lambda x: (x["in_stock"] is not True, x["price"] or 0))}
+                            for c, st in sorted(colours[v["key"]].items(),
+                                                key=lambda kv: (not any(x["in_stock"] for x in kv[1]), kv[0]))]
+        u = used.get((v["model"], v["storage_gb"] or 0)) or used.get((v["model"], 0))
+        if u:
+            v["used"] = {"store": u["store_id"], "ads": u["ads"], "low": u["low"], "median": u["median"],
+                         "high": u["high"], "all_sizes": u["storage_gb"] == 0}
+
     store_meta = []
     for s in stores:
         last = db.q("SELECT * FROM runs WHERE store_id=? ORDER BY id DESC LIMIT 1", s["id"])
@@ -202,6 +259,7 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
             "kind": "marketplace" if s["id"] in market_ids else "store",
             "search_url": s.get("search_url") if s["id"] in market_ids else None,
             "logo": store_logo(s, out_dir.parent),
+            "details": store_details(s),
             "enabled": bool(s.get("enabled", True)),
             "offers": sum(1 for v in vlist for o in (v.get("market", []) if s["id"] in market_ids else v["offers"])
                           if o["store"] == s["id"]),

@@ -273,7 +273,7 @@
     const rows = [];
     for (const v of m.variants) {
       if (state.storage.size && !state.storage.has(String(v.storage_gb))) continue;
-      const hay = `${m.model} ${v.storage_gb}gb ${v.storage_gb} ${v.storage_gb >= 1024 ? v.storage_gb / 1024 + "tb" : ""}`.toLowerCase();
+      const hay = `${m.model} ${v.storage_gb}gb ${v.storage_gb} ${v.storage_gb >= 1024 ? v.storage_gb / 1024 + "tb" : ""} ${(v.colours || []).map((c) => c.colour).join(" ")}`.toLowerCase();
       if (!words.every((w) => hay.includes(w))) continue;
       const offers = offersOf(v);
       if (!offers.length) continue;
@@ -364,13 +364,16 @@
     const words = state.q.toLowerCase().replace(/iphone/g, "").replace(/(\d)\s*(gb|tb)/g, "$1$2").split(/\s+/).filter(Boolean);
     sugItems = [];
     for (const m of MODELS) for (const v of m.variants) {
-      const hay = `${m.model} ${v.storage_gb}gb ${v.storage_gb >= 1024 ? v.storage_gb / 1024 + "tb" : ""}`.toLowerCase();
-      if (words.every((w) => hay.includes(w))) sugItems.push({ m, v, best: bestOf(v.offers) });
+      const hay = `${m.model} ${v.storage_gb}gb ${v.storage_gb >= 1024 ? v.storage_gb / 1024 + "tb" : ""} ${(v.colours || []).map((c) => c.colour).join(" ")}`.toLowerCase();
+      if (!words.every((w) => hay.includes(w))) continue;
+      // "17 pro max cosmic orange": say where that colour is in stock
+      const colour = (v.colours || []).find((c) => words.some((w) => w.length > 2 && !m.model.toLowerCase().includes(w) && c.colour.toLowerCase().includes(w)));
+      sugItems.push({ m, v, best: bestOf(v.offers), colour });
     }
     sugItems = sugItems.slice(0, 8);
     sugIdx = -1;
     sug.innerHTML = sugItems.length
-      ? sugItems.map((it, i) => `<li role="option" data-i="${i}" aria-selected="false"><span class="s-img">${productImage(it.m)}</span><span class="s-name">${esc(it.m.model)} ${gbLabel(it.v.storage_gb)}</span><span class="s-price">${rs(it.best.price)}</span></li>`).join("")
+      ? sugItems.map((it, i) => `<li role="option" data-i="${i}" aria-selected="false"><span class="s-img">${productImage(it.m)}</span><span class="s-name">${esc(it.m.model)} ${gbLabel(it.v.storage_gb)}${it.colour ? `<small>${esc(it.colour.colour)}: ${(() => { const n = it.colour.stores.filter((x) => x.in_stock === true).length; return n ? `in stock at ${n} ${n === 1 ? "shop" : "shops"}` : "not in stock right now"; })()}</small>` : ""}</span><span class="s-price">${rs(it.best.price)}</span></li>`).join("")
       : `<li class="s-empty">No iPhone matches “${esc(state.q)}”</li>`;
     sug.hidden = false;
     q.setAttribute("aria-expanded", "true");
@@ -560,6 +563,7 @@
         <div class="txt">
           <div class="name"><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(s.name)}</a>${s.authorized ? `<span class="badge auth">${ICON_CHECK}Apple authorized</span>` : ""}${s.kind === "marketplace" ? `<span class="badge new">Individual sellers</span>` : ""}</div>
           <div class="sub"><span class="dot ${st[0]}"></span>${esc(st[1])}${s.offers ? `, ${s.offers} ${s.kind === "marketplace" ? "brand-new listings" : "prices"}` : ""}</div>
+          ${s.details ? `<details class="s-info"><summary>Warranty, EMI, delivery and shops</summary>${shopInfo(s)}</details>` : ""}
         </div></div>`;
     }).join("");
   }
@@ -611,6 +615,8 @@
         </div>
       </div>
 
+      ${waysBox(m, v, all.find((o) => o.in_stock !== false) || null)}
+
       <nav class="tabs" aria-label="On this page">
         <a href="#" data-to="p-prices" class="on">Prices (${all.length})</a>
         <a href="#" data-to="p-history">Price history</a>
@@ -624,6 +630,7 @@
           ${offers.length ? offers.map((o) => offerRow(o, o === best, v)).join("") : `<div class="empty-state">No seller has this in stock right now.</div>`}
           <p class="offers-note">Prices are checked every 6 hours and can change. Confirm with the seller before you pay.${DATA.contact_email ? ` <a href="${esc(reportHref(m, v))}">Report a wrong price</a>` : ""}</p>
         </div>
+        ${coloursBox(m, v, all)}
         ${marketBox(m, v, best)}
       </section>
 
@@ -647,6 +654,10 @@
       e.preventDefault();
       $$("#product .tabs a").forEach((x) => x.classList.toggle("on", x === a));
       document.getElementById(a.dataset.to).scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+    $$("#product .ways [data-to]").forEach((a) => a.addEventListener("click", (e) => {  // jump without touching the URL
+      const el = document.getElementById(a.dataset.to);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: "smooth", block: "start" }); }
     }));
   }
 
@@ -707,6 +718,85 @@
     return text ? `<p class="flash ${kind === "confirmed" ? "ok" : "err"}" role="status">${esc(text)}</p>` : "";
   }
 
+  // ---- shop details (from stores.yaml `details:`): only what the site owner entered
+  const telHref = (p) => "tel:" + String(p).split(/[,/]/)[0].replace(/[^0-9+]/g, "");
+  function shopInfo(s) {
+    const d = s && s.details;
+    if (!d) return "";
+    const rows = [["warranty", "Warranty"], ["emi", "EMI"], ["delivery", "Delivery"], ["returns", "Returns"],
+      ["hours", "Opening hours"], ["note", "Good to know"]].filter(([k]) => d[k])
+      .map(([k, l]) => `<div><dt>${l}</dt><dd>${esc(d[k])}</dd></div>`);
+    if (d.phone) rows.push(`<div><dt>Phone</dt><dd><a href="${esc(telHref(d.phone))}">${esc(d.phone)}</a></dd></div>`);
+    const li = (l) => `<li><b>${esc(l.name)}</b>${l.address ? `<span>${esc(l.address)}</span>` : ""}${
+      l.phone ? `<a href="${esc(telHref(l.phone))}">${esc(l.phone)}</a>` : ""}${l.map ? `<a href="${esc(safeUrl(l.map))}" target="_blank" rel="noopener">Map</a>` : ""}</li>`;
+    // branches grouped by city, in the order they're listed in stores.yaml
+    const byCity = new Map();
+    (d.locations || []).forEach((l) => { const c = l.city || ""; byCity.set(c, [...(byCity.get(c) || []), l]); });
+    const n = (d.locations || []).length;
+    const locs = [...byCity].map(([city, ls]) => `${city ? `<div class="city">${esc(city)}</div>` : ""}<ul>${ls.map(li).join("")}</ul>`).join("");
+    return `<dl class="shop-info">${rows.join("")}</dl>${n ? `<div class="shop-locs"><div class="lbl">${n === 1 ? "Shop" : `${n} branches`}${byCity.size > 1 ? ` in ${byCity.size} cities` : ""}</div>${locs}</div>` : ""}`;
+  }
+
+  // ---- colours: which shop has which colour of this exact phone
+  const SWATCH = { "Cosmic Orange": "#e8762d", "Deep Blue": "#2b3a55", "Mist Blue": "#a9bdd6", "Sky Blue": "#bcd4e6",
+    "Light Gold": "#e9dcc0", "Cloud White": "#f2f2ef", "Space Black": "#2b2b2d", Sage: "#b6c3a6", Lavender: "#c9b8dc",
+    Burgundy: "#6d1f2c", "Desert Titanium": "#bfa48a", "Natural Titanium": "#bab3a8", "White Titanium": "#e8e6e1",
+    "Black Titanium": "#3a3a3c", "Blue Titanium": "#3f4a5a", Ultramarine: "#4a5fd4", Teal: "#8fc6c0", "Deep Purple": "#4f4256",
+    "Sierra Blue": "#9bb5ce", "Alpine Green": "#505f4e", "Pacific Blue": "#2f4d5f", Graphite: "#4a4a4c", Midnight: "#222a33",
+    Starlight: "#f0e9dd", Red: "#c62a2f", Black: "#1f1f21", White: "#f5f5f3", Silver: "#e3e4e5", Gold: "#f2dfc2",
+    Pink: "#f5c6cf", Blue: "#5f86b5", Green: "#9cc3a1", Yellow: "#f4e48c", Purple: "#c8b6dc", Orange: "#f08a3c" };
+  function coloursBox(m, v, offers) {
+    const cols = v.colours || [];
+    if (!cols.length) return "";
+    const listed = new Set(cols.flatMap((c) => c.stores.map((x) => x.store)));
+    const silent = [...new Set(offers.map((o) => o.store))].filter((id) => !listed.has(id) && SELLERS[id]).map((id) => SELLERS[id].name);
+    const rows = cols.map((c) => `<div class="c-row">
+        <div class="c-name"><span class="swatch" style="background:${SWATCH[c.colour] || "#999"}"></span>${esc(c.colour)}</div>
+        <div class="c-shops">${c.stores.filter((x) => SELLERS[x.store]).map((x) => {
+          const st = x.in_stock === true ? ["in", "In stock"] : x.in_stock === false ? ["out", "Out of stock"] : ["", "Stock not shown"];
+          return `<a class="c-chip ${st[0]}" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener nofollow" title="${esc(st[1])}">${esc(SELLERS[x.store].name)}<span>${st[1]}</span></a>`;
+        }).join("")}</div></div>`).join("");
+    return `<div class="panel colours" id="p-colours">
+      <div class="offers-head"><h2 style="font-size:17px">Colours of the ${esc(m.model)} ${gbLabel(v.storage_gb)}</h2></div>
+      ${rows}
+      ${silent.length ? `<p class="offers-note">${esc(silent.length > 1 ? silent.slice(0, -1).join(", ") + " and " + silent[silent.length - 1] : silent[0])} ${silent.length === 1 ? "doesn't" : "don't"} show colours on ${silent.length === 1 ? "its website" : "their websites"}. Ask them directly.</p>` : ""}
+    </div>`;
+  }
+
+  // ---- three ways to buy: shop (VAT bill) vs no-VAT ad vs used
+  function waysBox(m, v, best) {
+    const nov = (v.market || [])[0], u = v.used;
+    if (!nov && !u) return "";
+    const mk = (s) => (s && SELLERS[s] ? SELLERS[s] : null);
+    const market = mk((nov || u || {}).store);
+    const searchUrl = market && market.search_url ? market.search_url.replace("{query}", encodeURIComponent(m.model.toLowerCase())) : (market ? market.url : "#");
+    const less = (p) => (best && best.price > p ? `<div class="w-diff">${rs(best.price - p)} less than in shops</div>` : "");
+    return `<section class="ways" aria-label="Ways to buy">
+      <h2>Three ways to buy the ${esc(m.model)} ${gbLabel(v.storage_gb)}</h2>
+      <div class="ways-grid">
+        <div class="way panel official">
+          <div class="w-lbl">From a shop</div>
+          <div class="w-price">${best ? rs(best.price) : "Not in stock"}</div>
+          <ul><li>VAT bill</li><li>Warranty from the shop; Apple authorized sellers give the official warranty</li></ul>
+          <a href="#p-prices" data-to="p-prices">Compare shops</a>
+        </div>
+        <div class="way panel novat">
+          <div class="w-lbl">New, without VAT bill</div>
+          ${nov ? `<div class="w-price">${rs(nov.price)}</div>${less(nov.price)}` : `<div class="w-price none">No ads right now</div>`}
+          <ul><li>Individual sellers${market ? ` on ${esc(market.name)}` : ""}</li><li>Usually no official warranty</li><li>Check the IMEI is registered with NTA</li></ul>
+          ${nov ? `<a href="#p-market" data-to="p-market">See the ads and the warning</a>` : ""}
+        </div>
+        <div class="way panel used">
+          <div class="w-lbl">Used</div>
+          ${u ? `<div class="w-price">${rs(u.median)}</div><div class="w-range">Most ads ${rs(u.low)} to ${rs(u.high)}, from ${u.ads} ads${u.all_sizes ? ", all storage sizes" : ""}</div>`
+              : `<div class="w-price none">Not enough ads yet</div>`}
+          <ul><li>Check battery health, and that iCloud is signed out</li><li>Ask for the original bill if there is one</li></ul>
+          ${u ? `<a href="${esc(safeUrl(searchUrl))}" target="_blank" rel="noopener nofollow">See used ads${market ? ` on ${esc(market.name)}` : ""}</a>` : ""}
+        </div>
+      </div>
+    </section>`;
+  }
+
   // ---- marketplaces (HamroBazar): individual sellers, kept apart from shops, with a warning
   function marketBox(m, v, best) {
     const listings = v.market || [];
@@ -749,7 +839,7 @@
       <div class="stock ${oos ? "out" : o.in_stock ? "in" : ""}">${oos ? "Out of stock" : o.in_stock ? "In stock" : "Stock not shown"}</div>
       <div class="amt">${isBest ? `<span class="lowest-tag">Lowest price</span>` : ""}${o.old_price > o.price ? `<s>${rs(o.old_price)}</s>` : ""}<b>${rs(o.price)}</b></div>
       <div class="act"><a class="btn ${isBest ? "go" : ""} small" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener nofollow">Go to store</a></div>
-    </div>`;
+    </div>${s.details ? `<details class="o-info"><summary>Warranty, EMI, delivery and shop details for ${esc(s.name)}</summary>${shopInfo(s)}</details>` : ""}`;
   }
 
   // ================================================================ price history

@@ -44,8 +44,9 @@ def load_env(path: Path = ROOT / ".env") -> None:
 
 
 def load_config() -> tuple[dict, list[dict]]:
-    cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
-    return cfg.get("defaults", {}), cfg["stores"]
+    """stores.yaml with the admin panel's shop_info.yaml applied (see scraper/shopconfig.py)."""
+    from .shopconfig import load_config as _load
+    return _load(CONFIG)
 
 
 def make_fetcher(defaults: dict, no_proxy: bool) -> Fetcher:
@@ -80,6 +81,11 @@ def cmd_run(args) -> int:
                     for variant, offer in results:
                         changed += db.record(store["id"], variant, offer.title, offer.url, offer.price,
                                              offer.old_price, offer.in_stock, image=offer.image)
+                    if results or getattr(results, "listings", 0):  # only replace after a scrape that worked
+                        if getattr(results, "colours", None) is not None:
+                            db.replace_colours(store["id"], results.colours)
+                        if getattr(results, "used", None) is not None:
+                            db.replace_used(store["id"], results.used)
                     db.commit()
                 for variant, offer in sorted(results, key=lambda x: x[0].key):
                     log.info("   %-28s %-6s Rs %9s  [%s]", variant.model, variant.storage_label,
@@ -266,6 +272,9 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("proxies", help="test Webshare proxy credentials")
     sub.add_parser("status", help="show what is in the database and how each store's last run went")
+    ad = sub.add_parser("admin", help="open the admin panel in your browser (only this computer can reach it)")
+    ad.add_argument("--port", type=int, default=8765)
+    ad.add_argument("--no-browser", action="store_true", help="don't open the browser automatically")
     im = sub.add_parser("image", help="use your own image for a model instead of the store's photo")
     im.add_argument("model", nargs="?", help='e.g. "iPhone 17 Pro"')
     im.add_argument("source", nargs="?", help="image link (https://...) or a file on this computer")
@@ -297,6 +306,10 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_inspect(args)
     if args.cmd == "image":
         return cmd_image(args)
+    if args.cmd == "admin":
+        from .admin import serve
+        serve(DB_PATH, args.port, not args.no_browser)
+        return 0
     if args.cmd == "proxies":
         check_pool(ProxyPool.from_env())
         return 0

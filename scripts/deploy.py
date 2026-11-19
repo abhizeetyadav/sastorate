@@ -99,14 +99,14 @@ def tool(name: str) -> str | None:
 
 
 def run(cmd: list[str], *, input: str | None = None, check: bool = True, capture: bool = True,
-        change: bool = False, cwd: Path = ROOT, extra_env: dict | None = None) -> subprocess.CompletedProcess:
+        change: bool = False, cwd: Path | None = None, extra_env: dict | None = None) -> subprocess.CompletedProcess:
     """Run a command. `change=True` marks commands that change something (skipped in --dry-run)."""
     shown = " ".join(c if " " not in c else f'"{c}"' for c in [Path(cmd[0]).stem, *cmd[1:]])
     if change and DRY:
         info(f"(dry run) would run: {shown}" + ("   <- value sent privately" if input is not None else ""))
         return subprocess.CompletedProcess(cmd, 0, "", "")
     try:
-        p = subprocess.run(cmd, input=input, cwd=cwd, text=True, encoding="utf-8", errors="replace",
+        p = subprocess.run(cmd, input=input, cwd=cwd or ROOT, text=True, encoding="utf-8", errors="replace",
                            capture_output=capture, env={**os.environ, **extra_env} if extra_env else None)
     except FileNotFoundError:
         raise Stop(f"Couldn't start {cmd[0]}. Is it installed and on PATH?")
@@ -167,6 +167,7 @@ def save_env(key: str, value: str) -> None:
 
 # ---------------------------------------------------------------- file versions
 MANIFEST = ROOT / "scripts" / "manifest.json"
+OBSOLETE = ["scraper/config.py"]  # renamed to scraper/shopconfig.py
 
 
 def _file_hash(p: Path) -> str:
@@ -192,6 +193,28 @@ def outdated_files() -> list[str]:
 # ---------------------------------------------------------------- 1. preflight
 def preflight(env: dict[str, str], alerts: bool, host: str) -> None:
     step(1, "Checking your computer and settings")
+    for old in OBSOLETE:  # files replaced in later updates
+        f = ROOT / old
+        if f.is_file() and "shop_info.yaml" in f.read_text(encoding="utf-8", errors="ignore"):
+            f.unlink()
+            ok(f"removed {old} (replaced by a newer file)")
+    if (ROOT.parent / "scraper").is_dir() and (ROOT.parent / "scraper") != ROOT / "scraper":
+        warn(f"There's another copy of the project in the folder above ({ROOT.parent}).")
+        warn(f"Always unzip updates into THIS folder: {ROOT}")
+    stale = outdated_files()
+    missing = [f.replace(" (missing)", "") for f in stale if f.endswith("(missing)")]
+    if missing:
+        raise Stop("These code files are missing from this folder:\n   " + "\n   ".join(missing[:15]) +
+                   f"\nUnzip the latest bhaau-full-*.zip into {ROOT} and run again.\n"
+                   "(It doesn't contain your settings, images, price data or .env, so they stay as they are.)")
+    if stale:
+        warn(f"{len(stale)} file(s) don't match the latest update (an older copy, or edited by you):")
+        for f in stale[:15]:
+            info(f"   {f}")
+        info("To fix: unzip the latest bhaau-full-*.zip into this folder (your settings and data aren't in it).")
+    else:
+        ok("all code files match the latest update")
+
     if sys.version_info < (3, 10):
         raise Stop("Python 3.10 or newer is needed.")
     if not GIT:
@@ -206,8 +229,8 @@ def preflight(env: dict[str, str], alerts: bool, host: str) -> None:
 
     if gh("auth", "status", check=False).returncode != 0:
         warn("You're not signed in to GitHub in this terminal.")
-        if DRY:
-            raise Stop("Run  gh auth login  first.")
+        if DRY or ASSUME_YES:
+            raise Stop("Not signed in to GitHub. Open a terminal and run:  gh auth login   then try again.")
         if not confirm("Sign in now (opens your browser)?"):
             raise Stop("Run  gh auth login  and try again.")
         run([GH, "auth", "login", "--web", "--git-protocol", "https"], capture=False)
@@ -242,26 +265,17 @@ def preflight(env: dict[str, str], alerts: bool, host: str) -> None:
              "appears on each GitHub run). Add RESEND_API_KEY to .env to turn them on.")
 
     try:
-        import yaml
-        cfg = yaml.safe_load((ROOT / "scraper/config/stores.yaml").read_text(encoding="utf-8"))
-        enabled = [s["id"] for s in cfg["stores"] if s.get("enabled", True)]
+        sys.path.insert(0, str(ROOT))
+        from scraper.shopconfig import load_config
+        enabled = [s["id"] for s in load_config()[1] if s.get("enabled", True)]
+    except ImportError as e:
+        raise Stop(f"Some code files are missing or old ({e}).\n"
+                   "Unzip the latest bhaau-full-*.zip into this folder, then run again.")
     except Exception as e:  # noqa: BLE001
-        raise Stop(f"scraper/config/stores.yaml has a problem: {e}")
+        raise Stop(f"scraper/config/stores.yaml or shop_info.yaml has a problem: {e}")
     if not enabled:
         raise Stop("No store is enabled in stores.yaml.")
     ok(f"{len(enabled)} stores enabled: {', '.join(enabled)}")
-
-    if (ROOT.parent / "scraper").is_dir() and (ROOT.parent / "scraper") != ROOT / "scraper":
-        warn(f"There's another copy of the project in the folder above ({ROOT.parent}).")
-        warn(f"Always unzip updates into THIS folder: {ROOT}")
-    stale = outdated_files()
-    if stale:
-        warn(f"{len(stale)} file(s) don't match the latest update (an older copy, or edited by you):")
-        for f in stale[:15]:
-            info(f"   {f}")
-        info("To fix: unzip the latest bhaau-full-*.zip into this folder (your settings and data aren't in it).")
-    else:
-        ok("all code files match the latest update")
 
     try:
         import pytest  # noqa: F401
@@ -375,38 +389,81 @@ def github_repo(args) -> tuple[str, bool]:
     return f"{login}/{name}", True
 
 
-def take_live_data(repo: str, is_new: bool) -> None:
-    """Once the site is live, GitHub's copy of the price data is the newest: use it locally too."""
+# Files the price bot rebuilds on GitHub every 6 hours. Your computer never needs to send them:
+# GitHub's copy always wins, so they can't clash with the bot's commits.
+GENERATED_FILES = ("data/prices.db", "web/sitemap.xml", "web/robots.txt", "web/404.html")
+GENERATED_DIRS = ("web/data/", "web/privacy/", "web/status-")
+GENERATED_PAGE = re.compile(r"^web/[a-z0-9][a-z0-9-]*/(index\.html|\.bhaau-page)$")   # model pages
+YOURS_ANYWAY = ("web/index.html",)  # rebuilt by the bot too, but it's also the page template: keep yours
+
+
+def is_generated(path: str) -> bool:
+    if path.startswith(("web/logos/", "web/images/")):
+        return False
+    return path in GENERATED_FILES or path.startswith(GENERATED_DIRS) or bool(GENERATED_PAGE.match(path))
+
+
+def _names(*args: str) -> list[str]:
+    p = git(*args, check=False)
+    return [line.strip() for line in (p.stdout or "").splitlines() if line.strip()] if p.returncode == 0 else []
+
+
+def sync_with_github(repo: str, is_new: bool) -> None:
+    """Put your work on top of GitHub's latest commit without merging generated files.
+
+    1. take GitHub's version of everything the bot generates (prices, model pages, sitemap...),
+    2. take GitHub's version of any other file it changed that you didn't,
+    3. move your branch onto GitHub's latest commit, keeping your files as they are.
+    The next commit then contains only your real changes, and the push can't clash.
+    """
     if is_new or DRY:
         return
     git("fetch", "-q", "origin", "main", check=False)
     if git("rev-parse", "--verify", "-q", "origin/main", check=False).returncode != 0:
         return
+    base = (git("merge-base", "HEAD", "origin/main", check=False).stdout or "").strip()
+    remote_changed = set(_names("diff", "--name-only", base, "origin/main")) if base else set()
+    local_changed = set(_names("diff", "--name-only", base)) | set(_names("ls-files", "-o", "--exclude-standard")) if base else set()
+    clash = sorted(f for f in remote_changed & local_changed if not is_generated(f) and f not in YOURS_ANYWAY)
+    if clash:
+        raise Stop("These files were changed both on GitHub and on this computer:\n   " + "\n   ".join(clash) +
+                   "\nDecide which version to keep (git pull origin main), then run this script again.")
+
     db = ROOT / "data" / "prices.db"
-    live = git("ls-tree", "--name-only", "origin/main", "data/prices.db", check=False).stdout.strip()
-    if live and db.exists():
+    if db.exists() and "data/prices.db" in remote_changed | set(_names("ls-tree", "-r", "--name-only", "origin/main", "data")):
         backup = db.with_name(f"prices.{datetime.now():%Y%m%d-%H%M}.backup.db")
         shutil.copy2(db, backup)
         info(f"kept a copy of your local price database as data/{backup.name}")
-    if live:
-        git("checkout", "origin/main", "--", "data/prices.db", check=False)
-        git("checkout", "origin/main", "--", "web/data", check=False)
-        ok("took the latest live prices from GitHub")
+
+    remote_files = set(_names("ls-tree", "-r", "--name-only", "origin/main"))
+    take = sorted(f for f in remote_files if is_generated(f)) + sorted(
+        f for f in remote_changed - local_changed if f in remote_files and not is_generated(f))
+    for i in range(0, len(take), 100):  # GitHub's copy of these files, staged and in the folder
+        git("checkout", "origin/main", "--", *take[i:i + 100], check=False)
+    for f in sorted(remote_changed - local_changed):  # deleted on GitHub, untouched here: delete here too
+        if f not in remote_files and not is_generated(f):
+            (ROOT / f).unlink(missing_ok=True)
+    tracked_here = set(_names("ls-files"))
+    for f in sorted(tracked_here | set(_names("ls-files", "-o", "--exclude-standard"))):
+        if is_generated(f) and f not in remote_files:  # generated here but gone on GitHub (an old model page)
+            (ROOT / f).unlink(missing_ok=True)
+            parent = (ROOT / f).parent
+            if parent != ROOT / "web" and parent.is_dir() and not any(parent.iterdir()):
+                parent.rmdir()
+    git("reset", "-q", "--soft", "origin/main")  # your branch now sits on GitHub's latest commit
+    ok("took the latest prices and pages from GitHub")
 
 
-def push(repo: str) -> None:
+def push(repo: str, is_new: bool, message: str) -> None:
     for attempt in (1, 2):
         p = git("push", "-u", "origin", "HEAD:main", check=False, change=True)
         if p.returncode == 0:
             ok("pushed to GitHub")
             return
         if attempt == 1 and ("rejected" in (p.stderr or "") or "fetch first" in (p.stderr or "")):
-            info("GitHub has newer commits (the price bot); combining them with yours...")
-            r = git("pull", "--rebase", "-X", "theirs", "origin", "main", check=False)
-            if r.returncode != 0:
-                git("rebase", "--abort", check=False)
-                raise Stop("Couldn't combine your changes with GitHub's. Run  git pull --rebase origin main,"
-                           " fix any conflicts, then run this script again.")
+            info("The price bot updated GitHub a moment ago; catching up...")
+            sync_with_github(repo, is_new)
+            commit(message)
             continue
         raise Stop(f"git push failed:\n{(p.stderr or '').strip()[-1500:]}")
 
@@ -602,8 +659,8 @@ def deploy_alerts(env: dict[str, str], site: str) -> bool:
     step(5, "Price-alert service (Cloudflare)")
     who = wrangler("whoami", check=False)
     if who.returncode != 0 or "not authenticated" in (who.stdout + who.stderr).lower():
-        if DRY:
-            raise Stop("Run  cd alerts  then  npx wrangler login  first.")
+        if DRY or ASSUME_YES:
+            raise Stop("Not signed in to Cloudflare. Open a terminal and run:  cd alerts  then  npx wrangler login")
         info("Signing in to Cloudflare (opens your browser)...")
         wrangler("login", capture=False)
     ok("signed in to Cloudflare")
@@ -691,7 +748,7 @@ def configure(repo: str, env: dict[str, str]) -> None:
 
 
 # ---------------------------------------------------------------- 7. first run
-def first_run(repo: str) -> bool:
+def first_run(repo: str, watch: bool = True) -> bool:
     step(7, "First scrape and deploy on GitHub")
     def recent():
         return gh_json("run", "list", "--repo", repo, "--workflow", WORKFLOW, "--event", "workflow_dispatch",
@@ -706,6 +763,9 @@ def first_run(repo: str) -> bool:
         raise Stop(f"Couldn't start the workflow: {(p.stderr or '').strip()}")
     if DRY:
         return True
+    if not watch:
+        ok("price update started on GitHub; the site updates by itself in about 15 minutes")
+        return False
     info("Started. This takes about 10-20 minutes (installing the browser, then every store).")
     run_id = None
     for _ in range(30):
@@ -822,6 +882,7 @@ def main() -> int:
     ap.add_argument("--repo", help="name for a new GitHub repository (default: bhaau)")
     ap.add_argument("--private", action="store_true", help="make a new repository private (needs GitHub Pro for Pages)")
     ap.add_argument("--no-run", action="store_true", help="don't start a scrape now; wait for the schedule")
+    ap.add_argument("--no-watch", action="store_true", help="start a scrape on GitHub but don't wait for it")
     ap.add_argument("--host", choices=["cloudflare", "github"],
                     help="where the website is hosted (default: HOSTING in .env, else cloudflare)")
     args = ap.parse_args()
@@ -847,21 +908,22 @@ def main() -> int:
         preflight(env, args.alerts, host)
         git_prepare(env)
         repo, is_new = github_repo(args)
-        take_live_data(repo, is_new)
+        sync_with_github(repo, is_new)
         stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         # [skip ci]: don't start a deploy for this push; the script starts one itself once settings are in place
-        if commit(f"Deploy {stamp} [skip ci]"):
+        message = f"Deploy {stamp} [skip ci]"
+        if commit(message):
             ok("committed your changes")
-        push(repo)
+        push(repo, is_new, message)
         site = cf_pages(repo, env) if host == "cloudflare" else pages(repo, env)
         if args.alerts:
             if deploy_alerts(env, site) and commit(f"Alerts config {stamp} [skip ci]"):
-                push(repo)
+                push(repo, is_new, f"Alerts config {stamp} [skip ci]")
         elif env.get("ALERTS_URL"):
             info("price alerts: using ALERTS_URL from .env (run with --alerts to redeploy the Worker)")
         configure(repo, env)
-        finished = True if args.no_run else first_run(repo)
-        if not DRY and not args.no_run:
+        finished = True if args.no_run else first_run(repo, watch=not args.no_watch)
+        if not DRY and not args.no_run and not args.no_watch:
             live_check(site, env, wait=finished)
     except Stop as e:
         print(f"\n   [x]  {e}\n\nNothing after this step was changed. Fix it and run the script again.")

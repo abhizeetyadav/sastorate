@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from .extract import RawOffer, extract_offers, is_iphone_title, page_image, product_links
 from .fetch import Fetcher, FetchError
 from . import marketplace
-from .normalize import Variant, classify, is_article_url, is_product_url
+from .normalize import Variant, classify, is_article_url, is_product_url, parse_colour
 
 log = logging.getLogger(__name__)
 
@@ -156,8 +156,35 @@ def scrape_store(fetcher: Fetcher, store: dict, defaults: dict,
         pages += min(len(product_urls), cfg["max_product_pages"])
 
     if market:
-        return marketplace.select(offers, refs), pages
-    return pick_best(offers, cfg.get("include_used", False)), pages
+        picked = marketplace.select(offers, refs)
+        picked.used = marketplace.used_stats(offers, refs)
+        return picked, pages
+    picked = Picked(pick_best(offers, cfg.get("include_used", False)))
+    picked.colours = colour_stock(offers)
+    return picked, pages
+
+
+class Picked(list):
+    """The best offer per phone, plus which colours the shop has (`.colours`)."""
+    colours: list = []
+
+
+def colour_stock(offers: list[RawOffer]) -> list[dict]:
+    """Per model + storage + colour: is it in stock at this shop? Only for listings that name a colour."""
+    rank = {True: 2, False: 1, None: 0}  # in stock beats out of stock beats unknown
+    acc: dict[tuple, dict] = {}
+    for o in offers:
+        v = classify(o.title)
+        colour = parse_colour(o.title)
+        if v is None or not v.storage_gb or not colour or not is_product_url(o.url):
+            continue
+        k = (v.model, v.storage_gb, colour)
+        cur = acc.get(k)
+        if (cur is None or rank[o.in_stock] > rank[cur["in_stock"]]
+                or (o.in_stock == cur["in_stock"] and o.price < cur["price"])):
+            acc[k] = {"model": v.model, "storage_gb": v.storage_gb, "colour": colour,
+                      "in_stock": o.in_stock, "price": o.price, "url": o.url}
+    return list(acc.values())
 
 
 def _scrape_product_pages(fetcher: Fetcher, cfg: dict, urls: list[str], render: bool, hint) -> list[RawOffer]:

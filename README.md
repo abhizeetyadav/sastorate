@@ -69,6 +69,26 @@ Both modes log in with username and password. That matters on GitHub Actions, wh
 
 The free Webshare plan (10 datacenter proxies) is enough for this volume: about 8 stores × ~70 pages, 4 times a day. If a store starts blocking datacenter IPs, switch to residential proxies. No code changes are needed.
 
+## Admin panel
+
+```powershell
+python -m scraper admin
+```
+
+This opens the panel in your browser at `http://127.0.0.1:8765`. It runs only on your computer: nothing is put on the internet, and only this computer can reach it. Close it with **Ctrl+C** in the terminal.
+
+| Section | What you do there |
+|---|---|
+| **Status** | See how each shop's last scrape went and what needs attention. **Scrape now** updates one shop's prices on this computer; **Test a page** checks whether Bhaau can read a page. A live log shows the output. |
+| **Shops** | Edit name, website, Apple authorized, on/off, logo, details (warranty, EMI, delivery, returns, hours, phone) and branches by city. **Add a shop** with just a name and website; it's found automatically, then test it with Scrape now. |
+| **Prices** | Every shop's latest price for a model and the page it came from. **Hide** a wrong price (one size, the whole model, or everything from a shop, optionally until a date) and **Show again** later. |
+| **Images** | Set a model's image from an image address or a file. The same checks as the command line (no banners or dark backgrounds) apply, with **Use it anyway** if you're sure. |
+| **Publish** | Puts your changes live (`scripts/deploy.py`). Tick **Also update prices now** to refresh prices on GitHub at the same time. |
+
+Each save rebuilds the site on your computer. **Preview the site**, in the panel's sidebar, shows it before you publish.
+
+**Where changes are saved:** the panel writes `scraper/config/shop_info.yaml`, which is laid over `stores.yaml`, so your hand-written scraping settings and comments are never rewritten. It also writes `overrides.yaml`, `models.yaml`, and the files in `web/logos/` and `web/images/`. Everything is committed when you publish, so every change can be undone with git.
+
 ## 3. Deploy (GitHub Actions + Cloudflare Pages, free)
 
 - **GitHub Actions** runs the scraper every 6 hours and keeps the price history in the repository.
@@ -200,6 +220,44 @@ Add to `scraper/config/stores.yaml` under `stores:`:
 ```
 
 Each run, after the shops, it searches HamroBazar once for every model the shops sell. An ad is used only if HamroBazar's condition badge says **Brand new**, and its title or web address doesn't show it's used ("95% BH", "98% battery", "used"), a copy, an accessory, a "wanted" post, EMI or rent. It must also name a model, and cost between 70% and 105% of the cheapest shop price for that exact phone. An ad without storage is filed under the model's base storage and marked "storage not stated", but only if its price fits that storage. Much cheaper is almost always bait or a copy. The cheapest ads that pass are shown. Seller phone numbers are removed from titles, and no seller names or contact details are stored.
+
+### Shop details (optional, recommended)
+
+When shops charge the same, buyers choose on warranty, EMI, delivery and location. Add what you know to each shop in `scraper/config/stores.yaml`. Every field is optional, and only what you enter is shown:
+
+```yaml
+  - id: evostore
+    name: Evo Store
+    ...
+    details:
+      warranty: "1 year Apple warranty through the official distributor"
+      emi: "Card EMI with partner banks; 0% offers on some models"
+      delivery: "Free inside Kathmandu valley; 2-4 days outside"
+      returns: "7-day replacement for factory defects"
+      hours: "10 am to 7 pm, every day"
+      phone: "01-XXXXXXX"
+      note: "Exchange offers on older iPhones"
+      locations:                             # every branch, up to 30
+        - name: "New Road"
+          city: "Kathmandu"                    # branches are grouped by city
+          address: "New Road, Kathmandu"
+          phone: "98XXXXXXXX"
+          map: "https://maps.app.goo.gl/..."   # Google Maps "Share" link
+        - name: "Lakeside"
+          city: "Pokhara"
+          address: "Lakeside Road"
+```
+
+The details appear under each shop's price on every model page, and on the shop's card in "Sellers we compare". Check them with the shop, and keep them current.
+
+### Colours and the three ways to buy
+
+These need no setup. Each run reads colour names from the shops' listings ("iPhone 18 Pro Max — Burgundy — 256GB") and shows which shop has which colour in stock. Shops that don't name colours on their websites are listed as "doesn't show colours". The search box also matches colours ("17 pro max cosmic orange").
+
+With HamroBazar enabled, each model page also starts with **Three ways to buy**:
+- **From a shop:** the lowest shop price, with a VAT bill and warranty.
+- **New, without VAT bill:** the cheapest believable brand-new ad.
+- **Used:** a typical used price from at least 3 ads, with the range most ads fall in. Copies, parts, iCloud-locked phones and bait prices are left out.
 
 ### Store logos (optional)
 

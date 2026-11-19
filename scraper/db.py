@@ -36,6 +36,32 @@ CREATE TABLE IF NOT EXISTS runs (
     pages       INTEGER DEFAULT 0,
     error       TEXT
 );
+
+-- which colours each shop has, per model and storage (latest scrape only)
+CREATE TABLE IF NOT EXISTS colour_stock (
+    store_id    TEXT NOT NULL,
+    model       TEXT NOT NULL,
+    storage_gb  INTEGER NOT NULL,
+    colour      TEXT NOT NULL,
+    in_stock    INTEGER,
+    price       INTEGER,
+    url         TEXT,
+    seen_at     TEXT NOT NULL,
+    PRIMARY KEY (store_id, model, storage_gb, colour)
+);
+
+-- typical used prices from marketplaces (storage_gb 0 = all sizes together)
+CREATE TABLE IF NOT EXISTS used_prices (
+    store_id    TEXT NOT NULL,
+    model       TEXT NOT NULL,
+    storage_gb  INTEGER NOT NULL,
+    ads         INTEGER NOT NULL,
+    low         INTEGER NOT NULL,
+    median      INTEGER NOT NULL,
+    high        INTEGER NOT NULL,
+    seen_at     TEXT NOT NULL,
+    PRIMARY KEY (store_id, model, storage_gb)
+);
 """
 
 
@@ -84,6 +110,22 @@ class DB:
             (store_id, variant.key, variant.model, variant.series, variant.storage_gb, title, url, price,
              old_price, stock, seen_at, seen_at, image))
         return bool(last and last["price"] != price)
+
+    def replace_colours(self, store_id: str, rows: list[dict]) -> None:
+        """This scrape's colour stock for a shop replaces the last one (only called after a good scrape)."""
+        self.conn.execute("DELETE FROM colour_stock WHERE store_id = ?", (store_id,))
+        now = now_iso()
+        self.conn.executemany(
+            "INSERT OR REPLACE INTO colour_stock VALUES (?,?,?,?,?,?,?,?)",
+            [(store_id, r["model"], r["storage_gb"], r["colour"],
+              None if r["in_stock"] is None else int(r["in_stock"]), r.get("price"), r.get("url"), now) for r in rows])
+
+    def replace_used(self, store_id: str, rows: list[dict]) -> None:
+        self.conn.execute("DELETE FROM used_prices WHERE store_id = ?", (store_id,))
+        now = now_iso()
+        self.conn.executemany(
+            "INSERT OR REPLACE INTO used_prices VALUES (?,?,?,?,?,?,?,?)",
+            [(store_id, r["model"], r["storage_gb"], r["ads"], r["low"], r["median"], r["high"], now) for r in rows])
 
     def commit(self):
         self.conn.commit()
