@@ -11,6 +11,7 @@ from pathlib import Path
 import logging
 
 from .db import DB, now_iso
+from .normalize import is_product_url
 from .overrides import is_hidden, load_rules
 from .seo import build_site, contact_email
 from . import status_page
@@ -131,6 +132,9 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
     hidden = 0
     for (store_id, vkey), pts in by_pair.items():
         cur = pts[-1]
+        if not is_product_url(cur["url"]):  # read from a blog post or news page by an older version
+            hidden += 1
+            continue
         if is_hidden(rules, store_id, cur["model"], cur["storage_gb"]):
             hidden += 1
             continue

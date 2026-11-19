@@ -129,6 +129,42 @@ def cmd_probe(args) -> int:
     return 0
 
 
+def cmd_inspect(args) -> int:
+    """Where every price for one model came from: page title, address, when it was last seen."""
+    from .normalize import is_product_url, parse_model
+    from .overrides import is_hidden, load_rules
+    if not DB_PATH.exists():
+        print(f"No database yet at {DB_PATH}. Run: python -m scraper run")
+        return 1
+    parsed = parse_model(args.model if "iphone" in args.model.lower() else f"iPhone {args.model}")
+    if not parsed:
+        print(f"'{args.model}' isn't an iPhone model I recognise. Try e.g.  python -m scraper inspect \"iPhone 17\"")
+        return 1
+    model = parsed[0]
+    db = DB(DB_PATH)
+    rows = db.q("""SELECT p.* FROM price_points p
+                   JOIN (SELECT store_id, variant_key, MAX(id) AS id FROM price_points
+                         WHERE model = ? GROUP BY store_id, variant_key) l ON l.id = p.id
+                   ORDER BY p.storage_gb, p.price""", model)
+    if not rows:
+        print(f"No prices recorded for {model}.")
+        return 0
+    _, stores = load_config()
+    rules = load_rules(known_stores={st["id"] for st in stores})
+    print(f"{model}: latest price from each store and storage size\n")
+    for r in rows:
+        size = "?" if not r["storage_gb"] else (f"{r['storage_gb'] // 1024} TB" if r["storage_gb"] >= 1024 else f"{r['storage_gb']} GB")
+        stock = {1: "in stock", 0: "out of stock"}.get(r["in_stock"], "stock not shown")
+        note = ("  <- HIDDEN: article/news page, not a product" if not is_product_url(r["url"])
+                else "  <- HIDDEN by overrides.yaml" if is_hidden(rules, r["store_id"], r["model"], r["storage_gb"]) else "")
+        print(f"  {r['store_id']:<12} {size:>6}  Rs {r['price']:>9,}  {stock:<15} last seen {r['last_seen'][:16].replace('T', ' ')}{note}")
+        print(f"               title: {r['title']}")
+        print(f"               page:  {r['url']}\n")
+    print("A wrong price? Open the page above. If the store lists something else there, hide it with")
+    print("scraper/config/overrides.yaml, or send me the page so the scraper can be fixed.")
+    return 0
+
+
 def cmd_status() -> int:
     """Summary of what the database holds, and how each store's last run went."""
     if not DB_PATH.exists():
@@ -187,6 +223,8 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("proxies", help="test Webshare proxy credentials")
     sub.add_parser("status", help="show what is in the database and how each store's last run went")
+    ins = sub.add_parser("inspect", help="show where each price for one model came from")
+    ins.add_argument("model", help='e.g. "iPhone 17" or "17 Pro Max"')
     h = sub.add_parser("health", help="check for broken stores and suspicious prices")
     h.add_argument("--notify", action="store_true", help="email new problems to OWNER_EMAIL; exit code 1 if there are any")
     h.add_argument("--test-email", action="store_true", help="send a test email to OWNER_EMAIL and stop")
@@ -205,6 +243,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_health(args)
     if args.cmd == "status":
         return cmd_status()
+    if args.cmd == "inspect":
+        return cmd_inspect(args)
     if args.cmd == "proxies":
         check_pool(ProxyPool.from_env())
         return 0

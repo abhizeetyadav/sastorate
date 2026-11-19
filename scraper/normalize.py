@@ -21,6 +21,20 @@ VALID_STORAGE_GB = [64, 128, 256, 512, 1024, 2048]
 
 MIN_PRICE, MAX_PRICE = 15_000, 1_000_000  # NPR sanity window for a phone
 
+# Pages that talk about iPhones but don't sell one: blog posts, news, comparisons, guides.
+# (A GAG Nepal article about the iPhone 18 was once read as a GAG "iPhone 18" listing.)
+NON_PRODUCT_URL = re.compile(
+    r"/(?:blogs?|articles?|news|posts?|guides?|reviews?|tips|stories|magazine|press|tags?|authors?|faqs?|help|support)(?:/|$)"
+    r"|everything-you-need-to-know|-vs-|rumou?rs?|leaks?|release-date|launch-date|expected-price|comparison|compared"
+    r"|how-to|what-to-know|should-you-buy|things-to-know",
+    re.I)
+
+
+def is_product_url(url: str) -> bool:
+    """False for addresses that are clearly articles/news/guides rather than product pages."""
+    from urllib.parse import urlparse
+    return not NON_PRODUCT_URL.search(urlparse(url or "").path)
+
 
 @dataclass(frozen=True)
 class Variant:
@@ -74,6 +88,8 @@ def parse_model(text: str) -> tuple[str, str] | None:
     """Return (display model, series) or None if this isn't recognisably an iPhone."""
     t = re.sub(r"\s+", " ", text.lower().replace("i-phone", "iphone"))
     t = re.sub(r"(iphone)(\d)", r"\1 \2", t)
+    t = re.sub(r"[-–—_|/(),:+\[\]]+", " ", t)  # "Pro-Max", "17 (Pro Max)", "17 | Pro Max"
+    t = re.sub(r"\s+", " ", t)
     m = re.search(r"\biphone\b\s*(.*)", t)
     if not m:
         return None
@@ -85,6 +101,8 @@ def parse_model(text: str) -> tuple[str, str] | None:
         if not 6 <= int(n) <= 30:
             return None
         rest = rest[num.end():]
+        # storage, "5G" or a year can come before the name: "iPhone 17 256GB Pro Max", "iPhone 17 (2025) Pro"
+        rest = re.sub(r"^(?:(?:\d{2,4}\s*(?:gb|tb)|\d\s*tb|5g|20\d\d)\s*)+", "", rest)
         if e:
             return f"iPhone {n}e", f"{n}e"
         suffix = next((s for s, rx in SUFFIX_RES if rx.match(rest)), "")

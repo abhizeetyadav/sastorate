@@ -22,7 +22,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup, Tag
 
-from .normalize import parse_price
+from .normalize import is_product_url, parse_price
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +63,9 @@ class RawOffer:
 def extract_offers(html: str, page_url: str, selectors: dict | None = None,
                    product_path_hint: str | None = None) -> list[RawOffer]:
     soup = BeautifulSoup(html, "lxml")
+    if is_article_page(soup):
+        log.info("  skipped %s: it's an article, not a product page", page_url)
+        return []
     found: list[RawOffer] = []
     for fn in (from_jsonld, from_embedded_json):
         try:
@@ -83,6 +86,20 @@ def extract_offers(html: str, page_url: str, selectors: dict | None = None,
         for o in unknown:
             o.in_stock = stock
     return dedupe(found)
+
+
+ARTICLE_TYPES = re.compile(r'"@type"\s*:\s*\[?\s*"(?:Article|BlogPosting|NewsArticle|Report|TechArticle)"')
+
+
+def is_article_page(soup: BeautifulSoup) -> bool:
+    """Blog posts and news pages mention prices too ("expected to cost Rs ...") but sell nothing."""
+    ld = " ".join(s.string or "" for s in soup.find_all("script", type="application/ld+json"))
+    if '"Product"' in ld or "'Product'" in ld:
+        return False
+    og = soup.find("meta", attrs={"property": "og:type"})
+    if og and (og.get("content") or "").strip().lower() in ("article", "blog", "news"):
+        return True
+    return bool(ARTICLE_TYPES.search(ld))
 
 
 def page_stock(soup: BeautifulSoup) -> bool | None:
@@ -475,6 +492,8 @@ def product_links(html: str, page_url: str, pattern: str | None = None) -> list[
         href = urljoin(page_url, a["href"]).split("#")[0]
         text = _text(a) or a.get("title", "") or href
         if rx and not rx.search(href):
+            continue
+        if not is_product_url(href):
             continue
         if not rx and not (is_iphone_title(text) or "iphone" in href.lower()):
             continue

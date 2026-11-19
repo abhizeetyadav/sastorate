@@ -506,3 +506,73 @@ def test_health_test_email(monkeypatch, capsys):
     assert health.send_test_email() == 1
     monkeypatch.delenv("RESEND_API_KEY")
     assert health.send_test_email() == 1 and "add RESEND_API_KEY" in capsys.readouterr().out
+
+
+def test_model_names_with_separators_and_storage_first():
+    from scraper.normalize import parse_model
+    cases = {
+        "Apple iPhone 17 Pro-Max 256GB": "iPhone 17 Pro Max",
+        "iPhone 17 (Pro Max) - Deep Blue": "iPhone 17 Pro Max",
+        "iPhone 17 | Pro Max | 1TB": "iPhone 17 Pro Max",
+        "iPhone 17 256GB Pro Max": "iPhone 17 Pro Max",
+        "iPhone17ProMax 512GB": "iPhone 17 Pro Max",
+        "iPhone 17 (2025) Pro": "iPhone 17 Pro",
+        "iPhone 17 256GB Lavender": "iPhone 17",
+        "iPhone 17 - 256GB - Black": "iPhone 17",
+        "iPhone 16e 128GB": "iPhone 16e",
+        "iPhone Air 256GB": "iPhone Air",
+    }
+    for title, want in cases.items():
+        assert parse_model(title)[0] == want, title
+
+
+def test_articles_are_not_product_pages(tmp_path):
+    from scraper.normalize import is_product_url
+    from scraper.extract import product_links
+    gag_article = "https://gag-nepal.com/articles/iphone-18-series-everything-you-need-to-know-about-apples-next-generation-iphones"
+    assert not is_product_url(gag_article)
+    for u in ["https://x.np/blogs/news/iphone-17-launch", "https://x.np/iphone-17-vs-iphone-17-pro",
+              "https://x.np/news/iphone-18-rumours", "https://x.np/blog/iphone-17-price"]:
+        assert not is_product_url(u), u
+    for u in ["https://www.olizstore.com/product/iphone-air-price-in-nepal", "https://gag-nepal.com/products/iphone-17-pro-max",
+              "https://hukut.com/apple-iphone-17-pro", "https://evostore.com.np/iphone-16e-128gb"]:
+        assert is_product_url(u), u
+    listing = f'<a href="{gag_article}">iPhone 18 series: everything</a><a href="/products/iphone-17">iPhone 17</a>'
+    assert product_links(listing, "https://gag-nepal.com/collections/apple") == ["https://gag-nepal.com/products/iphone-17"]
+
+    # an article at a normal-looking address is recognised from the page itself
+    article = ('<html><head><meta property="og:type" content="article"><title>iPhone 18: price in Nepal</title></head>'
+               '<body><h1>iPhone 18 price in Nepal</h1><p>The iPhone 17 Pro Max costs Rs. 2,59,900 today.</p></body></html>')
+    assert extract_offers(article, "https://shop.np/iphone-18-price") == []
+    product = ('<html><head><meta property="og:type" content="product"></head><body><h1>Apple iPhone 17 256GB</h1>'
+               '<span class="price">Rs. 1,49,999</span></body></html>')
+    assert extract_offers(product, "https://shop.np/p/iphone-17")
+
+
+def test_old_prices_read_from_articles_are_hidden(tmp_path):
+    import json as _json
+    from scraper.db import DB
+    from scraper.export import export
+    db = DB(tmp_path / "t.db")
+    art = "https://gag-nepal.com/articles/iphone-18-series-everything-you-need-to-know"
+    db.record("gag", classify("iPhone 18"), "iPhone 18 series", art, 259900, None, None)
+    db.record("gag", classify("iPhone 17 Pro Max 256GB"), "iPhone 17 Pro Max 256GB", "https://gag-nepal.com/products/iphone-17-pro-max", 242499, None, True)
+    out = tmp_path / "web" / "data"
+    export(db, [{"id": "gag", "name": "GAG Nepal", "url": "https://gag-nepal.com"}], out, rules=[])
+    keys = [v["key"] for v in _json.loads((out / "latest.json").read_text(encoding="utf-8"))["variants"]]
+    assert keys == ["iphone-17-pro-max|256"]
+
+
+def test_inspect_shows_where_prices_came_from(tmp_path, monkeypatch, capsys):
+    import scraper.__main__ as cli
+    from scraper.db import DB
+    db = DB(tmp_path / "prices.db")
+    db.record("hukut", classify("iPhone 17 256GB"), "Apple iPhone 17 256GB", "https://hukut.com/iphone-17", 149999, None, True)
+    db.record("gag", classify("iPhone 17 256GB"), "iPhone 17 256GB", "https://gag-nepal.com/blogs/news/iphone-17", 242499, None, None)
+    db.conn.commit()
+    monkeypatch.setattr(cli, "DB_PATH", tmp_path / "prices.db")
+    monkeypatch.setattr(cli, "load_config", lambda: ({}, [{"id": "hukut"}, {"id": "gag"}]))
+    assert cli.main(["inspect", "17"]) == 0
+    out = capsys.readouterr().out
+    assert "iPhone 17:" in out and "https://hukut.com/iphone-17" in out and "Rs   149,999" in out
+    assert "HIDDEN: article/news page" in out

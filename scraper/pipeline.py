@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 from .extract import RawOffer, extract_offers, is_iphone_title, page_image, product_links
 from .fetch import Fetcher, FetchError
-from .normalize import Variant, classify
+from .normalize import Variant, classify, is_product_url
 
 log = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ def _iphone_links_on(html: str, store_url: str) -> dict[str, int]:
         h = href.lower()
         if "iphone" not in h and not is_iphone_title(text):
             continue
-        if ACCESSORY_URL.search(urlparse(h).path):
+        if ACCESSORY_URL.search(urlparse(h).path) or not is_product_url(href):
             continue
         # category/brand/search pages first; they list many models at once
         score = 3 if re.search(r"categor|collection|brand|/apple|search|type-|iphone/?$", h) else 1
@@ -98,7 +98,7 @@ def sitemap_product_urls(fetcher: Fetcher, store_url: str, max_maps: int = 12) -
             continue
         for u in locs:
             path = urlparse(u).path.lower()
-            if "iphone" in path and not ACCESSORY_URL.search(path):
+            if "iphone" in path and not ACCESSORY_URL.search(path) and is_product_url(u):
                 found.append(u)
     found = list(dict.fromkeys(found))
     log.info("  sitemap: %d iPhone product URLs (read %d sitemap files)", len(found), len(seen))
