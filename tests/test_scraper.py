@@ -460,7 +460,7 @@ def test_health_emails_each_problem_once_a_day(tmp_path, monkeypatch):
     _seed_runs(db, "down", [("ok", 20), ("error", 0, "blocked")])
     sent = []
     monkeypatch.setenv("RESEND_API_KEY", "re_x"); monkeypatch.setenv("OWNER_EMAIL", "me@example.com"); monkeypatch.setenv("MAIL_FROM", "Bhaau <a@b.np>")
-    monkeypatch.setattr(health.requests, "post", lambda url, **kw: sent.append(kw["json"]) or type("R", (), {"raise_for_status": lambda s: None})())
+    monkeypatch.setattr(health.requests, "post", lambda url, **kw: sent.append(kw["json"]) or type("R", (), {"ok": True, "status_code": 200, "raise_for_status": lambda s: None})())
     assert health.run(db, stores, notify=True, status_url="https://bhaau.com.np/status-abc/") == 1
     assert len(sent) == 1 and sent[0]["subject"] == "Bhaau: 1 store not working" and "status-abc" in sent[0]["html"]
     assert health.run(db, stores, notify=True) == 0 and len(sent) == 1         # same problem again: no repeat
@@ -490,3 +490,19 @@ def test_status_page(tmp_path):
     assert "blocked by Cloudflare" in html and "Rs 1,95,000" in html and "Rs 1,90,699" in html
     assert "hukut: iPhone 17 Pro 256 GB (wrong size)" in html
     assert "@" not in html.split("<main>")[1]                                   # no email addresses on the page
+
+
+def test_health_test_email(monkeypatch, capsys):
+    from scraper import health
+    sent = []
+    class R:
+        def __init__(self, ok, body): self.ok, self._b, self.status_code, self.text = ok, body, 200 if ok else 403, str(body)
+        def json(self): return self._b
+    monkeypatch.setenv("RESEND_API_KEY", "re_x"); monkeypatch.setenv("OWNER_EMAIL", "me@example.com"); monkeypatch.delenv("MAIL_FROM", raising=False)
+    monkeypatch.setattr(health.requests, "post", lambda url, **kw: sent.append(kw["json"]) or R(True, {"id": "1"}))
+    assert health.send_test_email() == 0
+    assert sent[0]["subject"] == "Bhaau: test email" and sent[0]["to"] == ["me@example.com"] and "onboarding@resend.dev" in sent[0]["from"]
+    monkeypatch.setattr(health.requests, "post", lambda url, **kw: R(False, {"message": "You can only send testing emails to your own email address"}))
+    assert health.send_test_email() == 1
+    monkeypatch.delenv("RESEND_API_KEY")
+    assert health.send_test_email() == 1 and "add RESEND_API_KEY" in capsys.readouterr().out

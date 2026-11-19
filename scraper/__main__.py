@@ -155,6 +155,9 @@ def cmd_status() -> int:
 
 
 def cmd_health(args) -> int:
+    if args.test_email:
+        site, key = os.getenv("SITE_URL", "").rstrip("/"), os.getenv("STATUS_KEY", "")
+        return health.send_test_email(f"{site}/status-{key}/" if site and key else None)
     _, stores = load_config()
     if not DB_PATH.exists():
         print(f"No database yet at {DB_PATH}. Run: python -m scraper run")
@@ -186,6 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status", help="show what is in the database and how each store's last run went")
     h = sub.add_parser("health", help="check for broken stores and suspicious prices")
     h.add_argument("--notify", action="store_true", help="email new problems to OWNER_EMAIL; exit code 1 if there are any")
+    h.add_argument("--test-email", action="store_true", help="send a test email to OWNER_EMAIL and stop")
     sub.add_parser("export", help="rebuild website JSON from the database")
 
     args = ap.parse_args(argv)

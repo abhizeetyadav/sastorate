@@ -148,7 +148,7 @@ def _mark_notified(db: DB, problems: list[Problem]) -> None:
     db.commit()
 
 
-def send_email(problems: list[Problem], status_url: str | None = None) -> str:
+def send_email(problems: list[Problem], status_url: str | None = None, subject: str | None = None) -> str:
     """Returns "sent", "not_configured" or "failed"."""
     key, to = os.getenv("RESEND_API_KEY"), os.getenv("OWNER_EMAIL")
     # Resend's shared test sender only delivers to your own Resend account address - fine for this.
@@ -157,7 +157,7 @@ def send_email(problems: list[Problem], status_url: str | None = None) -> str:
         log.warning("Health email not sent: set RESEND_API_KEY and OWNER_EMAIL to get these by email")
         return "not_configured"
     broken = sum(p.severity == "broken" for p in problems)
-    subject = (f"Bhaau: {broken} store{'s' if broken != 1 else ''} not working" if broken
+    subject = subject or (f"Bhaau: {broken} store{'s' if broken != 1 else ''} not working" if broken
                else f"Bhaau: {len(problems)} price{'s' if len(problems) != 1 else ''} to check")
     items = "".join(f'<li style="margin:0 0 10px"><b style="color:{"#c2271b" if p.severity == "broken" else "#8a5a00"}">'
                     f'{"Broken" if p.severity == "broken" else "Check"}:</b> {html.escape(p.message)}</li>' for p in problems)
@@ -169,11 +169,29 @@ def send_email(problems: list[Problem], status_url: str | None = None) -> str:
         r = requests.post("https://api.resend.com/emails", timeout=30,
                           headers={"Authorization": f"Bearer {key}"},
                           json={"from": sender, "to": [to], "subject": subject, "html": body, "text": report_text(problems)})
-        r.raise_for_status()
+        if not r.ok:
+            try:
+                why = r.json().get("message") or r.text
+            except ValueError:
+                why = r.text
+            log.error("Health email failed (%s): %s", r.status_code, why[:300])
+            return "failed"
         return "sent"
     except Exception as e:  # noqa: BLE001
         log.error("Health email failed: %s", e)
         return "failed"
+
+
+def send_test_email(status_url: str | None = None) -> int:
+    """`python -m scraper health --test-email`: check the email settings without waiting for a problem."""
+    to = os.getenv("OWNER_EMAIL") or "(OWNER_EMAIL not set)"
+    print(f"Sending a test email to {to} from {os.getenv('MAIL_FROM') or 'Bhaau <onboarding@resend.dev>'} ...")
+    result = send_email([Problem("test", "-", "check", "This is a test. If you can read it, Bhaau can email you "
+                                 "when a store stops working.")], status_url, subject="Bhaau: test email")
+    print({"sent": "Sent. Check your inbox, and the spam folder the first time.",
+           "not_configured": "Not sent: add RESEND_API_KEY and OWNER_EMAIL to .env.",
+           "failed": "Not sent: see the error above."}[result])
+    return 0 if result == "sent" else 1
 
 
 def run(db: DB, stores: list[dict], notify: bool = False, status_url: str | None = None) -> int:
