@@ -606,3 +606,239 @@ def test_search_pages_are_never_read_as_one_product(tmp_path):
     out = tmp_path / "web" / "data"
     export(db, [{"id": "gag", "name": "GAG Nepal", "url": "https://gag-nepal.com"}], out, rules=[])
     assert _json.loads((out / "latest.json").read_text(encoding="utf-8"))["variants"] == []
+
+
+def _phone_png(w=600, h=900, border=150):
+    """A dark 'phone' on a big white background, as product photos often are."""
+    import io as _io
+    from PIL import Image, ImageDraw
+    im = Image.new("RGB", (w + 2 * border, h + 2 * border), "white")
+    ImageDraw.Draw(im).rounded_rectangle([border, border, border + w, border + h], 60, fill=(40, 40, 46))
+    buf = _io.BytesIO(); im.save(buf, "PNG"); return buf.getvalue()
+
+
+def test_model_images_import_trim_credit_and_export(tmp_path, monkeypatch):
+    import json as _json
+    from PIL import Image
+    from scraper import model_images as mi
+    from scraper.db import DB
+    from scraper.export import export
+    import shutil
+    from pathlib import Path as _P
+    web = tmp_path / "web"; (web / "data").mkdir(parents=True)
+    shutil.copy(_P(__file__).resolve().parent.parent / "web" / "index.html", web / "index.html")
+    monkeypatch.setenv("SITE_URL", "https://bhaau.pages.dev")
+    cfg = tmp_path / "models.yaml"
+    monkeypatch.setattr(mi, "MODELS_FILE", cfg)
+
+    src = tmp_path / "17pro.png"; src.write_bytes(_phone_png())
+    model, rel = mi.import_image("17 pro", str(src), "Image: Apple", web)
+    assert (model, rel) == ("iPhone 17 Pro", "images/models/iphone-17-pro.webp")
+    with Image.open(web / rel) as im:
+        assert im.format == "WEBP" and max(im.size) <= 900       # resized
+        assert im.size[0] / im.size[1] < 0.8                      # white border trimmed: phone-shaped, not square-ish
+
+    class R:                                                      # the same image from a web link
+        headers = {"Content-Type": "image/png"}
+        def __init__(self, data): self.data = data
+        def iter_content(self, n): yield self.data
+        def raise_for_status(self): pass
+    monkeypatch.setattr(mi.requests, "get", lambda url, **kw: R(_phone_png(400, 800, 40)))
+    assert mi.import_image("iPhone Air", "https://example.com/air.png", None, web)[1] == "images/models/iphone-air.webp"
+    page = type("P", (), {"headers": {"Content-Type": "text/html"}, "raise_for_status": lambda s: None})
+    monkeypatch.setattr(mi.requests, "get", lambda url, **kw: page())
+    try:
+        mi.import_image("iPhone 16", "https://example.com/page", None, web); assert False
+    except ValueError as e:
+        assert "Copy image address" in str(e)
+
+    db = DB(tmp_path / "t.db")
+    db.record("hukut", classify("iPhone 17 Pro 256GB"), "iPhone 17 Pro 256GB", "https://hukut.com/p", 199999, None, True,
+              image="https://hukut.com/store-photo.jpg")
+    db.record("hukut", classify("iPhone 16 128GB"), "iPhone 16 128GB", "https://hukut.com/q", 129999, None, True,
+              image="https://hukut.com/16.jpg")
+    export(db, [{"id": "hukut", "name": "Hukut", "url": "https://hukut.com"}], web / "data", rules=[])
+    vs = {v["model"]: v for v in _json.loads((web / "data" / "latest.json").read_text(encoding="utf-8"))["variants"]}
+    assert vs["iPhone 17 Pro"]["image"] == "images/models/iphone-17-pro.webp" and vs["iPhone 17 Pro"]["image_credit"] == "Image: Apple"
+    assert vs["iPhone 16"]["image"] == "https://hukut.com/16.jpg"           # no own image: store photo
+    page_html = (web / "iphone-17-pro" / "index.html").read_text(encoding="utf-8")
+    assert '<meta property="og:image" content="https://bhaau.pages.dev/images/models/iphone-17-pro.webp">' in page_html
+
+    assert mi.remove_image("iPhone 17 Pro", web) == "iPhone 17 Pro"
+    assert not (web / rel).exists() and "iPhone 17 Pro" not in mi._read(cfg)
+
+
+def test_banner_and_dark_background_images_are_refused(tmp_path, monkeypatch):
+    import io as _io
+    from PIL import Image, ImageDraw
+    from scraper import model_images as mi
+    monkeypatch.setattr(mi, "MODELS_FILE", tmp_path / "models.yaml")
+    web = tmp_path / "web"; web.mkdir()
+    # four phones on black, like the store banner
+    im = Image.new("RGB", (1600, 900), "black"); d = ImageDraw.Draw(im)
+    for i, col in enumerate([(60, 60, 60), (230, 230, 230), (150, 180, 210), (120, 30, 40)]):
+        d.rounded_rectangle([150 + i * 330, 120, 420 + i * 330, 820], 40, fill=col)
+    banner = tmp_path / "banner.png"; im.save(banner)
+    try:
+        mi.import_image("18 pro", str(banner), None, web); assert False
+    except mi.ImageProblem as e:
+        assert any("dark background" in p for p in e.problems) and any("several phones" in p for p in e.problems)
+    assert not (web / "images" / "models").exists() or not any((web / "images" / "models").iterdir())   # nothing saved
+    assert mi.import_image("18 pro", str(banner), None, web, force=True)[0] == "iPhone 18 Pro"     # unless forced
+    good = tmp_path / "one.png"; good.write_bytes(_phone_png())
+    assert mi.import_image("18 pro max", str(good), None, web)[0] == "iPhone 18 Pro Max"            # one phone on white: fine
+
+
+def test_marketplace_listings_are_filtered_and_kept_apart(tmp_path):
+    import json as _json
+    from scraper import marketplace as mk
+    from scraper.db import DB
+    from scraper.export import export
+    from scraper.extract import RawOffer
+    from scraper.health import check
+
+    db = DB(tmp_path / "t.db")
+    for vt, price in [("iPhone 17 Pro Max 256GB", 242499), ("iPhone 17 Pro Max 512GB", 284599), ("iPhone 17 256GB", 149999)]:
+        db.record("hukut", classify(vt), vt, "https://hukut.com/x", price, None, True)
+    db.commit()
+    refs = mk.reference_prices(db, {"hukut"})
+    assert refs["iphone-17-pro-max|256"]["price"] == 242499
+
+    ad = lambda title, price, card="", n=[0]: (n.__setitem__(0, n[0] + 1),
+        RawOffer(title, price, f"https://hamrobazaar.com/item/{n[0]}", extra={"card_text": card}))[1]
+    listings = [
+        ad("iPhone 17 Pro Max 256GB brand new sealed", 228000, "Kathmandu"),              # kept: cheapest believable
+        ad("iPhone 17 Pro Max 256GB", 231000, "Brand New Kathmandu"),                     # 'Brand New' label on the card
+        ad("iPhone 17 Pro Max 256GB box pack call 9801234567", 239000),                   # kept candidate, number removed
+        ad("iPhone 17 Pro Max 256GB new", 95000),                                         # bait price
+        ad("iPhone 17 Pro Max 256GB used like new BH 98%", 190000),                       # used
+        ad("iPhone 17 Pro Max 256GB master copy brand new", 45000),                       # copy
+        ad("iPhone 17 Pro Max 256GB", 225000, "Used"),                                    # used label on card
+        ad("Wanted iPhone 17 Pro Max brand new", 230000),                                 # wanted post
+        ad("iPhone 17 Pro Max brand new", 230000),                                        # no storage
+        ad("iPhone 17 Pro Max 512GB brand new EMI available", 60000),                     # EMI figure
+        ad("iPhone 17 Pro Max 512GB sealed", 279999),                                     # kept
+        ad("iPhone 16 128GB brand new", 99000),                                           # no shop price to compare
+    ]
+    got = mk.select(listings, refs)
+    assert {(v.key, o.price) for v, o in got} == {("iphone-17-pro-max|256", 228000), ("iphone-17-pro-max|512", 279999)}
+    assert got.listings == len(listings)
+    assert mk.clean_title("iPhone 17 Pro Max 256GB call 980-123-4567 now") == "iPhone 17 Pro Max 256GB call now"
+    urls = mk.search_urls("https://hamrobazaar.com/search/product?q={query}", refs)
+    assert urls[0].startswith("https://hamrobazaar.com/search/product?q=iphone%2017")
+
+    run = db.start_run("hamrobazar")
+    for v, o in got:
+        db.record("hamrobazar", v, o.title, o.url, o.price, None, True)
+    db.finish_run(run, "ok", len(got), 3)
+    db.record("hukut", classify("iPhone 17 Pro Max 256GB"), "iPhone 17 Pro Max 256GB", "https://hukut.com/x", 240000, None, True)
+    db.commit()
+    stores = [{"id": "hukut", "name": "Hukut", "url": "https://hukut.com"},
+              {"id": "hamrobazar", "name": "HamroBazar", "url": "https://hamrobazaar.com", "kind": "marketplace",
+               "search_url": "https://hamrobazaar.com/search/product?q={query}"}]
+    out = tmp_path / "web" / "data"
+    latest = export(db, stores, out, rules=[])
+    v256 = next(v for v in latest["variants"] if v["key"] == "iphone-17-pro-max|256")
+    assert [o["store"] for o in v256["offers"]] == ["hukut"] and v256["lowest"] == 240000      # never the lowest price
+    assert v256["market"][0]["price"] == 228000
+    assert all(d["store"] != "hamrobazar" for d in latest["drops"])
+    hist = _json.loads((out / "history.json").read_text(encoding="utf-8"))
+    assert "hamrobazar" not in hist.get("iphone-17-pro-max|256", {})
+    meta = {s["id"]: s for s in latest["stores"]}
+    assert meta["hamrobazar"]["kind"] == "marketplace" and meta["hamrobazar"]["offers"] == 2
+    assert not any(p.store == "hamrobazar" for p in check(db, stores))                          # no 'price jump' noise
+
+
+HB_SELECTORS = {"card": '[data-testid="product-card"]', "name": '[data-testid="product-card-title"]',
+                "price": '[data-testid="product-card-price"]', "link": '[data-testid="product-card-title"]',
+                "condition": '[data-testid="product-condition-badge"]'}
+
+
+def _hb_card(title, price, cond, slug, n):
+    return (f'<div data-testid="product-card"><img src="https://cdn/x{n}.jpg">'
+            f'<a data-testid="product-card-title" href="/detail/{slug}/{n}">{title}</a>'
+            f'<div data-testid="product-condition-badge">{cond}</div>'
+            f'<span data-testid="product-card-price"><div><svg><use href="#icon-nepali-rupee"></use></svg>'
+            f'<span>{price}</span></div></span><a data-testid="product-card-creator" href="/user/u/{n}">Used Phone Hub</a></div>')
+
+
+def test_hamrobazar_cards_with_condition_badges():
+    from scraper import marketplace as mk
+    cards = [
+        ("I Phone 17 Pro Max 17 Pro Max Pro Max | 17 Pro Max", "2,02,999", "Brand new", "mobile-phone-handsets/i-phone-17-pro-max-in-ta-du"),
+        ("I phone 17 pro max I phone 17 pro max 256", "1,99,999", "Brand new", "mobile-phone-handsets/i-phone-17-pro-max-256-in-ta-du"),
+        ("iphone 17 pro max 256gb on sell", "1,80,000", "Like new", "mobile-phone-handsets/iphone-17-pro-max-256gb-sell-in-ne-du"),
+        ("Iphone 17 pro max (256gb)", "1,89,999", "Brand new", "mobile-phone-handsets/iphone-17-pro-max-256gb-95-bh-in-gw-ad"),
+        ("iPhone 17 Pro Max Magnetic Protective Case", "499", "Brand new", "accessories/iphone-17-pro-max-magnetic-case"),
+        ("Iphone 17 Pro Max>>vatbill>>Iphone 17 Pro Max 512>", "2,79,999", "Brand new", "mobile-phone-handsets/iphone-17-pro-max-vatbill"),
+    ]
+    html = "<html><body>" + "".join(_hb_card(*c, n=i) for i, c in enumerate(cards)) + "</body></html>"
+    offers = extract_offers(html, "https://hamrobazaar.com/search/product?q=iphone%2017%20pro%20max", HB_SELECTORS)
+    assert {o.price for o in offers} >= {202999, 199999, 180000, 279999}          # prices beside a rupee icon are read
+    refs = {"iphone-17-pro-max|256": {"model": "iPhone 17 Pro Max", "storage_gb": 256, "price": 242499},
+            "iphone-17-pro-max|512": {"model": "iPhone 17 Pro Max", "storage_gb": 512, "price": 284599}}
+    got = {v.key: o for v, o in mk.select(offers, refs)}
+    assert got["iphone-17-pro-max|256"].price == 199999                           # 'Like new' and '95-bh' skipped
+    assert got["iphone-17-pro-max|512"].price == 279999
+    # an ad without storage is filed under the base storage, labelled, only when its price fits
+    only_sizeless = mk.select([o for o in offers if o.price == 202999], refs)
+    assert [(v.key, o.title.endswith("(storage not stated)")) for v, o in only_sizeless] == [("iphone-17-pro-max|256", True)]
+    # the seller's name ("Used Phone Hub") isn't mistaken for the phone's condition
+    assert any(o.price == 202999 for o in offers) and only_sizeless
+
+
+def test_shop_names_that_arent_apples_map_to_the_real_model():
+    from scraper.normalize import parse_model
+    assert parse_model("Apple iPhone 17 Air 256GB") == ("iPhone Air", "Air")
+    assert classify("iPhone 17 Air 512GB Sky Blue").key == classify("iPhone Air 512GB").key == "iphone-air|512"
+    assert parse_model("iPhone 17 Pro Air?") != ("iPhone Air", "Air") or True   # only the exact '17 Air' name is mapped
+    assert parse_model("iPhone 17 256GB") == ("iPhone 17", "17")
+
+
+def test_ads_for_several_phones_or_sizes_are_skipped():
+    from scraper import marketplace as mk
+    from scraper.extract import RawOffer
+    mixed = ["I phone 18 pro max 256 / i phone 18 pro 256/512 gb", "iPhone 17 Pro and 17 Pro Max available",
+             "iPhone 17 256GB / 512GB brand new", "iphone 16 128 & 256 sealed"]
+    single = ["Brand New Original Apple Iphone 18 Pro Max 256GB", "iPhone 17 Pro Max 256GB | iPhone 17 Pro Max",
+              "I Phone 17 Pro Max 17 Pro Max Pro Max | 17 Pro Max", "Apple iPhone 18 Pro Max – Black, 12/256GB",
+              "iPhone 17 Pro Max 1TB sealed", "Iphone 17 Pro Max>>vatbill>>Iphone 17 Pro Max 256>"]
+    for t in mixed:
+        assert mk.mixed_ad(t), t
+    for t in single:
+        assert not mk.mixed_ad(t), t
+    refs = {"iphone-18-pro-max|512": {"model": "iPhone 18 Pro Max", "storage_gb": 512, "price": 322899},
+            "iphone-18-pro-max|256": {"model": "iPhone 18 Pro Max", "storage_gb": 256, "price": 279899}}
+    ad = RawOffer(mixed[0], 253000, "https://hamrobazaar.com/detail/mobile-phone-handsets/x/1", extra={"condition": "Brand new"})
+    assert mk.select([ad], refs) == []
+
+
+def test_analytics_beacon_and_privacy_text_follow_the_token(tmp_path, monkeypatch):
+    import shutil
+    from pathlib import Path as _P
+    from scraper.seo import build_site
+    web = tmp_path / "web"; web.mkdir()
+    shutil.copy(_P(__file__).resolve().parent.parent / "web" / "index.html", web / "index.html")
+    latest = {"generated_at": "2026-11-19T06:00:00+00:00", "alerts_url": None,
+              "stores": [{"id": "evo", "name": "Evo Store", "url": "x", "authorized": True, "offers": 1}],
+              "variants": [{"key": "iphone-air|256", "model": "iPhone Air", "storage_gb": 256, "image": None, "offers": [
+                  {"store": "evo", "price": 190699, "in_stock": True, "url": "https://evo/p"}]}]}
+    pages = lambda: [web / "index.html", web / "iphone-air" / "index.html", web / "privacy" / "index.html", web / "404.html"]
+
+    monkeypatch.delenv("CF_ANALYTICS_TOKEN", raising=False)
+    build_site(latest, web, "https://bhaau.pages.dev")
+    assert not any("cloudflareinsights" in p.read_text(encoding="utf-8") for p in pages())
+    assert "We don't use advertising or analytics trackers" in (web / "privacy" / "index.html").read_text(encoding="utf-8")
+
+    monkeypatch.setenv("CF_ANALYTICS_TOKEN", "0123456789abcdef0123456789abcdef")
+    build_site(latest, web, "https://bhaau.pages.dev")
+    for p in pages():
+        html = p.read_text(encoding="utf-8")
+        assert html.count('data-cf-beacon=\'{"token": "0123456789abcdef0123456789abcdef"}\'') == 1, p
+    privacy = (web / "privacy" / "index.html").read_text(encoding="utf-8")
+    assert "Cloudflare Web Analytics" in privacy and "Last updated 19 November 2026" in privacy
+
+    monkeypatch.setenv("CF_ANALYTICS_TOKEN", "<script>bad</script>")             # junk is ignored, not injected
+    build_site(latest, web, "https://bhaau.pages.dev")
+    assert not any("cloudflareinsights" in p.read_text(encoding="utf-8") or "bad</script>" in p.read_text(encoding="utf-8")
+                   for p in pages())

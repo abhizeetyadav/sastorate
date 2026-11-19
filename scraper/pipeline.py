@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 
 from .extract import RawOffer, extract_offers, is_iphone_title, page_image, product_links
 from .fetch import Fetcher, FetchError
+from . import marketplace
 from .normalize import Variant, classify, is_article_url, is_product_url
 
 log = logging.getLogger(__name__)
@@ -106,8 +107,14 @@ def sitemap_product_urls(fetcher: Fetcher, store_url: str, max_maps: int = 12) -
 
 
 # ---------------------------------------------------------------- scraping
-def scrape_store(fetcher: Fetcher, store: dict, defaults: dict) -> tuple[list[tuple[Variant, RawOffer]], int]:
+def scrape_store(fetcher: Fetcher, store: dict, defaults: dict,
+                 refs: dict | None = None) -> tuple[list[tuple[Variant, RawOffer]], int]:
+    """`refs` (cheapest store price per phone) is needed for marketplaces like HamroBazar."""
     cfg = {**defaults, **store}
+    market = marketplace.is_marketplace(cfg)
+    if market and not refs:
+        log.warning("  no store prices to compare with yet; run the stores first")
+        return [], 0
     render = cfg.get("render_js", False)
     selectors = cfg.get("selectors")
     hint = cfg.get("product_path")
@@ -116,7 +123,9 @@ def scrape_store(fetcher: Fetcher, store: dict, defaults: dict) -> tuple[list[tu
     pages = 0
 
     start_urls = list(cfg.get("start_urls") or [])
-    if cfg.get("discover") or (not start_urls and not cfg.get("sitemap")):
+    if cfg.get("search_url"):  # e.g. https://hamrobazaar.com/search/product?q={query}: one search per model
+        start_urls += marketplace.search_urls(cfg["search_url"], refs or {})
+    elif cfg.get("discover") or (not start_urls and not cfg.get("sitemap")):
         start_urls += discover_start_urls(fetcher, cfg)
     use_sitemap = cfg.get("sitemap") or (cfg.get("discover") and not start_urls)
     if use_sitemap and cfg.get("follow_product_pages"):
@@ -127,7 +136,8 @@ def scrape_store(fetcher: Fetcher, store: dict, defaults: dict) -> tuple[list[tu
         for page in range(1, max_pages + 1):
             url = with_page(start, cfg["page_param"], page) if page > 1 else start
             try:
-                html = fetcher.get(url, render_js=render, wait_selector=cfg.get("wait_selector"))
+                html = fetcher.get(url, render_js=render, wait_selector=cfg.get("wait_selector"),
+                                   capture_json=cfg.get("capture_json", True))
             except FetchError as e:
                 log.warning("  %s", e)
                 break
@@ -145,6 +155,8 @@ def scrape_store(fetcher: Fetcher, store: dict, defaults: dict) -> tuple[list[tu
         offers += _scrape_product_pages(fetcher, cfg, product_urls[: cfg["max_product_pages"]], render, hint)
         pages += min(len(product_urls), cfg["max_product_pages"])
 
+    if market:
+        return marketplace.select(offers, refs), pages
     return pick_best(offers, cfg.get("include_used", False)), pages
 
 
@@ -156,7 +168,8 @@ def _scrape_product_pages(fetcher: Fetcher, cfg: dict, urls: list[str], render: 
     empty = 0
     for url in urls:
         try:
-            html = fetcher.get(url, render_js=render, wait_selector=cfg.get("wait_selector"))
+            html = fetcher.get(url, render_js=render, wait_selector=cfg.get("wait_selector"),
+                                   capture_json=cfg.get("capture_json", True))
         except FetchError as e:
             log.warning("  %s", e)
             continue

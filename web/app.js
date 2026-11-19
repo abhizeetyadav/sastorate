@@ -14,6 +14,8 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : "#");
+  // images: store photos are full web addresses; your own model images are paths inside the site
+  const imgSrc = (u) => (/^https?:\/\//i.test(u || "") ? u : u && !/^[a-z]+:|^\/\//i.test(u) ? ROOT + u.replace(/^\/+/, "") : "#");
   const gbLabel = (g) => (!g ? "" : g >= 1024 ? `${g / 1024} TB` : `${g} GB`);
   const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const ktm = (o) => new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kathmandu", ...o });
@@ -63,6 +65,7 @@
     q: "", series: new Set(), storage: new Set(), bands: new Set(), sellers: new Set(),
     authOnly: false, stockOnly: false, sort: "newest",
     pick: {}, range: "3m", mode: "lowest", pStock: false,
+    emi: { open: false, down: 0, months: 12, rate: 12, flat: false },  // 12%: typical shop card EMI in Nepal
   };
   let DATA, HISTORY = {}, SELLERS = {}, MODELS = [], BY_SLUG = {};
 
@@ -104,7 +107,7 @@
   }
   function productImage(m) {
     if (!m.image) return phoneArt(m.model);
-    return `<img class="phone-img" src="${esc(safeUrl(m.image))}" alt="${esc(m.model)}" loading="lazy" referrerpolicy="no-referrer" data-model="${esc(m.model)}">`;
+    return `<img class="phone-img" src="${esc(imgSrc(m.image))}" alt="${esc(m.model)}" loading="lazy" referrerpolicy="no-referrer" data-model="${esc(m.model)}">`;
   }
   // swap broken remote images for the drawn phone
   document.addEventListener("error", (e) => {
@@ -135,6 +138,7 @@
       const m = byModel.get(v.model);
       m.variants.push(v);
       m.image = m.image || v.image || null;
+      m.image_credit = m.image_credit || v.image_credit || null;
     }
     MODELS = [...byModel.values()];
     MODELS.forEach((m, i) => { m.order = i; m.variants.sort((a, b) => (a.storage_gb || 1e9) - (b.storage_gb || 1e9)); BY_SLUG[m.slug] = m; });
@@ -183,6 +187,84 @@
     const cutoff = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
     const before = s.filter(([d]) => d <= cutoff).pop();
     return before ? now - before[1] : null;
+  }
+
+  /** "Is this a good price?": today's lowest price against the last 90 days (needs 14+ days of history). */
+  function priceVerdict(v, now) {
+    if (now == null) return null;
+    const cutoff = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10);
+    const win = lowestSeries(v.key).filter(([d]) => d >= cutoff);
+    if (win.length < 14) return null;
+    const prices = win.map(([, p]) => p);
+    const days = win.length;
+    const span = days >= 85 ? "the last 90 days" : `the ${days} days we've tracked it`;
+    const low = Math.min(...prices);
+    const usual = [...prices].sort((a, b) => a - b)[Math.floor(prices.length / 2)];
+    const lowDay = [...win].reverse().find(([, p]) => p === low)[0];
+    if (Math.max(...prices) === low && now === low) return { tone: "ok", head: "Price hasn't changed",
+      text: `It has been ${rs(now)} for ${span}.` };
+    if (now <= low) return { tone: "good", head: days >= 85 ? "Lowest price in 90 days" : "Lowest price we've seen",
+      text: `Nothing has been cheaper in ${span}.` };
+    if (now <= usual * 0.98) return { tone: "good", head: "Good price",
+      text: `${rs(usual - now)} below its usual price of ${rs(usual)} over ${span}.` };
+    if (now >= usual * 1.03) return { tone: "high", head: "Higher than usual",
+      text: `${rs(now - usual)} above its usual price of ${rs(usual)}. It was ${rs(low)} on ${fmtDay(lowDay)}, so it may be worth waiting.` };
+    return { tone: "ok", head: "Usual price", text: `Close to its usual price of ${rs(usual)} over ${span}.` };
+  }
+
+  // ---- EMI calculator: card EMI charges interest on the remaining balance;
+  // hire-purchase schemes usually charge flat interest on the whole loan (often paid upfront)
+  const EMI_MONTHS = [6, 9, 12, 18, 24];
+  const EMI_DOWN = [0, 20, 40, 50];
+  function emiCalc(price, e) {
+    const loan = Math.round(price * (1 - e.down / 100));
+    const n = e.months, rate = Math.max(0, +e.rate || 0);
+    let monthly, interest;
+    if (e.flat) {
+      interest = loan * rate / 100 * (n / 12);
+      monthly = (loan + interest) / n;
+    } else {
+      const r = rate / 1200;
+      monthly = r ? loan * r * (1 + r) ** n / ((1 + r) ** n - 1) : loan / n;
+      interest = monthly * n - loan;
+    }
+    return { downPay: price - loan, monthly: Math.round(monthly), interest: Math.round(interest), total: Math.round(price + interest) };
+  }
+  function emiBox(price) {
+    const e = state.emi, c = emiCalc(price, e);
+    const opts = (vals, cur, fmt) => vals.map((x) => `<option value="${x}"${x === cur ? " selected" : ""}>${fmt(x)}</option>`).join("");
+    return `<details class="emi panel" id="emiBox"${e.open ? " open" : ""}>
+      <summary><span>Pay in installments (EMI)</span><b id="emiSum">${rs(c.monthly)}/month</b></summary>
+      <div class="emi-body" data-price="${price}">
+        <div class="emi-grid">
+          <label>Down payment<select name="down">${opts(EMI_DOWN, e.down, (x) => `${x}%`)}</select></label>
+          <label>Months<select name="months">${opts(EMI_MONTHS, e.months, (x) => `${x} months`)}</select></label>
+          <label>Interest per year<span class="pct"><input name="rate" type="number" inputmode="decimal" min="0" max="40" step="0.5" value="${e.rate}">%</span></label>
+        </div>
+        <div class="emi-type" role="radiogroup" aria-label="How interest is charged">
+          <label><input type="radio" name="flat" value="0"${e.flat ? "" : " checked"}> On the remaining balance <span>(bank card EMI)</span></label>
+          <label><input type="radio" name="flat" value="1"${e.flat ? " checked" : ""}> Flat on the whole loan <span>(hire purchase)</span></label>
+        </div>
+        <dl class="emi-out" id="emiOut">${emiOut(c)}</dl>
+        <p class="emi-note">An estimate. Banks and shops set their own rates and may add a processing fee; 0% EMI offers usually need a 40–50% down payment. Ask the seller for the exact terms.</p>
+      </div>
+    </details>`;
+  }
+  const emiOut = (c) => `<div><dt>Pay now</dt><dd>${rs(c.downPay)}</dd></div><div><dt>Each month</dt><dd>${rs(c.monthly)}</dd></div>
+    <div><dt>Interest</dt><dd>${rs(c.interest)}</dd></div><div><dt>Total cost</dt><dd>${rs(c.total)}</dd></div>`;
+  function bindEmi() {
+    const box = $("#emiBox");
+    if (!box) return;
+    const body = box.querySelector(".emi-body"), price = +body.dataset.price;
+    box.addEventListener("toggle", () => { state.emi.open = box.open; });
+    body.addEventListener("input", (ev) => {
+      const t = ev.target;
+      if (t.name === "flat") state.emi.flat = t.value === "1";
+      else if (t.name) state.emi[t.name] = +t.value;
+      const c = emiCalc(price, state.emi);
+      $("#emiOut").innerHTML = emiOut(c);
+      $("#emiSum").textContent = `${rs(c.monthly)}/month`;
+    });
   }
 
   /** Which variants of a model pass the current filters, with their best offer. */
@@ -288,7 +370,7 @@
     sugItems = sugItems.slice(0, 8);
     sugIdx = -1;
     sug.innerHTML = sugItems.length
-      ? sugItems.map((it, i) => `<li role="option" data-i="${i}" aria-selected="false"><span class="s-img">${phoneArt(it.m.model)}</span><span class="s-name">${esc(it.m.model)} ${gbLabel(it.v.storage_gb)}</span><span class="s-price">${rs(it.best.price)}</span></li>`).join("")
+      ? sugItems.map((it, i) => `<li role="option" data-i="${i}" aria-selected="false"><span class="s-img">${productImage(it.m)}</span><span class="s-name">${esc(it.m.model)} ${gbLabel(it.v.storage_gb)}</span><span class="s-price">${rs(it.best.price)}</span></li>`).join("")
       : `<li class="s-empty">No iPhone matches “${esc(state.q)}”</li>`;
     sug.hidden = false;
     q.setAttribute("aria-expanded", "true");
@@ -301,7 +383,7 @@
 
   // ================================================================ catalog
   function renderCatalog() {
-    const live = DATA.stores.filter((s) => s.offers > 0);
+    const live = DATA.stores.filter((s) => s.offers > 0 && s.kind !== "marketplace");  // marketplaces aren't sellers
     const fams = [...new Set(MODELS.map(family))].sort((a, b) => familyRank(a) - familyRank(b));
     const sizes = [...new Set(DATA.variants.map((v) => v.storage_gb).filter(Boolean))].sort((a, b) => a - b);
     const optList = (name, items) => items.map(([val, label, count]) =>
@@ -449,7 +531,7 @@
       .filter((d) => { const k = d.variant; if (seen.has(k)) return false; seen.add(k); return true; })
       .sort((a, b) => (b.from - b.to) - (a.from - a.to)).slice(0, 6);
     $("#dropsRow").innerHTML = drops.length ? drops.map((d) => `<a class="drop-card panel" href="${modelHref(slugify(d.model), d.storage_gb)}" data-pick="${esc(d.variant)}" data-slug="${slugify(d.model)}">
-        <span class="img">${phoneArt(d.model)}</span>
+        <span class="img">${productImage(BY_SLUG[slugify(d.model)])}</span>
         <span class="txt"><span class="name">${esc(d.model)} ${gbLabel(d.storage_gb)}</span><span class="where">${esc(SELLERS[d.store].name)}, ${fmtDay(d.at)}</span></span>
         <span class="p"><s>${rs(d.from)}</s><b>${rs(d.to)}</b></span></a>`).join("")
       : `<p class="note">No price drops in the last 14 days.</p>`;
@@ -476,8 +558,8 @@
       return `<div class="seller-card panel">
         ${sellerMark(SELLERS[s.id])}
         <div class="txt">
-          <div class="name"><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(s.name)}</a>${s.authorized ? `<span class="badge auth">${ICON_CHECK}Apple authorized</span>` : ""}</div>
-          <div class="sub"><span class="dot ${st[0]}"></span>${esc(st[1])}${s.offers ? `, ${s.offers} prices` : ""}</div>
+          <div class="name"><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(s.name)}</a>${s.authorized ? `<span class="badge auth">${ICON_CHECK}Apple authorized</span>` : ""}${s.kind === "marketplace" ? `<span class="badge new">Individual sellers</span>` : ""}</div>
+          <div class="sub"><span class="dot ${st[0]}"></span>${esc(st[1])}${s.offers ? `, ${s.offers} ${s.kind === "marketplace" ? "brand-new listings" : "prices"}` : ""}</div>
         </div></div>`;
     }).join("");
   }
@@ -502,7 +584,7 @@
     $("#product").innerHTML = `${flashFromLink()}
       <ol class="crumbs"><li><a href="${homeHref()}" data-home data-series="">Home</a></li>${familyLabel(family(m)) !== m.model ? `<li><a href="${esc(homeHref(family(m)))}" data-home data-series="${esc(family(m))}">${esc(familyLabel(family(m)))}</a></li>` : ""}<li>${esc(m.model)}</li></ol>
       <div class="prod-top">
-        <div class="gallery panel">${productImage(m)}</div>
+        <div class="gallery panel">${productImage(m)}${m.image_credit ? `<p class="img-credit">${esc(m.image_credit)}</p>` : ""}</div>
         <div class="prod-info">
           <div>
             <h1>Apple ${esc(m.model)} ${gbLabel(v.storage_gb)}</h1>
@@ -521,7 +603,10 @@
               ${all.length > 1 ? (Math.min(...prices) === Math.max(...prices) ? `<span>Same price at all ${all.length} sellers</span>` : `<span>${all.length} sellers from ${rs(Math.min(...prices))} to ${rs(Math.max(...prices))}</span>`) : ""}
               ${chg ? `<span class="${chg < 0 ? "down" : "up"}">${rs(Math.abs(chg))} ${chg < 0 ? "lower" : "higher"} than last week</span>` : chg === 0 ? `<span>Same price as last week</span>` : ""}
             </div>
+            ${(() => { const vd = priceVerdict(v, best.in_stock === false ? null : best.price);
+              return vd ? `<div class="verdict ${vd.tone}"><b>${esc(vd.head)}</b> ${esc(vd.text)}</div>` : ""; })()}
           </div>
+          ${emiBox(best.price)}
           ${DATA.alerts_url && v.storage_gb ? alertForm(m, v) : ""}
         </div>
       </div>
@@ -539,6 +624,7 @@
           ${offers.length ? offers.map((o) => offerRow(o, o === best, v)).join("") : `<div class="empty-state">No seller has this in stock right now.</div>`}
           <p class="offers-note">Prices are checked every 6 hours and can change. Confirm with the seller before you pay.${DATA.contact_email ? ` <a href="${esc(reportHref(m, v))}">Report a wrong price</a>` : ""}</p>
         </div>
+        ${marketBox(m, v, best)}
       </section>
 
       <section class="section" id="p-history">
@@ -556,6 +642,7 @@
     bindAlertForm(v);
     $$("#product [data-variant]").forEach((b) => b.addEventListener("click", () => { state.pick[m.slug] = b.dataset.variant; renderProduct(m); }));
     $("#pStock").addEventListener("change", (e) => { state.pStock = e.target.checked; renderProduct(m); });
+    bindEmi();
     $$("#product .tabs a").forEach((a) => a.addEventListener("click", (e) => {
       e.preventDefault();
       $$("#product .tabs a").forEach((x) => x.classList.toggle("on", x === a));
@@ -618,6 +705,38 @@
     params.delete("alert");
     history.replaceState(null, "", location.pathname + (params.toString() ? `?${params}` : "") + location.hash);
     return text ? `<p class="flash ${kind === "confirmed" ? "ok" : "err"}" role="status">${esc(text)}</p>` : "";
+  }
+
+  // ---- marketplaces (HamroBazar): individual sellers, kept apart from shops, with a warning
+  function marketBox(m, v, best) {
+    const listings = v.market || [];
+    if (!listings.length) return "";
+    const byStore = {};
+    listings.forEach((o) => (byStore[o.store] = byStore[o.store] || []).push(o));
+    return Object.entries(byStore).filter(([id]) => SELLERS[id]).map(([id, items]) => {
+      const s = SELLERS[id];
+      const searchUrl = s.search_url ? s.search_url.replace("{query}", encodeURIComponent(m.model.toLowerCase())) : s.url;
+      const rows = items.slice(0, 3).map((o) => {
+        const below = best && best.price > o.price ? `${rs(best.price - o.price)} below the lowest shop price` : "";
+        return `<div class="m-row">
+          <div class="m-txt"><div class="m-title">${esc(o.title)}</div><div class="m-meta">Brand-new listing, seen ${ago(o.last_seen)}</div></div>
+          <div class="m-price"><b>${rs(o.price)}</b>${below ? `<span>${below}</span>` : ""}</div>
+          <a class="btn small" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener nofollow">View ad</a>
+        </div>`;
+      }).join("");
+      return `<div class="panel market" id="p-market">
+        <div class="market-head"><h2>On ${esc(s.name)}</h2><span class="badge new">Individual sellers</span></div>
+        <div class="market-warn" role="note">
+          <p><b>Often cheaper because it's sold without a VAT bill.</b> These are ads by individuals, not shops. Without a bill there's usually no official warranty, and the phone may be an unofficial import: if its IMEI isn't registered with NTA, it can be blocked from Nepali mobile networks.</p>
+          <ul><li>Ask for the bill and warranty, and check the IMEI is registered with NTA before you pay.</li>
+          <li>Make sure the box is sealed and the phone is genuine, not a copy.</li>
+          <li>Meet in a busy public place, and don't send money in advance.</li></ul>
+          <p class="m-fine">Bhaau shows only ads marked brand new and priced close to shop prices, but doesn't check them.</p>
+        </div>
+        ${rows}
+        <a class="m-all" href="${esc(safeUrl(searchUrl))}" target="_blank" rel="noopener nofollow">See all ${esc(m.model)} ads on ${esc(s.name)}</a>
+      </div>`;
+    }).join("");
   }
 
   function offerRow(o, isBest, v) {

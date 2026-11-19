@@ -40,7 +40,7 @@ SECRETS = ["WEBSHARE_PROXY_USERNAME", "WEBSHARE_PROXY_PASSWORD", "WEBSHARE_API_K
            "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID",
            "ALERTS_TOKEN", "RESEND_API_KEY", "OWNER_EMAIL", "STATUS_KEY"]
 VARIABLES = ["HOSTING", "CF_PAGES_PROJECT", "WEBSHARE_MODE", "WEBSHARE_COUNTRIES", "SITE_URL", "CONTACT_EMAIL",
-             "ALERTS_URL", "MAIL_FROM"]
+             "ALERTS_URL", "MAIL_FROM", "CF_ANALYTICS_TOKEN"]
 NEVER_COMMIT = ["WEBSHARE_PROXY_PASSWORD", "WEBSHARE_API_KEY", "ALERTS_TOKEN", "RESEND_API_KEY", "STATUS_KEY",
                 "CLOUDFLARE_API_TOKEN"]
 CF_TOKEN_PAGE = "https://dash.cloudflare.com/profile/api-tokens"
@@ -420,7 +420,8 @@ def cf_pages(repo: str, env: dict[str, str]) -> str:
     if not env.get("CLOUDFLARE_API_TOKEN"):
         info("GitHub needs a Cloudflare API token to publish the site. Create one (2 minutes):")
         info(f"   1. Open {CF_TOKEN_PAGE} -> Create Token -> Custom token -> Get started")
-        info("   2. Name it 'bhaau', Permissions: Account / Cloudflare Pages / Edit")
+        info("   2. Name it 'bhaau'. Permissions: Account | Cloudflare Pages | Edit   (Edit, not Read)")
+        info("      Account Resources: Include | your account")
         info("   3. Continue to summary -> Create Token, and copy it")
         token = "" if ASSUME_YES else getpass.getpass("   ?    Paste the token here (hidden): ").strip()
         if not token:
@@ -461,7 +462,27 @@ def cf_pages(repo: str, env: dict[str, str]) -> str:
     if sub:
         ok(f"Pages project '{name}' already exists")
     else:
-        made = cfw("pages", "project", "create", name, "--production-branch", "main", change=True, extra_env=cf)
+        for attempt in range(3):
+            made = cfw("pages", "project", "create", name, "--production-branch", "main", change=True,
+                       check=False, extra_env=cf)
+            out = (made.stdout or "") + (made.stderr or "")
+            if made.returncode == 0:
+                break
+            if "already exists" in out.lower():
+                made = subprocess.CompletedProcess([], 0, "", "")
+                break
+            if not re.search(r"Authentication error|code: 10000|code: 9109|not authorized", out, re.I) or attempt == 2:
+                raise Stop(f"Couldn't create the Pages project:\n{out.strip()[-1500:]}")
+            warn("Your Cloudflare token can read Pages but not create projects. Fix the token:")
+            info(f"   {CF_TOKEN_PAGE} -> your token -> ... -> Edit")
+            info("   Permissions: Account | Cloudflare Pages | Edit   (not Read; not the 'Read all resources' template)")
+            info("   Account Resources: Include | your account  ->  Continue to summary -> Update token")
+            if ASSUME_YES:
+                raise Stop("Fix the token as above, then run the script again.")
+            new = getpass.getpass("   ?    Press Enter once updated, or paste a new token (hidden): ").strip()
+            if new:
+                env["CLOUDFLARE_API_TOKEN"] = cf["CLOUDFLARE_API_TOKEN"] = new
+                save_env("CLOUDFLARE_API_TOKEN", new)
         m = re.search(r"https://([a-z0-9-]+\.pages\.dev)", (made.stdout or "") + (made.stderr or ""))
         sub = m.group(1) if m else domain_in((cfw("pages", "project", "list", check=False, extra_env=cf).stdout or ""))
         sub = sub or f"{name}.pages.dev"

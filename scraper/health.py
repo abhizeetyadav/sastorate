@@ -72,6 +72,7 @@ def check(db: DB, stores: list[dict], now: datetime | None = None) -> list[Probl
         if not s.get("enabled", True):
             continue
         sid, name = s["id"], s["name"]
+        market = (s.get("kind") or "").lower() == "marketplace"  # listings come and go: only real failures count
         runs = db.q("SELECT * FROM runs WHERE store_id = ? ORDER BY id DESC LIMIT 6", sid)
         if not runs:
             problems.append(Problem(f"{sid}:never", sid, "broken", f"{name} has never been scraped."))
@@ -89,7 +90,7 @@ def check(db: DB, stores: list[dict], now: datetime | None = None) -> list[Probl
             problems.append(Problem(f"{sid}:empty", sid, "broken",
                                     f"{name} was scraped but no iPhone prices were found. Its website has probably changed. "
                                     f"Try: python -m scraper probe <an iPhone page> --store {sid}"))
-        elif last["status"] == "ok":
+        elif last["status"] == "ok" and not market:
             usual = [r["offers"] for r in runs[1:] if r["status"] == "ok" and r["offers"]]
             if len(usual) >= 2:
                 normal = statistics.median(usual)
@@ -98,6 +99,8 @@ def check(db: DB, stores: list[dict], now: datetime | None = None) -> list[Probl
                                             f"{name} returned {last['offers']} phones; it usually has about {int(normal)}. "
                                             "Some pages may have changed or failed."))
 
+        if market:
+            continue
         # price jumps recorded during the latest scrape of this store
         since = last["started_at"]
         rows = db.q("""SELECT p.*, (SELECT q.price FROM price_points q WHERE q.store_id = p.store_id AND q.variant_key = p.variant_key

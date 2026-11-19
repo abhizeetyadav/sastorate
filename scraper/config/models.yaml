@@ -1,0 +1,59 @@
+# Your own image for each iPhone model, used on every page instead of the store's photo.
+# Managed by:  python -m scraper image "iPhone 17 Pro" <image link or file> --credit "Image: Apple"
+# You can also edit it by hand: the image path is inside web/, the credit is shown under the image.
+
+models:
+  iPhone 11:
+    image: images/models/iphone-11.webp
+    credit: 'Image: Apple'
+  iPhone 14:
+    image: images/models/iphone-14.webp
+    credit: 'Image: Apple'
+  iPhone 14 Pro:
+    image: images/models/iphone-14-pro.webp
+    credit: 'Image: Apple'
+  iPhone 14 Pro Max:
+    image: images/models/iphone-14-pro-max.webp
+    credit: 'Image: Apple'
+  iPhone 15 Plus:
+    image: images/models/iphone-15-plus.webp
+    credit: 'Image: Apple'
+  iPhone 15 Pro:
+    image: images/models/iphone-15-pro.webp
+    credit: 'Image: Apple'
+  iPhone 15 Pro Max:
+    image: images/models/iphone-15-pro-max.webp
+    credit: 'Image: Apple'
+  iPhone 16:
+    image: images/models/iphone-16.webp
+    credit: 'Image: Apple'
+  iPhone 16 Plus:
+    image: images/models/iphone-16-plus.webp
+    credit: 'Image: Apple'
+  iPhone 16 Pro:
+    image: images/models/iphone-16-pro.webp
+    credit: 'Image: Apple'
+  iPhone 16 Pro Max:
+    image: images/models/iphone-16-pro-max.webp
+    credit: 'Image: Apple'
+  iPhone 17:
+    image: images/models/iphone-17.webp
+    credit: 'Image: Apple'
+  iPhone 17 Pro:
+    image: images/models/iphone-17-pro.webp
+    credit: 'Image: Apple'
+  iPhone 17 Pro Max:
+    image: images/models/iphone-17-pro-max.webp
+    credit: 'Image: Apple'
+  iPhone 18 Pro:
+    image: images/models/iphone-18-pro.webp
+    credit: 'Image: Apple'
+  iPhone 18 Pro Max:
+    image: images/models/iphone-18-pro-max.webp
+    credit: 'Image: Apple'
+  iPhone Air:
+    image: images/models/iphone-air.webp
+    credit: 'Image: Apple'
+  iPhone Duo:
+    image: images/models/iphone-duo.webp
+    credit: 'Image: Apple'

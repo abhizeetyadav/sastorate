@@ -416,8 +416,11 @@ def from_selectors(soup: BeautifulSoup, page_url: str, sel: dict) -> list[RawOff
             if st is not None:
                 stock = not OUT_OF_STOCK_RE.search(_text(st))
         img = card.select_one(sel["image"]) if sel.get("image") else card.select_one("img")
+        extra = {"card_text": _text(card)[:500]}
+        if sel.get("condition"):  # e.g. HamroBazar's "Brand new" / "Like new" badge
+            extra["condition"] = _text(card.select_one(sel["condition"]))
         out.append(RawOffer(title, price, url, old if old and old > price else None, stock, "selectors",
-                            image=_img_src(img, page_url)))
+                            extra=extra, image=_img_src(img, page_url)))
     return out
 
 
@@ -461,7 +464,7 @@ def from_heuristics(soup: BeautifulSoup, page_url: str) -> list[RawOffer]:
         price = min(prices)
         out.append(RawOffer(title, price, urljoin(page_url, a["href"]),
                             old if old and old > price else None, None, "heuristic",
-                            image=_img_src(card.select_one("img"), page_url)))
+                            extra={"card_text": card_txt[:500]}, image=_img_src(card.select_one("img"), page_url)))
     return out
 
 

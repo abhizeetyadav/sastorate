@@ -375,3 +375,65 @@ img.phone-img { mix-blend-mode: multiply; filter: brightness(1.06); }
   .alert-fields { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.gallery > .img-credit { inset: auto 12px 8px; width: auto; height: auto; margin: 0; font-size: 12px; color: var(--ink-3); text-align: center; }
+/* small image slots (price drops, search suggestions): less padding on the dark-mode white tile */
+.drop-card .img img.phone-img, .suggest .s-img img.phone-img { padding: 2px; border-radius: 5px; }
+
+/* marketplace box (HamroBazar): individual sellers, shown apart from shops */
+.market { margin-top: 16px; }
+.market-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.market-head h2 { font-size: 17px; }
+.market-warn { margin: 14px 18px 4px; padding: 12px 14px; border-radius: 8px; background: var(--amber-wash); color: var(--ink); font-size: 14px; line-height: 1.55; border-left: 3px solid var(--amber); }
+.market-warn ul { margin: 6px 0 6px 18px; padding: 0; }
+.market-warn li { margin-top: 2px; }
+.market-warn .m-fine { color: var(--ink-2); font-size: 13px; }
+.m-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line-2); }
+.m-title { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-meta { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.m-price { text-align: right; }
+.m-price b { display: block; font-size: 17px; }
+.m-price span { font-size: 12.5px; color: var(--ink-3); }
+.m-all { display: block; padding: 12px 18px; font-size: 14px; color: var(--link); }
+@media (max-width: 640px) {
+  .m-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+  .m-row .m-txt { grid-column: 1 / -1; }
+  .m-row .m-title { white-space: normal; }
+  .m-row .m-price { text-align: left; }
+  .market-warn { margin: 12px 12px 4px; }
+}
+
+/* "Is this a good price?" */
+.verdict { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+.verdict b { display: block; font-size: 15px; }
+.verdict.good { background: var(--green-wash); color: var(--ink); }
+.verdict.good b { color: var(--green); }
+.verdict.high { background: var(--amber-wash); color: var(--ink); }
+.verdict.high b { color: var(--amber); }
+.verdict.ok { background: var(--line-2); color: var(--ink-2); }
+.verdict.ok b { color: var(--ink); }
+
+/* EMI calculator */
+.emi { margin-top: 12px; }
+.emi summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; font-weight: 600; }
+.emi summary::-webkit-details-marker { display: none; }
+.emi summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3); transform: rotate(45deg); margin-left: 4px; transition: transform .15s; }
+.emi[open] summary::after { transform: rotate(-135deg); }
+.emi summary b { margin-left: auto; color: var(--ink); white-space: nowrap; }
+.emi-body { padding: 0 16px 16px; border-top: 1px solid var(--line); }
+.emi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.emi-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-2); }
+.emi-grid select, .emi-grid input { height: 38px; border: 1px solid var(--line); border-radius: 8px; padding: 0 8px; background: var(--card); color: var(--ink); font: inherit; font-size: 14px; width: 100%; }
+.emi-grid .pct { display: flex; align-items: center; gap: 6px; }
+.emi-type { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; font-size: 14px; }
+.emi-type span { color: var(--ink-3); }
+.emi-out { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 14px 0 0; }
+.emi-out div { background: var(--line-2); border-radius: 8px; padding: 8px 10px; }
+.emi-out dt { font-size: 12px; color: var(--ink-3); }
+.emi-out dd { margin: 2px 0 0; font-weight: 700; font-size: 15px; }
+.emi-note { margin-top: 10px; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
+@media (max-width: 640px) {
+  .emi-grid { grid-template-columns: 1fr 1fr; }
+  .emi-grid label:last-child { grid-column: 1 / -1; }
+  .emi-out { grid-template-columns: 1fr 1fr; }
+}

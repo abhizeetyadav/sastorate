@@ -75,6 +75,21 @@ def _set_head(page: str, title: str, description: str) -> str:
 
 EMAIL_RE = re.compile(r"^[^@\s<>\"']+@[^@\s<>\"']+\.[A-Za-z]{2,}$")
 PRIVACY_UPDATED = "18 November 2026"   # change this when you change the privacy text below
+PRIVACY_UPDATED_ANALYTICS = "19 November 2026"  # the version that mentions visitor stats
+
+
+def analytics_token() -> str | None:
+    """Cloudflare Web Analytics site token (CF_ANALYTICS_TOKEN): cookie-free visit counts."""
+    t = (os.getenv("CF_ANALYTICS_TOKEN") or "").strip()
+    if t and not re.fullmatch(r"[0-9a-f]{32}", t):
+        log.warning("CF_ANALYTICS_TOKEN doesn't look like a Cloudflare Web Analytics token; ignoring it")
+        return None
+    return t or None
+
+
+def _beacon(token: str | None) -> str:
+    return (f"<script defer src=\"https://static.cloudflareinsights.com/beacon.min.js\" "
+            f"data-cf-beacon='{{\"token\": \"{token}\"}}'></script>") if token else ""
 
 
 def contact_email() -> str | None:
@@ -99,21 +114,24 @@ def _footer_links(root: str, contact: str | None, report_subject: str = "Wrong p
     return f'<nav class="foot-links" aria-label="About Bhaau">{"".join(links)}</nav>'
 
 
-def _privacy_body(contact: str | None, alerts_on: bool) -> str:
+def _privacy_body(contact: str | None, alerts_on: bool, analytics_on: bool = False) -> str:
     mail = (f'<a href="{_e(_mailto(contact))}">{_e(contact)}</a>') if contact else None
     parts = [
         '<ol class="crumbs"><li><a href="../">Home</a></li><li>Privacy</li></ol>',
         '<article class="doc">',
         '<h1>Privacy</h1>',
-        f'<p class="updated">Last updated {PRIVACY_UPDATED}</p>',
+        f'<p class="updated">Last updated {PRIVACY_UPDATED_ANALYTICS if analytics_on else PRIVACY_UPDATED}</p>',
         "<p>Bhaau is an independent website that compares iPhone prices in Nepal. This page explains what we keep about you and why. "
         "You can use the whole site without telling us anything"
         + (". If you sign up for a price alert, we keep your email address only to send that alert.</p>" if alerts_on else ".</p>"),
 
         "<h2>Using the website</h2><ul>"
         "<li>There are no accounts and no sign-in.</li>"
-        "<li>We don't use advertising or analytics trackers, and we don't set cookies.</li>"
-        "<li>If you pick the Light or Dark theme, that choice is saved in your own browser. It is never sent to us.</li>"
+        + ("<li>We count visits with Cloudflare Web Analytics, which doesn't use cookies or similar storage in your "
+           "browser and doesn't track you across sites. It tells us which pages are popular, not who you are. "
+           "We don't use advertising trackers, and we don't set cookies.</li>"
+           if analytics_on else "<li>We don't use advertising or analytics trackers, and we don't set cookies.</li>")
+        + "<li>If you pick the Light or Dark theme, that choice is saved in your own browser. It is never sent to us.</li>"
         "<li>Like every website, our hosting provider receives your IP address and browser details when you open a page, "
         "and may keep them in its server logs for a short time for security.</li>"
         "<li>Fonts are loaded from Google Fonts, so Google also receives your IP address when a page loads.</li></ul>",
@@ -168,6 +186,7 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
         return 0
     site = (site_url or os.getenv("SITE_URL") or "").rstrip("/")
     contact = latest.get("contact_email") or contact_email()
+    beacon = _beacon(analytics_token())  # visit counts on every public page (never on the status page)
     if not contact:
         log.warning("CONTACT_EMAIL is not set: footer shows only the Privacy link (no Contact / Report a wrong price)")
     stores = {s["id"]: s for s in latest["stores"]}
@@ -214,8 +233,10 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
             "offers": {"@type": "AggregateOffer", "priceCurrency": "NPR", "lowPrice": min(prices),
                        "highPrice": max(prices), "offerCount": len(offers_ld), "offers": offers_ld},
         }
-        if m["image"]:
-            product_ld["image"] = [m["image"]]
+        image_url = m["image"] if re.match(r"^https?://", m["image"] or "") else (
+            f"{site}/{m['image']}" if site and m["image"] else None)   # own images are stored inside web/
+        if image_url:
+            product_ld["image"] = [image_url]
         if url:
             product_ld["url"] = url
         crumbs_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -227,7 +248,7 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
             f'<meta property="og:type" content="product"><meta property="og:title" content="{_e(title)}">',
             f'<meta property="og:description" content="{_e(desc)}">',
             f'<meta property="og:url" content="{_e(url)}">' if url else "",
-            f'<meta property="og:image" content="{_e(m["image"])}">' if m["image"] else "",
+            f'<meta property="og:image" content="{_e(image_url)}">' if image_url else "",
             _jsonld(product_ld), _jsonld(crumbs_ld),
         ])
 
@@ -250,6 +271,7 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
         page = _replace(page, "body", "")
         page = _replace(page, "product", body)
         page = _replace(page, "foot", _footer_links("../", contact, f"Wrong price: {m['model']}"))
+        page = _replace(page, "analytics", beacon)
         page = page.replace('<div id="product" hidden>', '<div id="product">', 1)
         page = page.replace('<div id="catalog">', '<div id="catalog" hidden>', 1)
         page = page.replace("<body>", f'<body data-root="../" data-slug="{_e(m["slug"])}">', 1)
@@ -266,7 +288,8 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
                         "What Bhaau keeps about you: nothing while you browse, and your email address only if you sign up for a price alert.")
     privacy = _replace(privacy, "head", f'<link rel="canonical" href="{site}/privacy/">' if site else "")
     privacy = _replace(privacy, "body", "")
-    privacy = _replace(privacy, "product", _privacy_body(contact, bool(latest.get("alerts_url"))))
+    privacy = _replace(privacy, "product", _privacy_body(contact, bool(latest.get("alerts_url")), bool(beacon)))
+    privacy = _replace(privacy, "analytics", beacon)
     privacy = _replace(privacy, "foot", _footer_links("../", contact))
     privacy = privacy.replace('<div id="product" hidden>', '<div id="product">', 1)
     privacy = privacy.replace('<div id="catalog">', '<div id="catalog" hidden>', 1)
@@ -290,6 +313,7 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
     nf = _replace(nf, "body", "")
     nf = _replace(nf, "product", nf_body)
     nf = _replace(nf, "foot", _footer_links(base, contact))
+    nf = _replace(nf, "analytics", beacon)
     nf = nf.replace('<div id="product" hidden>', '<div id="product">', 1)
     nf = nf.replace('<div id="catalog">', '<div id="catalog" hidden>', 1)
     nf = nf.replace("<body>", f'<body data-root="{base}" data-page="404">', 1)
@@ -330,6 +354,7 @@ def build_site(latest: dict, web_dir: str | Path, site_url: str | None = None) -
     home = _replace(home, "body", home_body)
     home = _replace(home, "product", "")
     home = _replace(home, "foot", _footer_links("", contact))
+    home = _replace(home, "analytics", beacon)
     shell_path.write_text(home, encoding="utf-8")
 
     # ------------------------------------------------------------ sitemap + robots

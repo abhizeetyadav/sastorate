@@ -162,6 +162,45 @@ The probe prints every offer it found, which extractor found it, and how the off
 
 A new store only needs `id`, `name`, `url` and `discover: true` to start with.
 
+### Model images (optional)
+
+Every model shows the photo from a seller's listing, or a drawn phone if there is none. To use your own image for a model everywhere instead:
+
+```powershell
+python -m scraper image "iPhone 17 Pro" https://example.com/iphone-17-pro.png --credit "Image: Apple"
+python -m scraper image "iPhone 17" C:\Users\you\Pictures\iphone-17.jpg --credit "Photo: Bhaau"
+python -m scraper image --list                      # what you've set
+python -m scraper image "iPhone 17 Pro" --remove    # back to the store's photo
+```
+
+For a web image, right-click it and choose **Copy image address**; a link to a web page won't work. The image is downloaded once, trimmed of empty borders, resized and saved as `web/images/models/<model>.webp`, so the site serves it itself and it never breaks when a store changes. The credit appears under the image on the model page. Then run `python -m scraper export` to see it, and `python scripts/deploy.py` to publish. You choose every image, so check you're allowed to use it.
+
+### Marketplaces: HamroBazar (optional)
+
+Classified sites have many individual sellers, often cheaper because the phone is sold without a VAT bill. Bhaau shows them **apart from shops**: in their own box on each model page, with a warning about bills, warranty and NTA IMEI registration. They're never the "lowest price", and never in price drops, price history, seller counts or price alerts.
+
+Add to `scraper/config/stores.yaml` under `stores:`:
+
+```yaml
+  - id: hamrobazar
+    name: HamroBazar
+    url: https://hamrobazaar.com
+    kind: marketplace            # individual sellers: own box with a warning, never the "lowest price"
+    authorized: false
+    render_js: true              # its listings load with JavaScript
+    capture_json: false          # its /api/ is off-limits in robots.txt: read only the page
+    follow_product_pages: false  # don't open each seller's ad
+    search_url: "https://hamrobazaar.com/search/product?q={query}"
+    selectors:                   # HamroBazar's ad cards
+      card: '[data-testid="product-card"]'
+      name: '[data-testid="product-card-title"]'
+      price: '[data-testid="product-card-price"]'
+      link: '[data-testid="product-card-title"]'
+      condition: '[data-testid="product-condition-badge"]'
+```
+
+Each run, after the shops, it searches HamroBazar once for every model the shops sell. An ad is used only if HamroBazar's condition badge says **Brand new**, and its title or web address doesn't show it's used ("95% BH", "98% battery", "used"), a copy, an accessory, a "wanted" post, EMI or rent. It must also name a model, and cost between 70% and 105% of the cheapest shop price for that exact phone. An ad without storage is filed under the model's base storage and marked "storage not stated", but only if its price fits that storage. Much cheaper is almost always bait or a copy. The cheapest ads that pass are shown. Seller phone numbers are removed from titles, and no seller names or contact details are stored.
+
 ### Store logos (optional)
 
 Stores show coloured initials until you add their logo. Ask the store for its logo (or for permission) first, then:
@@ -272,6 +311,16 @@ Set the address once:
 It's shown publicly, so use a dedicated address rather than your personal one. Without it, the footer shows only the Privacy link.
 
 The privacy page only mentions price alerts when `ALERTS_URL` is set. It's written in plain language and matches what the code does; it isn't legal advice, so if you add analytics, ads or anything else that collects data, update it.
+
+## Visitor stats (optional)
+
+Cloudflare Web Analytics counts visits without cookies and without tracking people across sites, and it's free. To turn it on:
+
+1. Cloudflare dashboard → **Analytics & Logs** → **Web Analytics** → **Add a site** → enter your site address.
+2. Copy the token from the snippet it shows: the 32 letters and digits after `"token": "`.
+3. Add `CF_ANALYTICS_TOKEN=<token>` to `.env` and run `python scripts/deploy.py`. It goes to GitHub as a variable, and every public page gets the beacon. The private status page never does.
+
+The privacy page updates itself to say you count visits this way. Remove the token to switch it off.
 
 ## Keeping it healthy
 

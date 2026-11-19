@@ -45,18 +45,19 @@ class Fetcher:
         self._browser = None  # lazily created BrowserFetcher
 
     # ---------------------------------------------------------------- public
-    def get(self, url: str, *, render_js: bool = False, wait_selector: str | None = None) -> str:
+    def get(self, url: str, *, render_js: bool = False, wait_selector: str | None = None,
+            capture_json: bool = True) -> str:
         if self.respect_robots and not self.allowed(url):
             raise FetchError(f"robots.txt disallows {url}")
         self._throttle(url)
         if render_js:
-            return self._browser_get(url, wait_selector)
+            return self._browser_get(url, wait_selector, capture_json)
         try:
             return self._requests_get(url)
         except FetchError as e:
             if "blocked" in str(e):
                 log.info("Falling back to headless browser for %s", url)
-                return self._browser_get(url, wait_selector)
+                return self._browser_get(url, wait_selector, capture_json)
             raise
 
     def close(self) -> None:
@@ -123,10 +124,10 @@ class Fetcher:
         msg = "blocked" if last_err and "blocked" in str(last_err) else "failed"
         raise FetchError(f"{msg}: {url} ({last_err})")
 
-    def _browser_get(self, url: str, wait_selector: str | None) -> str:
+    def _browser_get(self, url: str, wait_selector: str | None, capture_json: bool = True) -> str:
         if self._browser is None:
             self._browser = BrowserFetcher(self.pool)
-        return self._browser.get(url, wait_selector, self.timeout)
+        return self._browser.get(url, wait_selector, self.timeout, capture_json)
 
 
 def with_captured(html: str, extra: str) -> str:
@@ -174,7 +175,7 @@ class BrowserFetcher:
         self._browser = self._pw.chromium.launch(
             headless=True, proxy=proxy.for_playwright() if proxy else None)
 
-    def get(self, url: str, wait_selector: str | None, timeout: int) -> str:
+    def get(self, url: str, wait_selector: str | None, timeout: int, capture_json: bool = True) -> str:
         ctx = self._browser.new_context(user_agent=random.choice(USER_AGENTS[:4]),
                                         locale="en-US", viewport={"width": 1366, "height": 900})
         page = ctx.new_page()
@@ -202,7 +203,8 @@ class BrowserFetcher:
                 page.mouse.wheel(0, 2500)
                 page.wait_for_timeout(600)
             html = page.content()
-            return with_captured(html, _captured_json(responses))
+            # capture_json: false for sites whose robots.txt puts their data API off-limits (HamroBazar)
+            return with_captured(html, _captured_json(responses)) if capture_json else html
         except Exception as e:  # noqa: BLE001
             raise FetchError(f"browser failed: {url} ({e})") from e
         finally:

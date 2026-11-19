@@ -14,7 +14,7 @@ from .db import DB, now_iso
 from .normalize import is_product_url
 from .overrides import is_hidden, load_rules
 from .seo import build_site, contact_email
-from . import status_page
+from . import model_images, status_page
 
 log = logging.getLogger(__name__)
 
@@ -117,6 +117,8 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
     stale_cutoff = (now - timedelta(days=stale_after_days)).isoformat()
     week_ago = (now - timedelta(days=7)).isoformat()
     store_by_id = {s["id"]: s for s in stores}
+    market_ids = {s["id"] for s in stores if (s.get("kind") or "").lower() == "marketplace"}
+    market: dict[str, list] = defaultdict(list)
 
     rows = db.q("SELECT * FROM price_points ORDER BY store_id, variant_key, first_seen, id")
     by_pair: dict[tuple, list] = defaultdict(list)
@@ -137,6 +139,11 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
             continue
         if is_hidden(rules, store_id, cur["model"], cur["storage_gb"]):
             hidden += 1
+            continue
+        if store_id in market_ids:  # individual sellers: their own box, nothing else
+            if cur["last_seen"] >= stale_cutoff:
+                market[vkey].append({"store": store_id, "price": cur["price"], "url": cur["url"],
+                                     "title": cur["title"], "last_seen": cur["last_seen"]})
             continue
         # ---- daily history (one point per day = that day's last price)
         daily: dict[str, int] = {}
@@ -177,8 +184,14 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
         prices = [o["price"] for o in v["offers"]]
         v["lowest"], v["highest"] = min(prices), max(prices)
         v["image"] = next((o["image"] for o in v["offers"] if o.get("image")), None)
+        if market.get(v["key"]):
+            v["market"] = sorted(market[v["key"]], key=lambda o: o["price"])
         vlist.append(v)
     vlist.sort(key=lambda v: (_series_rank(v["series"])[0], _model_rank(v["model"]), v["model"], v["storage_gb"] or 0))
+    own = model_images.load(out_dir.parent)  # your own model images (scraper/config/models.yaml) beat store photos
+    for v in vlist:
+        if v["model"] in own:
+            v["image"], v["image_credit"] = own[v["model"]]["image"], own[v["model"]]["credit"]
 
     store_meta = []
     for s in stores:
@@ -186,9 +199,12 @@ def export(db: DB, stores: list[dict], out_dir: str | Path, stale_after_days: in
         last_ok = db.q("SELECT finished_at FROM runs WHERE store_id=? AND status='ok' ORDER BY id DESC LIMIT 1", s["id"])
         store_meta.append({
             "id": s["id"], "name": s["name"], "url": s["url"], "authorized": bool(s.get("authorized")),
+            "kind": "marketplace" if s["id"] in market_ids else "store",
+            "search_url": s.get("search_url") if s["id"] in market_ids else None,
             "logo": store_logo(s, out_dir.parent),
             "enabled": bool(s.get("enabled", True)),
-            "offers": sum(1 for v in vlist for o in v["offers"] if o["store"] == s["id"]),
+            "offers": sum(1 for v in vlist for o in (v.get("market", []) if s["id"] in market_ids else v["offers"])
+                          if o["store"] == s["id"]),
             "last_status": last[0]["status"] if last else None,
             "last_error": last[0]["error"] if last else None,
             "last_success": last_ok[0]["finished_at"] if last_ok else None,

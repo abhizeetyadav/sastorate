@@ -97,14 +97,25 @@ def parse_storage(text: str) -> int | None:
         gb = int(num) * (1024 if unit.lower() == "tb" else 1)
         if gb in VALID_STORAGE_GB:
             sizes.append(gb)
-    return max(sizes) if sizes else None  # largest = storage, smaller ones are usually RAM
+    if sizes:
+        return max(sizes)  # largest = storage, smaller ones are usually RAM
+    # classified ads often drop the unit: "iPhone 17 Pro Max 256", "17 pro max (512)"
+    bare = [int(n) for n in re.findall(r"(?<![\d.,%])\b(64|128|256|512)\b(?![\d.,%]|\s*(?:mah|mp|hz|w)\b)", text, re.I)]
+    return max(bare) if bare else None
+
+
+# Names shops use that aren't Apple's: map them to the real model so prices aren't split over two pages.
+ALIASES = {
+    "iPhone 17 Air": ("iPhone Air", "Air"),  # Apple sells it as "iPhone Air"
+}
 
 
 def parse_model(text: str) -> tuple[str, str] | None:
     """Return (display model, series) or None if this isn't recognisably an iPhone."""
     t = re.sub(r"\s+", " ", text.lower().replace("i-phone", "iphone"))
+    t = re.sub(r"\bi\s+phone\b", "iphone", t)  # "I Phone 17 Pro Max" (common in classified ads)
     t = re.sub(r"(iphone)(\d)", r"\1 \2", t)
-    t = re.sub(r"[-–—_|/(),:+\[\]]+", " ", t)  # "Pro-Max", "17 (Pro Max)", "17 | Pro Max"
+    t = re.sub(r"[-–—_|/(),:+\[\]<>]+", " ", t)  # "Pro-Max", "17 (Pro Max)", "17 | Pro Max"
     t = re.sub(r"\s+", " ", t)
     m = re.search(r"\biphone\b\s*(.*)", t)
     if not m:
@@ -123,7 +134,7 @@ def parse_model(text: str) -> tuple[str, str] | None:
             return f"iPhone {n}e", f"{n}e"
         suffix = next((s for s, rx in SUFFIX_RES if rx.match(rest)), "")
         name = f"iPhone {n}" + (f" {suffix.title()}" if suffix else "")
-        return name, n
+        return ALIASES.get(name, (name, n))
 
     # number-less models: "iPhone Air", "iPhone Air 2", "iPhone Fold", "iPhone Duo"
     named = re.match(r"(air|fold|duo|se)\b\s*(\d)?\b", rest)

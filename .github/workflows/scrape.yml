@@ -46,6 +46,7 @@ jobs:
           WEBSHARE_COUNTRIES: ${{ vars.WEBSHARE_COUNTRIES }}
           SITE_URL: ${{ vars.SITE_URL }}
           CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
           ALERTS_URL: ${{ vars.ALERTS_URL }}
           ALERTS_TOKEN: ${{ secrets.ALERTS_TOKEN }}
           STATUS_KEY: ${{ secrets.STATUS_KEY }}

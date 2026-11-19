@@ -14,10 +14,11 @@ import os
 import sys
 from pathlib import Path
 
+import requests
 import yaml
 
 from .alerts import push_prices
-from . import health
+from . import health, marketplace
 from .db import DB
 from .export import export
 from .extract import extract_offers, product_links
@@ -59,6 +60,8 @@ def make_fetcher(defaults: dict, no_proxy: bool) -> Fetcher:
 def cmd_run(args) -> int:
     defaults, stores = load_config()
     targets = [s for s in stores if (s["id"] in args.store if args.store else s.get("enabled", True))]
+    targets.sort(key=marketplace.is_marketplace)  # marketplaces last: they compare with fresh store prices
+    shop_ids = {s["id"] for s in stores if not marketplace.is_marketplace(s)}
     if not targets:
         log.error("No stores selected")
         return 1
@@ -70,7 +73,8 @@ def cmd_run(args) -> int:
             log.info("== %s", store["name"])
             run_id = db.start_run(store["id"])
             try:
-                results, pages = scrape_store(fetcher, store, defaults)
+                refs = marketplace.reference_prices(db, shop_ids) if marketplace.is_marketplace(store) else None
+                results, pages = scrape_store(fetcher, store, defaults, refs)
                 changed = 0
                 if not args.dry_run:
                     for variant, offer in results:
@@ -80,7 +84,7 @@ def cmd_run(args) -> int:
                 for variant, offer in sorted(results, key=lambda x: x[0].key):
                     log.info("   %-28s %-6s Rs %9s  [%s]", variant.model, variant.storage_label,
                              f"{offer.price:,}", offer.method)
-                status = "ok" if results else "empty"
+                status = "ok" if results or getattr(results, "listings", 0) else "empty"
                 failures += status != "ok"
                 db.finish_run(run_id, status, len(results), pages)
                 log.info("   -> %d variants, %d price changes, %d pages", len(results), changed, pages)
@@ -107,7 +111,8 @@ def cmd_probe(args) -> int:
     store = next((s for s in stores if s["id"] == args.store), {}) if args.store else {}
     fetcher = make_fetcher({**defaults, "respect_robots": False}, args.no_proxy)
     try:
-        html = fetcher.get(args.url, render_js=args.js or store.get("render_js", False))
+        html = fetcher.get(args.url, render_js=args.js or store.get("render_js", False),
+                           capture_json=store.get("capture_json", True))
     except FetchError as e:
         print(f"\nCould not load the page: {e}")
         return 1
@@ -126,6 +131,44 @@ def cmd_probe(args) -> int:
     print(f"\n{len(links)} candidate product links:")
     for l in links[:25]:
         print("  ", l)
+    return 0
+
+
+def cmd_image(args) -> int:
+    """Use your own image for a model: python -m scraper image "iPhone 17 Pro" <link or file> --credit "..." """
+    from . import model_images as mi
+    web = ROOT / "web"
+    if args.list or not args.model:
+        entries = mi._read()
+        if not entries:
+            print("No model images yet. Add one with:\n"
+                  '  python -m scraper image "iPhone 17 Pro" <image link or file> --credit "Image: Apple"')
+        for model, e in entries.items():
+            e = e or {}
+            ok = (web / str(e.get("image", ""))).is_file()
+            print(f"  {model:<20} web/{e.get('image')}  {e.get('credit') or ''}{'' if ok else '   <- FILE MISSING'}")
+        return 0
+    if args.remove:
+        model = mi.remove_image(args.model, web)
+        print(f"Removed the image for {model}; it uses the store's photo again." if model
+              else f"No image set for '{args.model}'.")
+        return 0 if model else 1
+    if not args.source:
+        print('Give an image link or file, e.g.  python -m scraper image "iPhone 17 Pro" https://.../photo.png')
+        return 1
+    try:
+        model, rel = mi.import_image(args.model, args.source, args.credit, web, force=args.force)
+    except mi.ImageProblem as e:
+        print("Not saved: this image would look wrong on the site:")
+        for p in e.problems:
+            print(f"  - {p}")
+        print("Use a different image, or add --force to use it anyway.")
+        return 1
+    except (ValueError, requests.RequestException) as e:
+        print(f"Couldn't use that image: {e}")
+        return 1
+    print(f"Saved web/{rel} for {model}" + (f" (credit: {args.credit})" if args.credit else ""))
+    print("Run  python -m scraper export  to see it locally, then  python scripts/deploy.py  to publish.")
     return 0
 
 
@@ -223,6 +266,13 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("proxies", help="test Webshare proxy credentials")
     sub.add_parser("status", help="show what is in the database and how each store's last run went")
+    im = sub.add_parser("image", help="use your own image for a model instead of the store's photo")
+    im.add_argument("model", nargs="?", help='e.g. "iPhone 17 Pro"')
+    im.add_argument("source", nargs="?", help="image link (https://...) or a file on this computer")
+    im.add_argument("--credit", help='shown under the image, e.g. "Image: Apple"')
+    im.add_argument("--remove", action="store_true", help="go back to the store's photo")
+    im.add_argument("--list", action="store_true", help="list the images you've set")
+    im.add_argument("--force", action="store_true", help="use the image even if it looks like a banner or has a dark background")
     ins = sub.add_parser("inspect", help="show where each price for one model came from")
     ins.add_argument("model", help='e.g. "iPhone 17" or "17 Pro Max"')
     h = sub.add_parser("health", help="check for broken stores and suspicious prices")
@@ -245,6 +295,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_status()
     if args.cmd == "inspect":
         return cmd_inspect(args)
+    if args.cmd == "image":
+        return cmd_image(args)
     if args.cmd == "proxies":
         check_pool(ProxyPool.from_env())
         return 0

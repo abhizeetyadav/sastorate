@@ -20,6 +20,7 @@ defaults:
 stores:
   - id: evostore
     name: Evo Store
+    logo: logos/evo.png
     url: https://evostore.com.np
     authorized: true
     enabled: true
@@ -55,6 +56,7 @@ stores:
 
   - id: olizstore
     name: Oliz Store
+    logo: logos/oliz.jpg
     url: https://www.olizstore.com
     authorized: true
     enabled: true
@@ -67,6 +69,7 @@ stores:
 
   - id: fatafatsewa
     name: Fatafat Sewa
+    logo: logos/fatafat.jpg
     url: https://fatafatsewa.com
     authorized: false
     enabled: true
@@ -114,6 +117,7 @@ stores:
 
   - id: gagstore
     name: GAG Nepal
+    logo: logos/gag.jpg
     url: https://gag-nepal.com/
     authorized: false
     enabled: true
@@ -122,8 +126,27 @@ stores:
 
   - id: macstore
     name: MacStore
+    logo: logos/omacstore.jpg
     url: https://www.macstore.com.np/
     authorized: false
     enabled: true
     discover: true
     follow_product_pages: true
+
+
+  - id: hamrobazar
+    name: HamroBazar
+    logo: logos/hamrobazar.png
+    url: https://hamrobazaar.com
+    kind: marketplace
+    authorized: false
+    render_js: true
+    capture_json: false
+    follow_product_pages: false
+    search_url: "https://hamrobazaar.com/search/product?q={query}"
+    selectors:
+      card: '[data-testid="product-card"]'
+      name: '[data-testid="product-card-title"]'
+      price: '[data-testid="product-card-price"]'
+      link: '[data-testid="product-card-title"]'
+      condition: '[data-testid="product-condition-badge"]'
