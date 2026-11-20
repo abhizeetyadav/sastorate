@@ -17,33 +17,33 @@ ul.problems{list-style:none;padding:0;margin:0} ul.problems li{padding:10px 14px
 li.broken{background:var(--rw);color:var(--r)} li.check{background:var(--aw);color:var(--a)} li.good{background:var(--gw);color:var(--g)}
 .down{color:var(--g)} .up{color:var(--r)} .kpis{display:flex;gap:28px;padding:10px 0} .kpis b{display:block;font-size:24px} .kpis span{color:var(--ink3);font-size:13px}
 </style></head><body><main>
-<h1>Bhaau status</h1><p class="muted">Updated 20 Nov 2026, 12:42 AM (Nepal time). This page is private: it isn't linked anywhere, and search engines are told not to list it.</p>
-<h2>Problems</h2><ul class="problems"><li class="good">All stores look healthy.</li></ul>
+<h1>Bhaau status</h1><p class="muted">Updated 20 Nov 2026, 06:34 AM (Nepal time). This page is private: it isn't linked anywhere, and search engines are told not to list it.</p>
+<h2>Problems</h2><ul class="problems"><li class="broken"><b>Broken:</b> Evo Store was scraped but no iPhone prices were found. Its website has probably changed. Try: python -m scraper probe &lt;an iPhone page&gt; --store evostore</li><li class="broken"><b>Broken:</b> Oliz Store was scraped but no iPhone prices were found. Its website has probably changed. Try: python -m scraper probe &lt;an iPhone page&gt; --store olizstore</li><li class="broken"><b>Broken:</b> Fatafat Sewa was scraped but no iPhone prices were found. Its website has probably changed. Try: python -m scraper probe &lt;an iPhone page&gt; --store fatafatsewa</li><li class="broken"><b>Broken:</b> Hukut was scraped but no iPhone prices were found. Its website has probably changed. Try: python -m scraper probe &lt;an iPhone page&gt; --store hukut</li><li class="broken"><b>Broken:</b> GAG Nepal couldn&#x27;t be scraped: failed: https://gag-nepal.com/ (HTTPSConnectionPool(host=&#x27;gag-nepal.com&#x27;, port=443): Max retries exceeded with url: / (Caused by ProxyError(&#x27;Unable to connect to proxy&#x27;, OSError(&#x27;Tunnel connection failed: 402 Payment Required&#x27;))))</li><li class="broken"><b>Broken:</b> MacStore couldn&#x27;t be scraped: failed: https://www.macstore.com.np/ (HTTPSConnectionPool(host=&#x27;www.macstore.com.np&#x27;, port=443): Max retries exceeded with url: / (Caused by ProxyError(&#x27;Unable to connect to proxy&#x27;, OSError(&#x27;Tunnel connection failed: 402 Payment Required&#x27;))))</li><li class="broken"><b>Broken:</b> HamroBazar was scraped but no iPhone prices were found. Its website has probably changed. Try: python -m scraper probe &lt;an iPhone page&gt; --store hamrobazar</li></ul>
 <h2>Stores</h2><div class="card"><table><thead><tr><th>Store</th><th>Status</th><th>Last check</th><th class="r">Phones found / usual</th><th>Last 12 checks</th><th>Last error</th></tr></thead>
 <tbody><tr><td><b>Evo Store</b> <span class="tag">Authorized</span><br>
           <span class="muted">evostore</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>14 min ago</td>
-          <td class="r">9<span class="muted"> / ~9</span></td>
-          <td><div class="bars"><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="13 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="10 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="3 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="14 min ago: 9 phones, ok" class="" style="height:26px"></i></div></td>
+          <td><span class="st bad">No prices</span></td>
+          <td>4 min ago</td>
+          <td class="r">0<span class="muted"> / ~9</span></td>
+          <td><div class="bars"><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 9 phones, ok" class="" style="height:26px"></i><i title="19 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="15 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 9 phones, ok" class="" style="height:26px"></i><i title="4 min ago: 0 phones, empty" class="bad" style="height:3px"></i></div></td>
           <td class="err"></td></tr><tr><td><b>Oliz Store</b> <span class="tag">Authorized</span><br>
           <span class="muted">olizstore</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>12 min ago</td>
-          <td class="r">21<span class="muted"> / ~19</span></td>
-          <td><div class="bars"><i title="1 days ago: 12 phones, ok" class="" style="height:14px"></i><i title="1 days ago: 12 phones, ok" class="" style="height:14px"></i><i title="1 days ago: 12 phones, ok" class="" style="height:14px"></i><i title="1 days ago: 11 phones, ok" class="" style="height:13px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="13 h ago: 18 phones, ok" class="" style="height:22px"></i><i title="10 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="3 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 18 phones, ok" class="" style="height:22px"></i><i title="12 min ago: 21 phones, ok" class="" style="height:26px"></i></div></td>
+          <td><span class="st bad">No prices</span></td>
+          <td>4 min ago</td>
+          <td class="r">0<span class="muted"> / ~21</span></td>
+          <td><div class="bars"><i title="1 days ago: 12 phones, ok" class="" style="height:14px"></i><i title="1 days ago: 12 phones, ok" class="" style="height:14px"></i><i title="1 days ago: 11 phones, ok" class="" style="height:13px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="19 h ago: 18 phones, ok" class="" style="height:22px"></i><i title="15 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 18 phones, ok" class="" style="height:22px"></i><i title="6 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="4 min ago: 0 phones, empty" class="bad" style="height:3px"></i></div></td>
           <td class="err"></td></tr><tr><td><b>Fatafat Sewa</b><br>
           <span class="muted">fatafatsewa</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>11 min ago</td>
-          <td class="r">10<span class="muted"> / ~10</span></td>
-          <td><div class="bars"><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="13 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="10 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="3 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="11 min ago: 10 phones, ok" class="" style="height:26px"></i></div></td>
+          <td><span class="st bad">No prices</span></td>
+          <td>3 min ago</td>
+          <td class="r">0<span class="muted"> / ~10</span></td>
+          <td><div class="bars"><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 10 phones, ok" class="" style="height:26px"></i><i title="18 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="15 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="3 min ago: 0 phones, empty" class="bad" style="height:3px"></i></div></td>
           <td class="err"></td></tr><tr><td><b>Hukut</b><br>
           <span class="muted">hukut</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>8 min ago</td>
-          <td class="r">68<span class="muted"> / ~68</span></td>
-          <td><div class="bars"><i title="1 days ago: 0 phones, running" class="bad" style="height:3px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="13 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="9 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="8 min ago: 68 phones, ok" class="" style="height:26px"></i></div></td>
+          <td><span class="st bad">No prices</span></td>
+          <td>1 min ago</td>
+          <td class="r">0<span class="muted"> / ~68</span></td>
+          <td><div class="bars"><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 68 phones, ok" class="" style="height:26px"></i><i title="18 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="15 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="5 h ago: 68 phones, ok" class="" style="height:26px"></i><i title="1 min ago: 0 phones, empty" class="bad" style="height:3px"></i></div></td>
           <td class="err"></td></tr><tr><td><b>Dursachar</b><br>
           <span class="muted">dursachar</span></td>
           <td><span class="st off">Paused</span></td>
@@ -58,22 +58,22 @@ li.broken{background:var(--rw);color:var(--r)} li.check{background:var(--aw);col
           <td><div class="bars"></div></td>
           <td class="err"></td></tr><tr><td><b>GAG Nepal</b><br>
           <span class="muted">gagstore</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>4 min ago</td>
-          <td class="r">27<span class="muted"> / ~28</span></td>
-          <td><div class="bars"><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="9 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 27 phones, ok" class="" style="height:25px"></i><i title="1 h ago: 27 phones, ok" class="" style="height:25px"></i><i title="4 min ago: 27 phones, ok" class="" style="height:25px"></i></div></td>
-          <td class="err"></td></tr><tr><td><b>MacStore</b><br>
-          <span class="muted">macstore</span></td>
-          <td><span class="st ok">Working</span></td>
-          <td>3 min ago</td>
-          <td class="r">21<span class="muted"> / ~21</span></td>
-          <td><div class="bars"><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="9 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="6 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="2 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="3 min ago: 21 phones, ok" class="" style="height:26px"></i></div></td>
-          <td class="err"></td></tr><tr><td><b>HamroBazar</b><br>
-          <span class="muted">hamrobazar</span></td>
-          <td><span class="st ok">Working</span></td>
+          <td><span class="st bad">Failed</span></td>
           <td>1 min ago</td>
-          <td class="r">10<span class="muted"> / ~10</span></td>
-          <td><div class="bars"><i title="1 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 min ago: 10 phones, ok" class="" style="height:26px"></i></div></td>
+          <td class="r">0<span class="muted"> / ~28</span></td>
+          <td><div class="bars"><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 28 phones, ok" class="" style="height:26px"></i><i title="18 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="15 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 28 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 27 phones, ok" class="" style="height:25px"></i><i title="7 h ago: 27 phones, ok" class="" style="height:25px"></i><i title="5 h ago: 27 phones, ok" class="" style="height:25px"></i><i title="1 min ago: 0 phones, error" class="bad" style="height:3px"></i></div></td>
+          <td class="err">failed: https://gag-nepal.com/ (HTTPSConnectionPool(host=&#x27;gag-nepal.com&#x27;, port=443): Max retries exceeded with url: / (Caused by ProxyError(&#x27;Unab</td></tr><tr><td><b>MacStore</b><br>
+          <span class="muted">macstore</span></td>
+          <td><span class="st bad">Failed</span></td>
+          <td>1 min ago</td>
+          <td class="r">0<span class="muted"> / ~21</span></td>
+          <td><div class="bars"><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 days ago: 21 phones, ok" class="" style="height:26px"></i><i title="18 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="15 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="12 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="8 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="5 h ago: 21 phones, ok" class="" style="height:26px"></i><i title="1 min ago: 0 phones, error" class="bad" style="height:3px"></i></div></td>
+          <td class="err">failed: https://www.macstore.com.np/ (HTTPSConnectionPool(host=&#x27;www.macstore.com.np&#x27;, port=443): Max retries exceeded with url: / (Caused by ProxyErro</td></tr><tr><td><b>HamroBazar</b><br>
+          <span class="muted">hamrobazar</span></td>
+          <td><span class="st bad">No prices</span></td>
+          <td>1 min ago</td>
+          <td class="r">0<span class="muted"> / ~10</span></td>
+          <td><div class="bars"><i title="7 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="7 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="5 h ago: 10 phones, ok" class="" style="height:26px"></i><i title="1 min ago: 0 phones, empty" class="bad" style="height:3px"></i></div></td>
           <td class="err"></td></tr></tbody></table></div>
 <h2>Price changes in the last 24 hours</h2>
 <p class="muted">7 price changes, 14 newly listed phones.</p>
