@@ -21,6 +21,7 @@ Thumbs.db
 # local-only data
 data/demo.db
 data/*.backup.db
+data/laptop-test/
 dist/
 
 # pages saved while probing stores (python -m scraper probe --save x.html)

@@ -167,7 +167,14 @@ def save_env(key: str, value: str) -> None:
 
 # ---------------------------------------------------------------- file versions
 MANIFEST = ROOT / "scripts" / "manifest.json"
-OBSOLETE = ["scraper/config.py"]  # renamed to scraper/shopconfig.py
+# Files from earlier updates that are no longer used, each with a phrase only that version contains,
+# so a file of yours with the same name is never deleted.
+OBSOLETE = {
+    "scraper/config.py": "shop_info.yaml",                                     # renamed to scraper/shopconfig.py
+    "scraper/laptops.py": "Laptop price test",                                 # laptop test, removed 22 Nov 2026
+    "tests/test_laptops.py": "from scraper import laptops",
+    "scraper/config/laptop_test.yaml": "Laptop price test: python -m scraper laptops",
+}
 
 
 def _file_hash(p: Path) -> str:
@@ -193,11 +200,11 @@ def outdated_files() -> list[str]:
 # ---------------------------------------------------------------- 1. preflight
 def preflight(env: dict[str, str], alerts: bool, host: str) -> None:
     step(1, "Checking your computer and settings")
-    for old in OBSOLETE:  # files replaced in later updates
+    for old, marker in OBSOLETE.items():  # files from earlier updates that are no longer used
         f = ROOT / old
-        if f.is_file() and "shop_info.yaml" in f.read_text(encoding="utf-8", errors="ignore"):
+        if f.is_file() and marker in f.read_text(encoding="utf-8", errors="ignore"):
             f.unlink()
-            ok(f"removed {old} (replaced by a newer file)")
+            ok(f"removed {old} (no longer used)")
     if (ROOT.parent / "scraper").is_dir() and (ROOT.parent / "scraper") != ROOT / "scraper":
         warn(f"There's another copy of the project in the folder above ({ROOT.parent}).")
         warn(f"Always unzip updates into THIS folder: {ROOT}")
