@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T09:01:22+00:00",
+ "generated_at": "2026-11-25T22:02:08+00:00",
  "demo": false,
  "stores": [
   {
@@ -15,7 +15,7 @@
    "offers": 9,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:47:08+00:00"
+   "last_success": "2026-11-25T21:48:58+00:00"
   },
   {
    "id": "olizstore",
@@ -27,10 +27,10 @@
    "logo": "logos/oliz.jpg",
    "details": null,
    "enabled": true,
-   "offers": 21,
+   "offers": 22,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:49:24+00:00"
+   "last_success": "2026-11-25T21:50:54+00:00"
   },
   {
    "id": "fatafatsewa",
@@ -45,7 +45,7 @@
    "offers": 10,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:50:05+00:00"
+   "last_success": "2026-11-25T21:51:36+00:00"
   },
   {
    "id": "hukut",
@@ -60,7 +60,7 @@
    "offers": 68,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:53:22+00:00"
+   "last_success": "2026-11-25T21:54:49+00:00"
   },
   {
    "id": "dursachar",
@@ -105,7 +105,7 @@
    "offers": 27,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:57:15+00:00"
+   "last_success": "2026-11-25T21:58:49+00:00"
   },
   {
    "id": "macstore",
@@ -120,7 +120,7 @@
    "offers": 21,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T08:57:39+00:00"
+   "last_success": "2026-11-25T21:59:17+00:00"
   },
   {
    "id": "hamrobazar",
@@ -135,7 +135,7 @@
    "offers": 12,
    "last_status": "ok",
    "last_error": null,
-   "last_success": "2026-11-25T09:01:21+00:00"
+   "last_success": "2026-11-25T22:02:08+00:00"
   }
  ],
  "variants": [
@@ -152,9 +152,9 @@
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-18-pro-max-price-in-nepal",
      "title": "Apple iPhone 18 Pro Max – 12/256GB, Black",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 279899
     },
     {
      "store": "fatafatsewa",
@@ -163,9 +163,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-max-price-in-nepal",
      "title": "iPhone 18 Pro Max 256GB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 279900
     },
     {
      "store": "gagstore",
@@ -174,9 +174,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-18-pro-max",
      "title": "iPhone 18 Pro Max — Burgundy — 256GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 279900
     },
     {
      "store": "evostore",
@@ -185,9 +185,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone-18-pro-max",
      "title": "iPhone 18 Pro Max",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%2018%20Pro%20Max/iPhone_18_Pro_Max_Glacier_PDP_Image_Position_1_Glacier_Color__SEA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 279900,
      "storage_assumed": true
     },
     {
@@ -197,9 +197,9 @@
      "in_stock": true,
      "url": "https://www.olizstore.com/phone-18-pro-max-price-in-nepal",
      "title": "iPhone 18 Pro Max",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": null,
-     "week_ago": null,
+     "week_ago": 279900,
      "storage_assumed": true
     }
    ],
@@ -212,7 +212,7 @@
      "price": 210000,
      "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/apple-iphone-18-pro-max-256-gb-black-in-ww-du/60D5F4F7-4C0B-4A05-8A00-9874C1579A1C",
      "title": "Apple iPhone 18 Pro Max - 256 GB - Black",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -283,9 +283,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-18-pro-max-price-in-nepal",
      "title": "Apple iPhone 18 Pro Max – 12/512GB, Burgundy",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 322899
     },
     {
      "store": "fatafatsewa",
@@ -294,9 +294,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-max-512gb-price-in-nepal",
      "title": "iPhone 18 Pro Max 512GB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 322900
     },
     {
      "store": "gagstore",
@@ -305,9 +305,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro-max",
      "title": "iPhone 18 Pro Max — Burgundy — 512GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 322900
     },
     {
      "store": "macstore",
@@ -316,9 +316,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-18-pro-max-512gb-price-in-nepal",
      "title": "iPhone 18 Pro Max 512GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1791962715_6acf2e5b06a47.jpg",
-     "week_ago": null
+     "week_ago": 322900
     }
    ],
    "lowest": 322899,
@@ -327,10 +327,10 @@
    "market": [
     {
      "store": "hamrobazar",
-     "price": 298000,
-     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/iphone-18-pro-max-512gb-in-ka-du/292A0DA7-FD5A-4A4A-A447-074E0278EC65",
-     "title": "iPhone 18 Pro Max 512GB",
-     "last_seen": "2026-11-24T22:47:15+00:00"
+     "price": 299999,
+     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/iphone-18-pro-max-512-black-in-go-du/12D7BF28-80E9-4C6B-B3E1-1FDAE440A9DC",
+     "title": "iPhone 18 pro max 512 Black",
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -400,10 +400,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-18-pro-max-price-in-nepal",
-     "title": "Apple iPhone 18 Pro Max – Burgundy, 12/1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 18 Pro Max – 12/1TB, Burgundy",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 407899
     },
     {
      "store": "fatafatsewa",
@@ -412,9 +412,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-max-1tb-price-in-nepal",
      "title": "iPhone 18 Pro Max 1TB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 407900
     },
     {
      "store": "gagstore",
@@ -423,9 +423,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro-max",
      "title": "iPhone 18 Pro Max — Burgundy — 1TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 407900
     },
     {
      "store": "macstore",
@@ -434,9 +434,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-18-pro-max-1tb-price-in-nepal",
      "title": "iPhone 18 Pro Max 1TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1791964675_6acf3603e4e2a.jpg",
-     "week_ago": null
+     "week_ago": 407900
     }
    ],
    "lowest": 407899,
@@ -510,9 +510,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-18-pro-max-price-in-nepal",
      "title": "Apple iPhone 18 Pro Max – 12/2TB, Burgundy",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 534899
     },
     {
      "store": "fatafatsewa",
@@ -521,9 +521,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-max-2tb-price-in-nepal",
      "title": "iPhone 18 Pro Max 2TB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 534900
     },
     {
      "store": "gagstore",
@@ -532,9 +532,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro-max",
      "title": "iPhone 18 Pro Max — Burgundy — 2TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 534900
     }
    ],
    "lowest": 534899,
@@ -596,6 +596,29 @@
    ]
   },
   {
+   "key": "iphone-18-pro|na",
+   "model": "iPhone 18 Pro",
+   "series": "18",
+   "storage_gb": null,
+   "offers": [
+    {
+     "store": "olizstore",
+     "price": 259900,
+     "old_price": null,
+     "in_stock": true,
+     "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal",
+     "title": "iPhone 18 Pro",
+     "last_seen": "2026-11-25T21:50:54+00:00",
+     "image": null,
+     "week_ago": 259900
+    }
+   ],
+   "lowest": 259900,
+   "highest": 259900,
+   "image": "images/models/iphone-18-pro.webp",
+   "image_credit": "Image: Apple"
+  },
+  {
    "key": "iphone-18-pro|256",
    "model": "iPhone 18 Pro",
    "series": "18",
@@ -607,10 +630,10 @@
      "old_price": null,
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal",
-     "title": "Apple iPhone 18 Pro – Glacier, 12/256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 18 Pro – 12/256GB, Glacier",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 259899
     },
     {
      "store": "fatafatsewa",
@@ -619,9 +642,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/apple-iphone-18-pro-256gb-price-in-nepal",
      "title": "iPhone 18 Pro 256GB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 259900
     },
     {
      "store": "gagstore",
@@ -630,9 +653,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro",
      "title": "iPhone 18 Pro — Burgundy — 256GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 259900
     },
     {
      "store": "olizstore",
@@ -643,7 +666,7 @@
      "title": "iPhone 18 Pro Burgundy/256GB",
      "last_seen": "2026-11-25T08:49:24+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphpne-18-pro-4775.webp",
-     "week_ago": null
+     "week_ago": 259900
     },
     {
      "store": "evostore",
@@ -652,9 +675,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone-18-pro",
      "title": "iPhone 18 Pro",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%2018%20Pro/iPhone_18_Pro_Burgundy_PDP_Image_Position_1_Burgundy_Color__SEA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 259900,
      "storage_assumed": true
     }
    ],
@@ -665,36 +688,13 @@
     {
      "store": "hamrobazar",
      "price": 230000,
-     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/iphone-18-pro-256gb-in-ce-du/C8493F19-AEEC-4831-AC39-2073169BA545",
-     "title": "iPhone 18 Pro 256GB",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/brand-new-iphone-18-pro-in-po-ra/C1032CA1-AF3A-4730-8B8A-B0819029718F",
+     "title": "Brand new Iphone 18 Pro (storage not stated)",
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
    "colours": [
-    {
-     "colour": "Black",
-     "stores": [
-      {
-       "store": "olizstore",
-       "in_stock": true,
-       "price": 259900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "hukut",
-       "in_stock": false,
-       "price": 259899,
-       "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "gagstore",
-       "in_stock": false,
-       "price": 259900,
-       "url": "https://gag-nepal.com/products/iphone-18-pro"
-      }
-     ]
-    },
     {
      "colour": "Burgundy",
      "stores": [
@@ -703,12 +703,6 @@
        "in_stock": true,
        "price": 259899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": true,
-       "price": 259900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -728,10 +722,21 @@
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
       },
       {
-       "store": "olizstore",
+       "store": "gagstore",
        "in_stock": false,
        "price": 259900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
+       "url": "https://gag-nepal.com/products/iphone-18-pro"
+      }
+     ]
+    },
+    {
+     "colour": "Black",
+     "stores": [
+      {
+       "store": "hukut",
+       "in_stock": false,
+       "price": 259899,
+       "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -756,9 +761,9 @@
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal",
      "title": "Apple iPhone 18 Pro – 12/512GB, Burgundy",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 301899
     },
     {
      "store": "fatafatsewa",
@@ -767,9 +772,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-512gb-price-in-nepal",
      "title": "iPhone 18 Pro 512GB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 301900
     },
     {
      "store": "gagstore",
@@ -778,9 +783,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro",
      "title": "iPhone 18 Pro — Burgundy — 512GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 301900
     },
     {
      "store": "macstore",
@@ -789,9 +794,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-18-pro-512gb-price-in-nepal",
      "title": "iPhone 18 Pro 512GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1791959395_6acf216351f72.webp",
-     "week_ago": null
+     "week_ago": 301900
     },
     {
      "store": "olizstore",
@@ -802,7 +807,7 @@
      "title": "iPhone 18 Pro Glacier/512GB",
      "last_seen": "2026-11-25T08:49:24+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphpne-18-pro-1576.webp",
-     "week_ago": null
+     "week_ago": 301900
     }
    ],
    "lowest": 301899,
@@ -814,7 +819,7 @@
      "price": 285000,
      "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/i-phone-18-pro-512-gb-box-packing-sale-in-ne-du/A5E864AA-F8CD-4E24-8F1A-A0001B486C28",
      "title": "I phone 18 pro 512 gb box packing on sale",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -827,12 +832,6 @@
        "in_stock": true,
        "price": 301899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": true,
-       "price": 301900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -852,12 +851,6 @@
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
       },
       {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 301900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
-      },
-      {
        "store": "gagstore",
        "in_stock": false,
        "price": 301900,
@@ -873,12 +866,6 @@
        "in_stock": true,
        "price": 301899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 301900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -902,10 +889,10 @@
      "old_price": null,
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal",
-     "title": "Apple iPhone 18 Pro – 12/1TB, Burgundy",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 18 Pro – Burgundy, 12/1TB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 386899
     },
     {
      "store": "fatafatsewa",
@@ -914,9 +901,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-1tb-price-in-nepal",
      "title": "iPhone 18 Pro 1TB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 386900
     },
     {
      "store": "gagstore",
@@ -925,9 +912,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro",
      "title": "iPhone 18 Pro — Burgundy — 1TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 386900
     },
     {
      "store": "macstore",
@@ -936,9 +923,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-18-pro-1tb-price-in-nepal",
      "title": "iPhone 18 Pro 1TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1791961801_6acf2ac9b254c.jpg",
-     "week_ago": null
+     "week_ago": 386900
     },
     {
      "store": "olizstore",
@@ -949,7 +936,7 @@
      "title": "iPhone 18 Pro Burgundy/1TB",
      "last_seen": "2026-11-25T08:49:24+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphpne-18-pro-4775.webp",
-     "week_ago": null
+     "week_ago": 386900
     }
    ],
    "lowest": 386899,
@@ -961,7 +948,7 @@
      "price": 320000,
      "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/apple-iphone-18-pro-1tb-storage-in-su-du/8D570EBA-0F9B-4FF6-A232-75E6E4D0A7E4",
      "title": "📱 Apple iPhone 18 Pro – 1TB Storage",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -974,12 +961,6 @@
        "in_stock": true,
        "price": 386899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 386900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -999,12 +980,6 @@
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
       },
       {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 386900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
-      },
-      {
        "store": "gagstore",
        "in_stock": false,
        "price": 386900,
@@ -1020,12 +995,6 @@
        "in_stock": true,
        "price": 386899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 386900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -1050,9 +1019,9 @@
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal",
      "title": "Apple iPhone 18 Pro – 12/2TB, Burgundy",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-18-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 513899
     },
     {
      "store": "fatafatsewa",
@@ -1061,9 +1030,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-18-pro-2tb-price-in-nepal",
      "title": "iPhone 18 Pro 2TB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 513900
     },
     {
      "store": "gagstore",
@@ -1072,9 +1041,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-18-pro",
      "title": "iPhone 18 Pro — Burgundy — 2TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e0-859d-7f30-ad22-88fd60258b17/iphone%2018%20pro%20series%20all%20colors.jpg",
-     "week_ago": null
+     "week_ago": 513900
     },
     {
      "store": "olizstore",
@@ -1085,7 +1054,7 @@
      "title": "iPhone 18 Pro Burgundy/2TB",
      "last_seen": "2026-11-25T08:49:24+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphpne-18-pro-4775.webp",
-     "week_ago": null
+     "week_ago": 513900
     }
    ],
    "lowest": 513899,
@@ -1101,12 +1070,6 @@
        "in_stock": true,
        "price": 513899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 513900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -1126,12 +1089,6 @@
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
       },
       {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 513900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
-      },
-      {
        "store": "gagstore",
        "in_stock": false,
        "price": 513900,
@@ -1147,12 +1104,6 @@
        "in_stock": true,
        "price": 513899,
        "url": "https://hukut.com/apple-iphone-18-pro-price-in-nepal"
-      },
-      {
-       "store": "olizstore",
-       "in_stock": false,
-       "price": 513900,
-       "url": "https://www.olizstore.com/iphone-18-pro-price-in-nepal"
       },
       {
        "store": "gagstore",
@@ -1177,9 +1128,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/apple-iphone-duo-price-in-nepal",
      "title": "iPhone Duo",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 479999
     }
    ],
    "lowest": 479999,
@@ -1199,10 +1150,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-duo-price-in-nepal",
-     "title": "Apple iPhone Duo – 12/256GB, Star White",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone Duo – Star White, 12/256GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-duo-price-in-nepal",
-     "week_ago": null
+     "week_ago": 430000
     },
     {
      "store": "gagstore",
@@ -1211,9 +1162,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/apple-iphone-duo",
      "title": "Apple iPhone Duo — Night Sky — 256GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e2-7420-7058-bede-b43489fa2aca/a2-30.webp",
-     "week_ago": null
+     "week_ago": 430900
     },
     {
      "store": "olizstore",
@@ -1222,9 +1173,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-duo-price-in-nepal",
      "title": "iPhone Duo Star White/256GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-duo-1286.webp",
-     "week_ago": null
+     "week_ago": 430900
     },
     {
      "store": "evostore",
@@ -1233,9 +1184,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone-duo-new",
      "title": "iPhone Duo",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%20Duo/iPhone_Duo_Night_Sky_PDP_Image_Position_1_Night_Sky_Color__ROSA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 430900,
      "storage_assumed": true
     }
    ],
@@ -1282,9 +1233,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/apple-iphone-duo",
      "title": "Apple iPhone Duo — Night Sky — 512GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e2-7420-7058-bede-b43489fa2aca/a2-30.webp",
-     "week_ago": null
+     "week_ago": 472900
     },
     {
      "store": "hukut",
@@ -1293,9 +1244,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-duo-price-in-nepal",
      "title": "Apple iPhone Duo – 12/512GB, Star White",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-duo-price-in-nepal",
-     "week_ago": null
+     "week_ago": 472900
     },
     {
      "store": "macstore",
@@ -1304,9 +1255,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/apple-iphone-duo-512gb-price-in-nepal",
      "title": "Apple iPhone Duo 512GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1793779386_6aeae6ba61086.webp",
-     "week_ago": null
+     "week_ago": 472900
     },
     {
      "store": "olizstore",
@@ -1315,9 +1266,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-duo-price-in-nepal",
      "title": "iPhone Duo Star White/512GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-duo-1286.webp",
-     "week_ago": null
+     "week_ago": 472900
     }
    ],
    "lowest": 472900,
@@ -1372,9 +1323,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/apple-iphone-duo",
      "title": "Apple iPhone Duo — Night Sky — 1TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e2-7420-7058-bede-b43489fa2aca/a2-30.webp",
-     "week_ago": null
+     "week_ago": 557900
     },
     {
      "store": "hukut",
@@ -1383,9 +1334,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-duo-price-in-nepal",
      "title": "Apple iPhone Duo – 12/1TB, Star White",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-duo-price-in-nepal",
-     "week_ago": null
+     "week_ago": 557900
     },
     {
      "store": "macstore",
@@ -1394,9 +1345,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/apple-iphone-duo-1tb-price-in-nepal",
      "title": "Apple iPhone Duo 1TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1793779102_6aeae59ea6206.webp",
-     "week_ago": null
+     "week_ago": 557900
     },
     {
      "store": "olizstore",
@@ -1405,9 +1356,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-duo-price-in-nepal",
      "title": "iPhone Duo Star White/1TB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-duo-1286.webp",
-     "week_ago": null
+     "week_ago": 557900
     }
    ],
    "lowest": 557900,
@@ -1453,9 +1404,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/apple-iphone-duo",
      "title": "Apple iPhone Duo — Night Sky — 2TB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/01a185e2-7420-7058-bede-b43489fa2aca/a2-30.webp",
-     "week_ago": null
+     "week_ago": 684900
     },
     {
      "store": "hukut",
@@ -1463,10 +1414,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-duo-price-in-nepal",
-     "title": "Apple iPhone Duo – Star White, 12/2TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone Duo – 12/2TB, Star White",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-duo-price-in-nepal",
-     "week_ago": null
+     "week_ago": 684900
     },
     {
      "store": "olizstore",
@@ -1475,9 +1426,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-duo-price-in-nepal",
      "title": "iPhone Duo Star White/2TB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-duo-1286.webp",
-     "week_ago": null
+     "week_ago": 684900
     }
    ],
    "lowest": 684900,
@@ -1523,9 +1474,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17-pro-max",
      "title": "iPhone 17 Pro Max — 256GB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 242499
     },
     {
      "store": "hukut",
@@ -1533,10 +1484,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro-max",
-     "title": "Apple iPhone 17 Pro Max – Deep Blue, 12/256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 17 Pro Max – 12/256GB, Deep Blue",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": null
+     "week_ago": 248999
     },
     {
      "store": "macstore",
@@ -1545,9 +1496,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/Buy-iPhone-17-Pro-Max-256-GB-Price-in-Nepal",
      "title": "iPhone 17 Pro Max 256 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762247810_6909c482b1911.webp",
-     "week_ago": null
+     "week_ago": 242499
     },
     {
      "store": "olizstore",
@@ -1556,9 +1507,9 @@
      "in_stock": true,
      "url": "https://www.olizstore.com/iphone-17-pro-max-price-in-nepal",
      "title": "iPhone 17 Pro Max Cosmic Orange/256GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-0135.webp",
-     "week_ago": null
+     "week_ago": 242499
     }
    ],
    "lowest": 242499,
@@ -1570,7 +1521,7 @@
      "price": 198500,
      "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/iphone-17-pro-max-in-an-du/A2A24DB2-3064-4229-A0B0-10F4560D92E6",
      "title": "Iphone 17 pro Max (storage not stated)",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -1647,11 +1598,11 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 4,
-    "low": 186500,
-    "median": 190000,
-    "high": 190000,
-    "all_sizes": true
+    "ads": 6,
+    "low": 180000,
+    "median": 185000,
+    "high": 189500,
+    "all_sizes": false
    }
   },
   {
@@ -1667,9 +1618,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17-pro-max",
      "title": "iPhone 17 Pro Max — 512GB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 284599
     },
     {
      "store": "hukut",
@@ -1678,9 +1629,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro-max",
      "title": "Apple iPhone 17 Pro Max – 12/512GB, Deep Blue",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": null
+     "week_ago": 289999
     },
     {
      "store": "macstore",
@@ -1689,9 +1640,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/Buy-iPhone-17-Pro-Max-512-GB-Price-in-Nepal",
      "title": "iPhone 17 Pro Max 512 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762322204_690ae71c1e6d7.webp",
-     "week_ago": null
+     "week_ago": 284599
     },
     {
      "store": "olizstore",
@@ -1700,9 +1651,9 @@
      "in_stock": true,
      "url": "https://www.olizstore.com/iphone-17-pro-max-price-in-nepal",
      "title": "iPhone 17 Pro Max Cosmic Orange/512GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-0135.webp",
-     "week_ago": null
+     "week_ago": 284599
     }
    ],
    "lowest": 284599,
@@ -1714,7 +1665,7 @@
      "price": 239499,
      "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/iphone-17-pro-max-512gb-brand-new-seal-pack-in-ta-du/A56A0447-17F7-439D-A1A4-6A755CA2707A",
      "title": "Iphone 17 pro max 512gb Brand New Seal Pack",
-     "last_seen": "2026-11-24T22:47:15+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -1791,10 +1742,10 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 4,
-    "low": 186500,
-    "median": 190000,
-    "high": 190000,
+    "ads": 8,
+    "low": 180000,
+    "median": 186500,
+    "high": 189500,
     "all_sizes": true
    }
   },
@@ -1811,9 +1762,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17-pro-max",
      "title": "iPhone 17 Pro Max — 1TB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 327099
     },
     {
      "store": "hukut",
@@ -1822,9 +1773,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro-max",
      "title": "Apple iPhone 17 Pro Max – 12/1TB, Deep Blue",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": null
+     "week_ago": 330999
     },
     {
      "store": "macstore",
@@ -1833,9 +1784,9 @@
      "in_stock": false,
      "url": "https://macstore.com.np/buy-iphone-17-pro-max-1-tb-price-in-nepal",
      "title": "iPhone 17 Pro Max 1 TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762322949_690aea0555f93.webp",
-     "week_ago": null
+     "week_ago": 327099
     },
     {
      "store": "olizstore",
@@ -1844,9 +1795,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-17-pro-max-price-in-nepal",
      "title": "iPhone 17 Pro Max Cosmic Orange/1TB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-0135.webp",
-     "week_ago": null
+     "week_ago": 327099
     }
    ],
    "lowest": 327099,
@@ -1926,10 +1877,10 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 4,
-    "low": 186500,
-    "median": 190000,
-    "high": 190000,
+    "ads": 8,
+    "low": 180000,
+    "median": 186500,
+    "high": 189500,
     "all_sizes": true
    }
   },
@@ -1946,9 +1897,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro-max",
      "title": "Apple iPhone 17 Pro Max – Silver, 12/2TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": null
+     "week_ago": 248999
     },
     {
      "store": "fatafatsewa",
@@ -1957,9 +1908,9 @@
      "in_stock": true,
      "url": "https://fatafatsewa.com/product-detail/iphone-17-pro-max-2tb-price-in-nepal",
      "title": "iPhone 17 Pro Max 2TB",
-     "last_seen": "2026-11-25T08:50:05+00:00",
+     "last_seen": "2026-11-25T21:51:36+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 411399
     },
     {
      "store": "gagstore",
@@ -1968,9 +1919,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17-pro-max",
      "title": "iPhone 17 Pro Max — 2TB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 411399
     },
     {
      "store": "macstore",
@@ -1979,9 +1930,9 @@
      "in_stock": false,
      "url": "https://macstore.com.np/buy-iphone-17-pro-max-2-tb-price-in-nepal",
      "title": "iPhone 17 Pro Max 2 TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762323601_690aec912f6c4.webp",
-     "week_ago": null
+     "week_ago": 411399
     },
     {
      "store": "olizstore",
@@ -1990,9 +1941,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-17-pro-max-price-in-nepal",
      "title": "iPhone 17 Pro Max Cosmic Orange/2TB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-0135.webp",
-     "week_ago": null
+     "week_ago": 411399
     }
    ],
    "lowest": 411397,
@@ -2072,10 +2023,10 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 4,
-    "low": 186500,
-    "median": 190000,
-    "high": 190000,
+    "ads": 8,
+    "low": 180000,
+    "median": 186500,
+    "high": 189500,
     "all_sizes": true
    }
   },
@@ -2092,9 +2043,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17-pro",
      "title": "iPhone 17 Pro — 256GB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 221299
     },
     {
      "store": "hukut",
@@ -2102,10 +2053,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro",
-     "title": "Apple iPhone 17 Pro – 12/256GB, Deep Blue",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 17 Pro – Deep Blue, 12/256GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro",
-     "week_ago": null
+     "week_ago": 221299
     },
     {
      "store": "macstore",
@@ -2114,9 +2065,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iPhone-17-Pro-256gb-Price-in-Nepal",
      "title": "iPhone 17 Pro 256 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762241226_6909aaca1e8ed.webp",
-     "week_ago": null
+     "week_ago": 221299
     },
     {
      "store": "olizstore",
@@ -2125,9 +2076,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/apple-iphone-17-pro-price-in-nepal",
      "title": "iPhone 17 Pro Cosmic Orange/256GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-2492.webp",
-     "week_ago": null
+     "week_ago": 221299
     }
    ],
    "lowest": 221299,
@@ -2227,10 +2178,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro",
-     "title": "Apple iPhone 17 Pro – Cosmic Orange, 12/512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 17 Pro – 12/512GB, Cosmic Orange",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro",
-     "week_ago": null
+     "week_ago": 263598
     },
     {
      "store": "gagstore",
@@ -2239,9 +2190,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-17-pro",
      "title": "iPhone 17 Pro — 512GB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 263599
     },
     {
      "store": "macstore",
@@ -2250,9 +2201,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iPhone-17-Pro-512GB-Price-in-Nepal",
      "title": "iPhone 17 Pro 512 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762242138_6909ae5a877b1.webp",
-     "week_ago": null
+     "week_ago": 263599
     },
     {
      "store": "olizstore",
@@ -2261,9 +2212,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/apple-iphone-17-pro-price-in-nepal",
      "title": "iPhone 17 Pro Cosmic Orange/512GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-iphone-17-pro-series-cosmic-orange-price-in-nepal-2492.webp",
-     "week_ago": null
+     "week_ago": 263599
     }
    ],
    "lowest": 263598,
@@ -2355,9 +2306,9 @@
      "in_stock": true,
      "url": "https://evostore.com.np/apple/iphone/iphone-17-pro-1tb",
      "title": "iPhone 17 Pro - 1TB",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%2017%20Pro/iPhone_17_Pro_Cosmic_Orange_PDP_Image_Position_1_Cosmic_Orange_Color__SEA-EN-500x500.jpg",
-     "week_ago": null
+     "week_ago": 295000
     },
     {
      "store": "gagstore",
@@ -2366,9 +2317,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-17-pro",
      "title": "iPhone 17 Pro — 1TB — Deep Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-6f64-73f8-a7ed-c217bc1e6580/iPhone-17-pro-max-all-colors.jpg",
-     "week_ago": null
+     "week_ago": 305699
     },
     {
      "store": "hukut",
@@ -2376,10 +2327,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17-pro",
-     "title": "Apple iPhone 17 Pro – Deep Blue, 12/1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 17 Pro – 12/1TB, Deep Blue",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro",
-     "week_ago": null
+     "week_ago": 305699
     },
     {
      "store": "macstore",
@@ -2388,9 +2339,9 @@
      "in_stock": false,
      "url": "https://macstore.com.np/iphone-17-pro-1-tb-price-in-nepal",
      "title": "iPhone 17 Pro 1 TB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762242654_6909b05e5ce8b.webp",
-     "week_ago": null
+     "week_ago": 305699
     }
    ],
    "lowest": 295000,
@@ -2464,7 +2415,7 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-17-air",
      "title": "iPhone 17 Air — 256GB — Cloud White",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-64bd-7dd4-b192-914184789c8d/sky.webp",
      "week_ago": null
     },
@@ -2475,7 +2426,7 @@
      "in_stock": true,
      "url": "https://macstore.com.np/Buy-iPhone-17-Air-256-GB-Price-in-Nepal",
      "title": "iPhone 17 Air 256 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762349248_690b50c042e2e.webp",
      "week_ago": null
     },
@@ -2486,9 +2437,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-air",
      "title": "Apple iPhone Air – 12/256GB, Sky Blue",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-air",
-     "week_ago": null
+     "week_ago": 190699
     },
     {
      "store": "olizstore",
@@ -2497,9 +2448,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-air-price-in-nepal",
      "title": "iPhone Air Sky Blue/256GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-17-air-sky-blue-and-price-in-nepal-3048.webp",
-     "week_ago": null
+     "week_ago": 190699
     },
     {
      "store": "evostore",
@@ -2508,9 +2459,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphoneAir",
      "title": "iPhone Air",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iphone%20air/iPhone_Air_Sky_Blue_PDP_Image_Position_1_Sky_Blue_Color__SEA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 190699,
      "storage_assumed": true
     }
    ],
@@ -2596,7 +2547,7 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-17-air",
      "title": "iPhone 17 Air — 512GB — Cloud White",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-64bd-7dd4-b192-914184789c8d/sky.webp",
      "week_ago": null
     },
@@ -2606,10 +2557,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-air",
-     "title": "Apple iPhone Air – Sky Blue, 12/512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone Air – 12/512GB, Sky Blue",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-air",
-     "week_ago": null
+     "week_ago": 232899
     }
    ],
    "lowest": 208999,
@@ -2688,9 +2639,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-air",
      "title": "Apple iPhone Air – 12/1TB, Sky Blue",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-air",
-     "week_ago": null
+     "week_ago": 275099
     }
    ],
    "lowest": 275099,
@@ -2757,9 +2708,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-17",
      "title": "iPhone 17 — 8GB/256GB —  Mist Blue",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-7a95-7c87-90c6-3de0a7a3f385/iphone-17%20all%20colors.png",
-     "week_ago": null
+     "week_ago": 173499
     },
     {
      "store": "hukut",
@@ -2768,9 +2719,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17",
      "title": "Apple iPhone 17 – 8/256GB, Sage",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17",
-     "week_ago": null
+     "week_ago": 173499
     },
     {
      "store": "macstore",
@@ -2779,9 +2730,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iPhone-17-256-gb-Price-in-Nepal",
      "title": "iPhone 17 256 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762157819_690864fbd6aaa.webp",
-     "week_ago": null
+     "week_ago": 173499
     },
     {
      "store": "evostore",
@@ -2790,9 +2741,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone17",
      "title": "iPhone 17",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%2017/iPhone_17_Black_PDP_Image_Position_1_Black_Color__SEA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 173499,
      "storage_assumed": true
     },
     {
@@ -2802,9 +2753,9 @@
      "in_stock": true,
      "url": "https://www.olizstore.com/iphone-17-price-in-nepal",
      "title": "iPhone 17 White/256GB",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/uploads/682feff88c633f25b4c7ce32/product_image-apple-iphone-17-white-and-price-in-nepal-0653.webp",
-     "week_ago": null
+     "week_ago": 173499
     }
    ],
    "lowest": 173499,
@@ -2814,9 +2765,9 @@
     {
      "store": "hamrobazar",
      "price": 142999,
-     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/i-phone-17-256gb-in-ta-du/852A0860-FE9E-4697-B30D-85444FC6029E",
+     "url": "https://hamrobazaar.com/detail/mobile-phone-handsets/i-phone-17-256gb-in-ta-du/11F64E16-C92F-4511-9D6D-6C45CBB97AA2",
      "title": "I Phone 17 | I Phone 17 | I Phone 17 256gb | 17 17",
-     "last_seen": "2026-11-25T09:01:21+00:00"
+     "last_seen": "2026-11-25T22:02:08+00:00"
     }
    ],
    "image_credit": "Image: Apple",
@@ -2951,9 +2902,9 @@
      "in_stock": false,
      "url": "https://gag-nepal.com/products/iphone-17",
      "title": "iPhone 17 — 8GB/512GB — Black",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-7a95-7c87-90c6-3de0a7a3f385/iphone-17%20all%20colors.png",
-     "week_ago": null
+     "week_ago": 215699
     },
     {
      "store": "hukut",
@@ -2961,10 +2912,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17",
-     "title": "Apple iPhone 17 – Lavender, 8/512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 17 – 8/512GB, Lavender",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17",
-     "week_ago": null
+     "week_ago": 215699
     },
     {
      "store": "macstore",
@@ -2973,9 +2924,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/Buy-iPhone-17-512-GB-Price-in-Nepal",
      "title": "iPhone 17 512 GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762170529_690896a1d7841.webp",
-     "week_ago": null
+     "week_ago": 215699
     }
    ],
    "lowest": 215699,
@@ -3083,9 +3034,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-17e-256gb-price-in-nepal",
      "title": "iPhone 17e 256GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1789462363_6aa9075b3c38f.webp",
-     "week_ago": null
+     "week_ago": 132000
     },
     {
      "store": "gagstore",
@@ -3094,9 +3045,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/apple-iphone-17e",
      "title": "Apple iPhone 17e — Black — 256GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc372-0eb5-7d79-9ce6-5897fa4e8cee/iphone%2017e%20all%20colors.png",
-     "week_ago": null
+     "week_ago": 132499
     },
     {
      "store": "hukut",
@@ -3105,9 +3056,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17e",
      "title": "Apple iPhone 17e – Pink, 8/256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17e",
-     "week_ago": null
+     "week_ago": 132499
     },
     {
      "store": "evostore",
@@ -3116,9 +3067,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone-17e",
      "title": "iPhone 17e",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/iPhone%2017e/iPhone_17e_Soft_Pink_PDP_Image_Position_1__SEA-EN-500x500.jpg",
-     "week_ago": null,
+     "week_ago": 132499,
      "storage_assumed": true
     },
     {
@@ -3128,9 +3079,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-17e",
      "title": "iPhone 17e",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/682feff88c633f25b4c7ce32/hero_image/69f30acb4ef88edb44eaa819.webp",
-     "week_ago": null,
+     "week_ago": 132499,
      "storage_assumed": true
     }
    ],
@@ -3204,9 +3155,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-17e-512gb-price-in-nepal",
      "title": "iPhone 17e 512GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1789461852_6aa9055c18ec3.webp",
-     "week_ago": null
+     "week_ago": 174499
     },
     {
      "store": "gagstore",
@@ -3215,9 +3166,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/apple-iphone-17e",
      "title": "Apple iPhone 17e — Black — 512GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc372-0eb5-7d79-9ce6-5897fa4e8cee/iphone%2017e%20all%20colors.png",
-     "week_ago": null
+     "week_ago": 175099
     },
     {
      "store": "hukut",
@@ -3226,9 +3177,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-17e",
      "title": "Apple iPhone 17e – Pink, 8/512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17e",
-     "week_ago": null
+     "week_ago": 175099
     }
    ],
    "lowest": 174499,
@@ -3301,9 +3252,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro-max",
      "title": "Apple iPhone 16 Pro Max – Natural Titanium, 256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro-max",
-     "week_ago": null
+     "week_ago": 207000
     }
    ],
    "lowest": 207000,
@@ -3370,9 +3321,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro-max",
      "title": "Apple iPhone 16 Pro Max – White Titanium, 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro-max",
-     "week_ago": null
+     "week_ago": 235499
     }
    ],
    "lowest": 235499,
@@ -3439,9 +3390,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro-max",
      "title": "Apple iPhone 16 Pro Max – Desert Titanium, 1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro-max",
-     "week_ago": null
+     "week_ago": 284000
     }
    ],
    "lowest": 284000,
@@ -3508,9 +3459,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro",
      "title": "Apple iPhone 16 Pro – 8GB+128GB, Desert Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro",
-     "week_ago": null
+     "week_ago": 168700
     }
    ],
    "lowest": 168700,
@@ -3577,9 +3528,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro",
      "title": "Apple iPhone 16 Pro – 8GB+256GB, Desert Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro",
-     "week_ago": null
+     "week_ago": 188200
     }
    ],
    "lowest": 188200,
@@ -3646,9 +3597,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro",
      "title": "Apple iPhone 16 Pro – 8GB+512GB, Desert Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro",
-     "week_ago": null
+     "week_ago": 226600
     }
    ],
    "lowest": 226600,
@@ -3715,9 +3666,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-pro",
      "title": "Apple iPhone 16 Pro – 8GB+1TB, Desert Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-pro",
-     "week_ago": null
+     "week_ago": 265200
     }
    ],
    "lowest": 265200,
@@ -3784,9 +3735,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-plus",
      "title": "Apple iPhone 16 Plus – Ultramarine, 8GB+128GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-plus",
-     "week_ago": null
+     "week_ago": 149600
     }
    ],
    "lowest": 149600,
@@ -3864,9 +3815,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-plus",
      "title": "Apple iPhone 16 Plus – 8GB+256GB, Ultramarine",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-plus",
-     "week_ago": null
+     "week_ago": 168200
     }
    ],
    "lowest": 168200,
@@ -3944,9 +3895,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16-plus",
      "title": "Apple iPhone 16 Plus – 8GB+512GB, Ultramarine",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16-plus",
-     "week_ago": null
+     "week_ago": 205600
     }
    ],
    "lowest": 205600,
@@ -4024,23 +3975,15 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-16",
      "title": "iPhone 16",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 146599
     }
    ],
    "lowest": 167599,
    "highest": 167599,
    "image": "images/models/iphone-16.webp",
-   "image_credit": "Image: Apple",
-   "used": {
-    "store": "hamrobazar",
-    "ads": 3,
-    "low": 77000,
-    "median": 89000,
-    "high": 95000,
-    "all_sizes": true
-   }
+   "image_credit": "Image: Apple"
   },
   {
    "key": "iphone-16|128",
@@ -4055,9 +3998,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-16-price-in-nepal",
      "title": "iPhone 16 128GB",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1747811781_682d7dc552092.webp",
-     "week_ago": null
+     "week_ago": 146099
     },
     {
      "store": "gagstore",
@@ -4066,9 +4009,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-16",
      "title": "iPhone 16 — Black — 128GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc343-aa3e-7136-b989-c12027c48f42/product_image-img_0672-7304.webp",
-     "week_ago": null
+     "week_ago": 146599
     },
     {
      "store": "hukut",
@@ -4076,10 +4019,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-16",
-     "title": "Apple iPhone 16 – 8GB+128GB, Ultramarine",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 16 – Ultramarine, 8GB+128GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16",
-     "week_ago": null
+     "week_ago": 146599
     },
     {
      "store": "evostore",
@@ -4088,9 +4031,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iphone16",
      "title": "iPhone 16",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/16plus-427x452-removebg-preview-500x500.png",
-     "week_ago": null,
+     "week_ago": 146599,
      "storage_assumed": true
     }
    ],
@@ -4193,15 +4136,7 @@
       }
      ]
     }
-   ],
-   "used": {
-    "store": "hamrobazar",
-    "ads": 3,
-    "low": 77000,
-    "median": 89000,
-    "high": 95000,
-    "all_sizes": true
-   }
+   ]
   },
   {
    "key": "iphone-16|256",
@@ -4216,9 +4151,9 @@
      "in_stock": false,
      "url": "https://macstore.com.np/iPhone-16-256gb-price-in-nepal",
      "title": "iPhone 16 256 gb",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1747812638_682d811e1a8c0.webp",
-     "week_ago": null
+     "week_ago": 143500
     },
     {
      "store": "hukut",
@@ -4227,9 +4162,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16",
      "title": "Apple iPhone 16 – 8GB+256GB, Ultramarine",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16",
-     "week_ago": null
+     "week_ago": 149000
     }
    ],
    "lowest": 143500,
@@ -4292,15 +4227,7 @@
       }
      ]
     }
-   ],
-   "used": {
-    "store": "hamrobazar",
-    "ads": 3,
-    "low": 77000,
-    "median": 89000,
-    "high": 95000,
-    "all_sizes": true
-   }
+   ]
   },
   {
    "key": "iphone-16|512",
@@ -4315,9 +4242,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-16",
      "title": "Apple iPhone 16 – 8GB+512GB, Ultramarine",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-16",
-     "week_ago": null
+     "week_ago": 186500
     }
    ],
    "lowest": 186500,
@@ -4380,15 +4307,7 @@
       }
      ]
     }
-   ],
-   "used": {
-    "store": "hamrobazar",
-    "ads": 3,
-    "low": 77000,
-    "median": 89000,
-    "high": 95000,
-    "all_sizes": true
-   }
+   ]
   },
   {
    "key": "iphone-16e|na",
@@ -4403,14 +4322,14 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-16e",
      "title": "Apple iPhone 16e",
-     "last_seen": "2026-11-25T08:53:22+00:00",
-     "image": "https://cdn.hukut.com/iPhone-16e-Black-Price-in-Nepal.png1744176697819",
-     "week_ago": null
+     "last_seen": "2026-11-25T21:54:49+00:00",
+     "image": "https://cdn.hukut.com/iPhone-16e-Black-Price-in-Nepal.png1744176698433",
+     "week_ago": 105999
     }
    ],
    "lowest": 105999,
    "highest": 105999,
-   "image": "https://cdn.hukut.com/iPhone-16e-Black-Price-in-Nepal.png1744176697819"
+   "image": "https://cdn.hukut.com/iPhone-16e-Black-Price-in-Nepal.png1744176698433"
   },
   {
    "key": "iphone-15-pro-max|256",
@@ -4424,10 +4343,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-max-price-in-nepal",
-     "title": "Apple iPhone 15 Pro Max – 256GB, Natural Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Pro Max – Natural Titanium, 256GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 233499
     }
    ],
    "lowest": 233499,
@@ -4494,9 +4413,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-max-price-in-nepal",
      "title": "Apple iPhone 15 Pro Max – Natural Titanium, 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 271499
     }
    ],
    "lowest": 271499,
@@ -4562,10 +4481,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-max-price-in-nepal",
-     "title": "Apple iPhone 15 Pro Max – Natural Titanium, 1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Pro Max – 1TB, Natural Titanium",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 309499
     }
    ],
    "lowest": 309499,
@@ -4631,10 +4550,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-price-in-nepal",
-     "title": "Apple iPhone 15 Pro – 128GB, Natural Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Pro – Natural Titanium, 128GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 195499
     }
    ],
    "lowest": 195499,
@@ -4700,10 +4619,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-price-in-nepal",
-     "title": "Apple iPhone 15 Pro – Natural Titanium, 256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Pro – 256GB, Natural Titanium",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 214499
     }
    ],
    "lowest": 214499,
@@ -4770,9 +4689,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-price-in-nepal",
      "title": "Apple iPhone 15 Pro – 512GB, Natural Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 253499
     }
    ],
    "lowest": 253499,
@@ -4839,9 +4758,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-pro-price-in-nepal",
      "title": "Apple iPhone 15 Pro – 1TB, Natural Titanium",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 290499
     }
    ],
    "lowest": 290499,
@@ -4907,10 +4826,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-plus-price-in-nepal",
-     "title": "Apple iPhone 15 Plus – Pink, 128GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Plus – 128GB, Pink",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-plus-price-in-nepal",
-     "week_ago": null
+     "week_ago": 176499
     }
    ],
    "lowest": 176499,
@@ -4987,10 +4906,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-plus-price-in-nepal",
-     "title": "Apple iPhone 15 Plus – Pink, 256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 Plus – 256GB, Pink",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-plus-price-in-nepal",
-     "week_ago": null
+     "week_ago": 195499
     }
    ],
    "lowest": 195499,
@@ -5068,9 +4987,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-plus-price-in-nepal",
      "title": "Apple iPhone 15 Plus – Pink, 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-plus-price-in-nepal",
-     "week_ago": null
+     "week_ago": 233499
     }
    ],
    "lowest": 233499,
@@ -5148,9 +5067,9 @@
      "in_stock": true,
      "url": "https://www.olizstore.com/iphone-15",
      "title": "iPhone 15",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": null,
-     "week_ago": null
+     "week_ago": 127499
     }
    ],
    "lowest": 148299,
@@ -5158,9 +5077,9 @@
    "image": null,
    "used": {
     "store": "hamrobazar",
-    "ads": 3,
-    "low": 70000,
-    "median": 75000,
+    "ads": 4,
+    "low": 75000,
+    "median": 80000,
     "high": 80000,
     "all_sizes": true
    }
@@ -5178,9 +5097,9 @@
      "in_stock": true,
      "url": "https://gag-nepal.com/products/iphone-15",
      "title": "iPhone 15 — Blue — 128GB",
-     "last_seen": "2026-11-25T08:57:15+00:00",
+     "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc359-20bc-75e3-8ea2-5dda4b47aff0/iPhone%2015%20Blue.jpg",
-     "week_ago": null
+     "week_ago": 127499
     },
     {
      "store": "hukut",
@@ -5188,10 +5107,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-price-in-nepal",
-     "title": "Apple iPhone 15 – Pink, 128GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 – 128GB, Pink",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-price-in-nepal",
-     "week_ago": null
+     "week_ago": 127499
     },
     {
      "store": "macstore",
@@ -5200,9 +5119,9 @@
      "in_stock": true,
      "url": "https://macstore.com.np/iphone-15-pink-128gb-price-in-nepal",
      "title": "iPhone 15 128GB (MYWV3ZP/A-92)",
-     "last_seen": "2026-11-25T08:57:39+00:00",
+     "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1744462993_67fa64914231d.webp",
-     "week_ago": null
+     "week_ago": 127499
     },
     {
      "store": "evostore",
@@ -5211,9 +5130,9 @@
      "in_stock": null,
      "url": "https://evostore.com.np/apple/iphone/iPhone15",
      "title": "iPhone 15",
-     "last_seen": "2026-11-25T08:47:08+00:00",
+     "last_seen": "2026-11-25T21:48:58+00:00",
      "image": "https://evostore.com.np/image/cache/catalog/ipho15-500x500.png",
-     "week_ago": null,
+     "week_ago": 127499,
      "storage_assumed": true
     }
    ],
@@ -5306,9 +5225,9 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 3,
-    "low": 70000,
-    "median": 75000,
+    "ads": 4,
+    "low": 75000,
+    "median": 80000,
     "high": 80000,
     "all_sizes": false
    }
@@ -5325,10 +5244,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-price-in-nepal",
-     "title": "Apple iPhone 15 – 256GB, Pink",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 15 – Pink, 256GB",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-price-in-nepal",
-     "week_ago": null
+     "week_ago": 176499
     }
    ],
    "lowest": 176499,
@@ -5393,9 +5312,9 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 3,
-    "low": 70000,
-    "median": 75000,
+    "ads": 4,
+    "low": 75000,
+    "median": 80000,
     "high": 80000,
     "all_sizes": true
    }
@@ -5413,9 +5332,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-15-price-in-nepal",
      "title": "Apple iPhone 15 – Pink, 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-15-price-in-nepal",
-     "week_ago": null
+     "week_ago": 214499
     }
    ],
    "lowest": 214499,
@@ -5480,9 +5399,9 @@
    ],
    "used": {
     "store": "hamrobazar",
-    "ads": 3,
-    "low": 70000,
-    "median": 75000,
+    "ads": 4,
+    "low": 75000,
+    "median": 80000,
     "high": 80000,
     "all_sizes": true
    }
@@ -5499,10 +5418,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-max-price-in-nepal",
-     "title": "Apple iPhone 14 Pro Max – Gold, 128GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 14 Pro Max – 128GB, Gold",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 191990
     }
    ],
    "lowest": 191990,
@@ -5568,10 +5487,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-max-price-in-nepal",
-     "title": "Apple iPhone 14 Pro Max – Gold, 256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 14 Pro Max – 256GB, Gold",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 210990
     }
    ],
    "lowest": 210990,
@@ -5637,10 +5556,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-max-price-in-nepal",
-     "title": "Apple iPhone 14 Pro Max – Gold, 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 14 Pro Max – 512GB, Gold",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 247990
     }
    ],
    "lowest": 247990,
@@ -5706,10 +5625,10 @@
      "old_price": null,
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-max-price-in-nepal",
-     "title": "Apple iPhone 14 Pro Max – Gold, 1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "title": "Apple iPhone 14 Pro Max – 1TB, Gold",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-max-price-in-nepal",
-     "week_ago": null
+     "week_ago": 285990
     }
    ],
    "lowest": 285990,
@@ -5776,9 +5695,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-price-in-nepal",
      "title": "Apple iphone 14 Pro – 128GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 180190
     }
    ],
    "lowest": 180190,
@@ -5807,9 +5726,9 @@
      "in_stock": true,
      "url": "https://hukut.com/apple-iphone-14-pro-price-in-nepal",
      "title": "Apple iphone 14 Pro – 256GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 198890
     }
    ],
    "lowest": 198890,
@@ -5838,9 +5757,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-price-in-nepal",
      "title": "Apple iphone 14 Pro – 512GB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 246990
     }
    ],
    "lowest": 246990,
@@ -5869,9 +5788,9 @@
      "in_stock": false,
      "url": "https://hukut.com/apple-iphone-14-pro-price-in-nepal",
      "title": "Apple iphone 14 Pro – 1TB",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-14-pro-price-in-nepal",
-     "week_ago": null
+     "week_ago": 284990
     }
    ],
    "lowest": 284990,
@@ -5900,9 +5819,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-14-price-in-nepal",
      "title": "Apple iPhone 14 – 128GB, Red",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-14-price-in-nepal",
-     "week_ago": null
+     "week_ago": 93499
     },
     {
      "store": "olizstore",
@@ -5911,9 +5830,9 @@
      "in_stock": false,
      "url": "https://www.olizstore.com/iphone-14",
      "title": "iPhone 14",
-     "last_seen": "2026-11-25T08:49:24+00:00",
+     "last_seen": "2026-11-25T21:50:54+00:00",
      "image": "https://cdn2.blanxer.com/682feff88c633f25b4c7ce32/hero_image/69f30acb4ef88edb44eaa819.webp",
-     "week_ago": null,
+     "week_ago": 93499,
      "storage_assumed": true
     }
    ],
@@ -5992,9 +5911,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-14-price-in-nepal",
      "title": "Apple iPhone 14 – 256GB, Red",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-14-price-in-nepal",
-     "week_ago": null
+     "week_ago": 152989
     }
    ],
    "lowest": 152989,
@@ -6072,9 +5991,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-14-price-in-nepal",
      "title": "Apple iPhone 14 – 512GB, Red",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-14-price-in-nepal",
-     "week_ago": null
+     "week_ago": 204989
     }
    ],
    "lowest": 204989,
@@ -6152,14 +6071,14 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-13-pro-max-price-in-nepal",
      "title": "iPhone 13 Pro Max (6.7 inch , Super Retina XDR OLED, 120Hz, ProRes Video)\r\n",
-     "last_seen": "2026-11-25T08:53:22+00:00",
-     "image": "https://cdn.hukut.com/iPhone%2013%20Pro%20Max%20blue1.webp",
-     "week_ago": null
+     "last_seen": "2026-11-25T21:54:49+00:00",
+     "image": "https://cdn.hukut.com/iPhone%2013%20Pro%20Max%20blue2.webp",
+     "week_ago": 191990
     }
    ],
    "lowest": 191990,
    "highest": 191990,
-   "image": "https://cdn.hukut.com/iPhone%2013%20Pro%20Max%20blue1.webp"
+   "image": "https://cdn.hukut.com/iPhone%2013%20Pro%20Max%20blue2.webp"
   },
   {
    "key": "iphone-13|na",
@@ -6174,14 +6093,14 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-13-price-in-nepal",
      "title": "Apple iPhone 13",
-     "last_seen": "2026-11-25T08:53:22+00:00",
-     "image": "https://cdn.hukut.com/Apple%20iPhone%2013%20Midnight%202.webp",
-     "week_ago": null
+     "last_seen": "2026-11-25T21:54:49+00:00",
+     "image": "https://cdn.hukut.com/Apple%20iPhone%2013%20blue%202.webp",
+     "week_ago": 80399
     }
    ],
    "lowest": 80399,
    "highest": 80399,
-   "image": "https://cdn.hukut.com/Apple%20iPhone%2013%20Midnight%202.webp"
+   "image": "https://cdn.hukut.com/Apple%20iPhone%2013%20blue%202.webp"
   },
   {
    "key": "iphone-12|na",
@@ -6196,14 +6115,14 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-12-128gb-price-in-nepal",
      "title": "Apple iPhone 12",
-     "last_seen": "2026-11-25T08:53:22+00:00",
-     "image": "https://cdn.hukut.com/iPhone%2012%20Green.webp",
-     "week_ago": null
+     "last_seen": "2026-11-25T21:54:49+00:00",
+     "image": "https://cdn.hukut.com/iPhone%2012%20Black.webp",
+     "week_ago": 85100
     }
    ],
    "lowest": 85100,
    "highest": 85100,
-   "image": "https://cdn.hukut.com/iPhone%2012%20Green.webp"
+   "image": "https://cdn.hukut.com/iPhone%2012%20Black.webp"
   },
   {
    "key": "iphone-11|128",
@@ -6218,9 +6137,9 @@
      "in_stock": false,
      "url": "https://hukut.com/iphone-11-price-in-nepal",
      "title": "Apple iPhone 11 – 128GB, White",
-     "last_seen": "2026-11-25T08:53:22+00:00",
+     "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=iphone-11-price-in-nepal",
-     "week_ago": null
+     "week_ago": 68999
     }
    ],
    "lowest": 68999,
