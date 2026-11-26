@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T08:43:54+00:00",
+ "generated_at": "2026-11-26T21:48:37+00:00",
  "demo": false,
  "stores": [
   {
@@ -1487,7 +1487,7 @@
      "title": "Apple iPhone 17 Pro Max – 12/256GB, Deep Blue",
      "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": 248999
+     "week_ago": 242499
     },
     {
      "store": "macstore",
@@ -1631,7 +1631,7 @@
      "title": "Apple iPhone 17 Pro Max – 12/512GB, Deep Blue",
      "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": 289999
+     "week_ago": 284599
     },
     {
      "store": "macstore",
@@ -1775,7 +1775,7 @@
      "title": "Apple iPhone 17 Pro Max – 12/1TB, Deep Blue",
      "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": 330999
+     "week_ago": 327099
     },
     {
      "store": "macstore",
@@ -1899,7 +1899,7 @@
      "title": "Apple iPhone 17 Pro Max – Silver, 12/2TB",
      "last_seen": "2026-11-25T21:54:49+00:00",
      "image": "https://hukut.com/api/og?slug=apple-iphone-17-pro-max",
-     "week_ago": 248999
+     "week_ago": 411397
     },
     {
      "store": "fatafatsewa",
@@ -2417,7 +2417,7 @@
      "title": "iPhone 17 Air — 256GB — Cloud White",
      "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-64bd-7dd4-b192-914184789c8d/sky.webp",
-     "week_ago": null
+     "week_ago": 183999
     },
     {
      "store": "macstore",
@@ -2428,7 +2428,7 @@
      "title": "iPhone 17 Air 256 GB",
      "last_seen": "2026-11-25T21:59:17+00:00",
      "image": "https://admin.macstore.com.np/storage/images/main/1762349248_690b50c042e2e.webp",
-     "week_ago": null
+     "week_ago": 190199
     },
     {
      "store": "hukut",
@@ -2549,7 +2549,7 @@
      "title": "iPhone 17 Air — 512GB — Cloud White",
      "last_seen": "2026-11-25T21:58:49+00:00",
      "image": "https://gag-s3.spydolabs.com/media/originals/uploads/media/019fc351-64bd-7dd4-b192-914184789c8d/sky.webp",
-     "week_ago": null
+     "week_ago": 208999
     },
     {
      "store": "hukut",
